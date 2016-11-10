@@ -1,0 +1,4 @@
+<resources>
+    <string name="content_authority">hemal.t.shah.expensetracker</string>
+    <string name="app_name">Expense Tracker</string>
+</resources>
