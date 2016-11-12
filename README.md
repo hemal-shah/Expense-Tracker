@@ -4,7 +4,9 @@ This is a practice app I have been creating to experiment with features of Recyc
 Currently it's in primitive stages, but I have plans to add following features.
 - [x] Content Provider 
 - [x] Link Content Provider with Cursor Loader 
-- [ ] Swipe to dismiss feature.
+- [x] Swipe to dismiss feature.
+- [ ] Swipe to dismiss with better backgrounds.
+- [x] Drag & Drop feature.
 - [ ] Material Design touch & expand feature like in Inbox app.
 
 - Thanks to skyfishjy for [CursorRecyclerViewAdapter](https://gist.github.com/skyfishjy/443b7448f59be978bc59)
@@ -12,7 +14,7 @@ Currently it's in primitive stages, but I have plans to add following features.
 ```
 MIT License
 
-Copyright (c) [year] [fullname]
+Copyright (c) [2016] [Hemal M. Shah]
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
