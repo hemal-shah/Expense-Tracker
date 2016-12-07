@@ -1,4 +1,4 @@
-package hemal.t.shah.expensetracker.Data;
+package hemal.t.shah.expensetracker.data;
 
 
 import android.content.Context;

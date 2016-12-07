@@ -10,13 +10,17 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 
-import hemal.t.shah.expensetracker.Data.ExpenseContract;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import hemal.t.shah.expensetracker.data.ExpenseContract;
 
 public class MainActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
     private static final String TAG = "MainActivity";
 
+    @BindView(R.id.rv_activity_main)
     RecyclerView recyclerView;
+
     ExpenseAdapter adapter;
     private static final int LOADER_FOR_EXPENSE = 0;
 
@@ -24,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        recyclerView = (RecyclerView) findViewById(R.id.rv_activity_main);
+        ButterKnife.bind(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL,
                 false));

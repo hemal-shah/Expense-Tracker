@@ -18,7 +18,7 @@
 
         <provider
             android:authorities="@string/content_authority"
-            android:name=".Data.ExpenseProvider"
+            android:name=".data.ExpenseProvider"
             android:exported="false"
             android:syncable="true"
             />

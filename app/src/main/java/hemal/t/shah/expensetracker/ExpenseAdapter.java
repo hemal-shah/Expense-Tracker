@@ -11,7 +11,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import hemal.t.shah.expensetracker.Data.ExpenseContract;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import hemal.t.shah.expensetracker.data.ExpenseContract;
 
 /**
  * Created by hemal on 10/11/16.
@@ -94,11 +96,12 @@ public class ExpenseAdapter extends CursorRecyclerViewAdapter<ExpenseAdapter.Vie
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
+        @BindView(R.id.tv_single_row_expense)
         TextView tv;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            tv = (TextView) itemView.findViewById(R.id.tv_single_row_expense);
+            ButterKnife.bind(this, itemView);
         }
     }
 }
