@@ -1,105 +1,57 @@
 package hemal.t.shah.expensetracker;
 
-import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.MenuItem;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import hemal.t.shah.expensetracker.data.ExpenseContract;
 
 public class MainActivity extends AppCompatActivity implements
-        LoaderManager.LoaderCallbacks<Cursor> {
+        NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "MainActivity";
 
-    @BindView(R.id.rv_activity_main)
-    RecyclerView recyclerView;
+    @BindView(R.id.dl_activity_main)
+    DrawerLayout drawerLayout;
 
-    ExpenseAdapter adapter;
-    private static final int LOADER_FOR_EXPENSE = 0;
+    @BindView(R.id.nv_activity_main)
+    NavigationView navigationView;
+
+    @BindView(R.id.tb_activity_main)
+    Toolbar toolbar;
+
+    ActionBarDrawerToggle actionBarDrawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         ButterKnife.bind(this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this,
-                LinearLayoutManager.VERTICAL,
-                false));
-        recyclerView.setHasFixedSize(true);
 
-        adapter = new ExpenseAdapter(this, null);
+        setSupportActionBar(toolbar);
 
-        recyclerView.setAdapter(adapter);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(MainActivity.this,
+                drawerLayout,
+                toolbar,
+                R.string.drawer_open,
+                R.string.drawer_closed);
 
-        getSupportLoaderManager().initLoader(LOADER_FOR_EXPENSE,
-                null,
-                this);
+        Log.i(TAG, "onCreate: " + drawerLayout.getId());
 
-        ItemTouchHelper.Callback callback = new ItemTouchHelper.Callback() {
-            @Override
-            public int getMovementFlags(RecyclerView recyclerView,
-                    RecyclerView.ViewHolder viewHolder) {
-                int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
-                int swipeFlags = ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
-                return makeMovementFlags(dragFlags, swipeFlags);
-            }
-
-            @Override
-            public boolean isLongPressDragEnabled() {
-                return true;
-            }
-
-            @Override
-            public boolean isItemViewSwipeEnabled() {
-                return true;
-            }
-
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
-                    RecyclerView.ViewHolder target) {
-                adapter.onItemMove(viewHolder.getAdapterPosition(), target.getAdapterPosition());
-                return true;
-            }
-
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                adapter.onItemDismiss(viewHolder.getAdapterPosition());
-            }
-        };
-        ItemTouchHelper helper = new ItemTouchHelper(callback);
-        helper.attachToRecyclerView(recyclerView);
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
+        navigationView.setNavigationItemSelectedListener(this);
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String sortOrder = ExpenseContract.ExpenseEntry.COLUMN_AMOUNT + " DESC";
-
-        return new CursorLoader(
-                this,
-                ExpenseContract.ExpenseEntry.CONTENT_URI,
-                new String[]{ExpenseContract.ExpenseEntry._ID,
-                        ExpenseContract.ExpenseEntry.COLUMN_ABOUT,
-                        ExpenseContract.ExpenseEntry.COLUMN_AMOUNT},
-                null,
-                null,
-                sortOrder
-        );
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        adapter.swapCursor(data);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        adapter.swapCursor(null);
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        return false;
     }
 }
