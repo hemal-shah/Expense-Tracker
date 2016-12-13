@@ -1,4 +1,4 @@
-package hemal.t.shah.expensetracker;
+package hemal.t.shah.expensetracker.pojo;
 
 import android.os.Parcel;
 import android.os.Parcelable;

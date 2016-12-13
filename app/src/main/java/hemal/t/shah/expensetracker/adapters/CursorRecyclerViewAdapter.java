@@ -1,4 +1,4 @@
-package hemal.t.shah.expensetracker;
+package hemal.t.shah.expensetracker.adapters;
 
 /*
  * Copyright (C) 2014 skyfish.jy@gmail.com

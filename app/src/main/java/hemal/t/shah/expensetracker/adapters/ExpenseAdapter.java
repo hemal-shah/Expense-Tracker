@@ -1,4 +1,4 @@
-package hemal.t.shah.expensetracker;
+package hemal.t.shah.expensetracker.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -13,12 +13,16 @@ import java.util.Collections;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import hemal.t.shah.expensetracker.pojo.ExpenseParcelable;
+import hemal.t.shah.expensetracker.interfaces.ItemTouchHelper;
+import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.data.ExpenseContract;
 
 /**
  * Created by hemal on 10/11/16.
  */
-public class ExpenseAdapter extends CursorRecyclerViewAdapter<ExpenseAdapter.ViewHolder> implements ItemTouchHelperAdapter{
+public class ExpenseAdapter extends CursorRecyclerViewAdapter<ExpenseAdapter.ViewHolder> implements
+        ItemTouchHelper {
 
     Cursor cursor = null;
     Context context = null;
