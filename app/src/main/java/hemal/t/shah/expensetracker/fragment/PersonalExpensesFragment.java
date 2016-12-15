@@ -73,8 +73,8 @@ public class PersonalExpensesFragment extends Fragment implements LoaderManager.
         return new CursorLoader(
                 context,
                 ExpenseContract.ExpenseEntry.CONTENT_URI,
-                new String[]{ExpenseContract.ExpenseEntry._ID, ExpenseContract.ExpenseEntry.COLUMN_ABOUT,
-
+                new String[]{ExpenseContract.ExpenseEntry._ID,
+                        ExpenseContract.ExpenseEntry.COLUMN_ABOUT,
                         ExpenseContract.ExpenseEntry.COLUMN_AMOUNT},
                 null,
                 null,

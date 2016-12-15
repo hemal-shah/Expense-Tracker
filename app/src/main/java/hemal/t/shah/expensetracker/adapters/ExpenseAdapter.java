@@ -13,10 +13,10 @@ import java.util.Collections;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import hemal.t.shah.expensetracker.pojo.ExpenseParcelable;
-import hemal.t.shah.expensetracker.interfaces.ItemTouchHelper;
 import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.data.ExpenseContract;
+import hemal.t.shah.expensetracker.interfaces.ItemTouchHelper;
+import hemal.t.shah.expensetracker.pojo.ExpenseParcelable;
 
 /**
  * Created by hemal on 10/11/16.
@@ -64,7 +64,7 @@ public class ExpenseAdapter extends CursorRecyclerViewAdapter<ExpenseAdapter.Vie
                     cursor.getColumnIndex(ExpenseContract.ExpenseEntry.COLUMN_ABOUT));
             int amount = cursor.getInt(
                     cursor.getColumnIndex(ExpenseContract.ExpenseEntry.COLUMN_AMOUNT));
-            expenses.add(new ExpenseParcelable(about, amount));
+            expenses.add(new ExpenseParcelable(about, "time here", amount, 1));
         }while(cursor.moveToNext());
 
         return expenses;
