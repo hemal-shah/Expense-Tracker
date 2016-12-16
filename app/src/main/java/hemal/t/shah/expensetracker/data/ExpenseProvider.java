@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 @SuppressWarnings("ConstantConditions")
 public class ExpenseProvider extends ContentProvider {
@@ -20,17 +21,46 @@ public class ExpenseProvider extends ContentProvider {
 
     private ExpenseDBHelper dbHelper;
 
-    //queryBuilder object to help generate sql queries.
-    private static SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
+    //queryBuilder object to query user details table.
+    private static SQLiteQueryBuilder userDetailsQueryBuilder = new SQLiteQueryBuilder();
+
+    //queryBuilder object to query clusters
+    private static SQLiteQueryBuilder clustersQueryBuilder = new SQLiteQueryBuilder();
+
+    //queryBuilder to know expenses in a cluster
+    private static SQLiteQueryBuilder expensesFromClusterQueryBuilder = new SQLiteQueryBuilder();
+
+    //query Builder to retrieve number of participants in a cluster.
+    private static SQLiteQueryBuilder clusterUsersQueryBuilder = new SQLiteQueryBuilder();
 
     static {
+        //Providing the name of the table. i.e. UserDetailsEntry.TABLE_NAME
+        userDetailsQueryBuilder.setTables(ExpenseContract.UserDetailsEntry.TABLE_NAME);
 
-        String tables = ExpenseContract.UserDetailsEntry.TABLE_NAME + ", "
-                + ExpenseContract.ClusterEntry.TABLE_NAME + ", "
-                + ExpenseContract.ExpenseEntry.TABLE_NAME + ", "
-                + ExpenseContract.ClusterUserEntry.TABLE_NAME;
+        //setting normal query to invoke the clusters table.
+        clustersQueryBuilder.setTables(ExpenseContract.ClusterEntry.TABLE_NAME);
 
-        queryBuilder.setTables(tables);
+        /**
+         * Performing the INNER JOIN operation here.
+         * It should look something like following:
+         * expense_table INNER JOIN clusters ON expense_table.cluster_id = cluster._id
+         */
+        String innerJoinString =
+                ExpenseContract.ExpenseEntry.TABLE_NAME + " INNER JOIN " + ExpenseContract
+                        .ClusterEntry.TABLE_NAME + " ON "
+                        + ExpenseContract.ExpenseEntry.TABLE_NAME + "."
+                        + ExpenseContract.ExpenseEntry.COLUMN_FOREIGN_CLUSTER_ID + " = "
+                        + ExpenseContract.ClusterEntry.TABLE_NAME + "."
+                        + ExpenseContract.ClusterEntry._ID;
+        Log.i(TAG, "static initializer: inner join for expenses table: " + innerJoinString);
+        expensesFromClusterQueryBuilder.setTables(innerJoinString);
+
+        /**
+         * This query builder should retrieve details of users from the clusterUsersTable.
+         * todo build this query
+         */
+        clusterUsersQueryBuilder.setTables(ExpenseContract.ClusterUserEntry.TABLE_NAME);
+
     }
 
     private static UriMatcher matcher = buildUriMatcher();
@@ -62,7 +92,7 @@ public class ExpenseProvider extends ContentProvider {
         switch (matcher.match(uri)) {
             case EXPENSE:
 
-                cursor = queryBuilder.query(dbHelper.getReadableDatabase(),
+                cursor = expensesFromClusterQueryBuilder.query(dbHelper.getReadableDatabase(),
                         projection,
                         selection,
                         selectionArgs,
@@ -72,7 +102,7 @@ public class ExpenseProvider extends ContentProvider {
                 );
                 break;
             case USER_DETAILS:
-                cursor = queryBuilder.query(dbHelper.getReadableDatabase(),
+                cursor = userDetailsQueryBuilder.query(dbHelper.getReadableDatabase(),
                         projection,
                         selection,
                         selectionArgs,
@@ -81,7 +111,7 @@ public class ExpenseProvider extends ContentProvider {
                         sortOrder);
                 break;
             case CLUSTER:
-                cursor = queryBuilder.query(dbHelper.getReadableDatabase(),
+                cursor = clustersQueryBuilder.query(dbHelper.getReadableDatabase(),
                         projection,
                         selection,
                         selectionArgs,
@@ -90,7 +120,7 @@ public class ExpenseProvider extends ContentProvider {
                         sortOrder);
                 break;
             case CLUSTER_USERS:
-                cursor = queryBuilder.query(dbHelper.getReadableDatabase(),
+                cursor = clusterUsersQueryBuilder.query(dbHelper.getReadableDatabase(),
                         projection,
                         selection,
                         selectionArgs,
