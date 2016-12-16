@@ -58,6 +58,9 @@ public class ExpenseDBHelper extends SQLiteOpenHelper {
 //        Log.i(TAG, "onCreate: cluster table: " + sql_create_cluster_table);
         db.execSQL(sql_create_cluster_table);
 
+        /**
+         *Sample data inserted.
+         */
         for (int i = 0; i < 20; i++) {
             String title = "title " + i;
             String sql_cluster = "insert into " + ExpenseContract.ClusterEntry.TABLE_NAME
