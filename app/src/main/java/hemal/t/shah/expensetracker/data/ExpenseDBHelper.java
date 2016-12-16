@@ -12,7 +12,7 @@ import android.util.Log;
 public class ExpenseDBHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "ExpenseDBHelper";
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 7;
     private static final String DATABASE_NAME = "ExpenseDB.db";
 
     public ExpenseDBHelper(Context context) {
@@ -58,26 +58,17 @@ public class ExpenseDBHelper extends SQLiteOpenHelper {
 //        Log.i(TAG, "onCreate: cluster table: " + sql_create_cluster_table);
         db.execSQL(sql_create_cluster_table);
 
-        /**
-         *Sample data inserted.
-         */
-        for (int i = 0; i < 20; i++) {
-            String title = "title " + i;
-            String sql_cluster = "insert into " + ExpenseContract.ClusterEntry.TABLE_NAME
-                    + "(title, sum, is_shared, timestamp)"
-                    + " values(\"" + title + "\", 100, 0 , \"time is now\")";
-            db.execSQL(sql_cluster);
-            Log.i(TAG, "onCreate: inserted 1 row into cluster table");
-        }
-
 
         /**
          * CREATE TABLE expense_table(
          * _id INTEGER PRIMARY KEY ,
-         * about TEXT NOT NULL, amount REAL NOT NULL,
-         * timestamp TEXT, cluster_id INTEGER,
+         * about TEXT NOT NULL,
+         * amount REAL NOT NULL,
+         * timestamp TEXT,
+         * cluster_id INTEGER,
          * FOREIGN KEY(cluster_id) REFERENCES clusters(_id) );
          */
+
         String sql_create_expenses_table = "CREATE TABLE " + ExpenseContract.ExpenseEntry.TABLE_NAME
                 + "(" + ExpenseContract.ExpenseEntry._ID + " INTEGER PRIMARY KEY , "
                 + ExpenseContract.ExpenseEntry.COLUMN_ABOUT + " TEXT NOT NULL, "
@@ -88,8 +79,25 @@ public class ExpenseDBHelper extends SQLiteOpenHelper {
                 + "REFERENCES " + ExpenseContract.ClusterEntry.TABLE_NAME + "("
                 + ExpenseContract.ClusterEntry._ID + ") );";
 
-//        Log.i(TAG, "onCreate: expenses table: " + sql_create_expenses_table);
+        //Log.i(TAG, "onCreate: expenses table: " + sql_create_expenses_table);
         db.execSQL(sql_create_expenses_table);
+
+        //todo delete the sample insertions
+        for (int i = 0; i < 20; i++) {
+            String title = "title " + i;
+            String sql_cluster = "insert into " + ExpenseContract.ClusterEntry.TABLE_NAME
+                    + "(title, sum, is_shared, timestamp)"
+                    + " values(\"" + title + "\", 100, 0 , \"time is now\")";
+            db.execSQL(sql_cluster);
+            Log.i(TAG, "onCreate: inserted 1 row into cluster table");
+            String sql_expenses = "insert into " + ExpenseContract.ExpenseEntry.TABLE_NAME
+                    + "(about, amount, timestamp, cluster_id) VALUES (\"hemal\", 200.12, \"time "
+                    + "is now\",  "
+                    + (i + 1) + ");";
+
+            db.execSQL(sql_expenses);
+            Log.i(TAG, "onCreate: one row inserted into expenses table");
+        }
 
         /**
          * CREATE TABLE cluster_users(

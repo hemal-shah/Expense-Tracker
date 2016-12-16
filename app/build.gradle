@@ -31,8 +31,4 @@ dependencies {
     compile 'com.jakewharton:butterknife:8.4.0'
     apt 'com.jakewharton:butterknife-compiler:8.4.0'
 
-    //stetho by fb
-    compile 'com.facebook.stetho:stetho:1.4.2'
-    compile 'com.facebook.stetho:stetho-okhttp3:1.4.2'
-    compile 'com.facebook.stetho:stetho-js-rhino:1.4.2'
 }
