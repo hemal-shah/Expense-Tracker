@@ -1,5 +1,6 @@
 package hemal.t.shah.expensetracker.fragment;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
@@ -25,6 +26,8 @@ import butterknife.OnClick;
 import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.adapters.ClusterAdapter;
 import hemal.t.shah.expensetracker.data.ExpenseContract;
+import hemal.t.shah.expensetracker.data.NewClusterCreater;
+import hemal.t.shah.expensetracker.utils.SharedConstants;
 
 /**
  * Fragment showing clusters which are personal.
@@ -102,6 +105,20 @@ public class PersonalExpensesFragment extends Fragment implements
                 String timestamp = "new time here..";
 
                 // TODO: 17/12/16 asyntask to add new cluster
+                NewClusterCreater newClusterCreater = new NewClusterCreater(
+                        context.getContentResolver(), context);
+
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(ExpenseContract.ClusterEntry.COLUMN_TITLE, title);
+                contentValues.put(ExpenseContract.ClusterEntry.COLUMN_IS_SHARED, 0);
+                contentValues.put(ExpenseContract.ClusterEntry.COLUMN_SUM, 0.0);
+                contentValues.put(ExpenseContract.ClusterEntry.COLUMN_TIMESTAMP, timestamp);
+
+                newClusterCreater.startInsert(
+                        SharedConstants.TOKEN_ADD_NEW_PERSONAL_CLUSTER,
+                        null,
+                        ExpenseContract.ClusterEntry.CONTENT_URI,
+                        contentValues);
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
