@@ -1,22 +1,27 @@
 package hemal.t.shah.expensetracker.fragment;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.adapters.ClusterAdapter;
 import hemal.t.shah.expensetracker.data.ExpenseContract;
@@ -32,9 +37,6 @@ public class PersonalExpensesFragment extends Fragment implements
 
     @BindView(R.id.rv_activity_personal_clusters)
     RecyclerView recyclerView;
-
-    @BindView(R.id.fab_activity_personal_clusters)
-    FloatingActionButton fabAddNew;
 
     private static final int CURSOR_PERSONAL = 101; //id for cursor loader
 
@@ -72,6 +74,47 @@ public class PersonalExpensesFragment extends Fragment implements
         return baseView;
     }
 
+    @OnClick(R.id.fab_activity_personal_clusters)
+    public void fabNewPersonalCluster() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
+        builder.setCancelable(true);
+        builder.setTitle("Add new Cluster");
+
+        View etView = getLayoutInflater(null).inflate(R.layout.dialog_new_cluster, null);
+        final TextInputEditText et_new_personal_cluster = (TextInputEditText) etView.findViewById(
+                R.id.tiet_dialog_new_cluster);
+
+        builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String title = et_new_personal_cluster.getText().toString();
+
+                if (title.length() >= 15) {
+                    // TODO: 17/12/16 add snackbar here
+                    Toast.makeText(context, "Length should be between 3 to 15 characters.",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                Log.i(TAG, "onClick: " + title);
+                int is_shared = 0;
+                //// TODO: 17/12/16 generate timestamp here...
+                String timestamp = "new time here..";
+
+                // TODO: 17/12/16 asyntask to add new cluster
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.setView(etView);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
     @Override
     public void onLoadFinished(Loader loader, Cursor data) {
         clusterAdapter.swapCursor(data);
@@ -101,20 +144,5 @@ public class PersonalExpensesFragment extends Fragment implements
                 selectionArgs,
                 null
         );
-
-        /*String sortOrder = ExpenseContract.ExpenseEntry.COLUMN_AMOUNT + " DESC";
-
-        return new CursorLoader(context,
-                ExpenseContract.ExpenseEntry.CONTENT_URI,
-                new String[]{ExpenseContract.ExpenseEntry.TABLE_NAME + "."
-                        + ExpenseContract.ExpenseEntry._ID,
-                        ExpenseContract.ClusterEntry.TABLE_NAME + "."
-                                + ExpenseContract.ClusterEntry._ID,
-                        ExpenseContract.ExpenseEntry.COLUMN_ABOUT,
-                        ExpenseContract.ExpenseEntry.COLUMN_AMOUNT},
-                null,
-                null,
-                sortOrder
-        );*/
     }
 }
