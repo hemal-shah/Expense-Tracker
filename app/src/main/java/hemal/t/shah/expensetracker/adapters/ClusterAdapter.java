@@ -9,28 +9,26 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.data.ExpenseContract;
-import hemal.t.shah.expensetracker.interfaces.ItemTouchHelper;
-import hemal.t.shah.expensetracker.pojo.ExpenseParcelable;
+import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
 
 /**
+ * Adapter to show clusters in the main screen of the tabs.
  * Created by hemal on 10/11/16.
  */
-public class ExpenseAdapter extends CursorRecyclerViewAdapter<ExpenseAdapter.ViewHolder> implements
-        ItemTouchHelper {
+public class ClusterAdapter extends CursorRecyclerViewAdapter<ClusterAdapter.ViewHolder> {
 
     Cursor cursor = null;
     Context context = null;
-    ArrayList<ExpenseParcelable> expenses = null;
+    ArrayList<ClusterParcelable> personalClusters = null;
 
-    private static final String TAG = "ExpenseAdapter";
+    private static final String TAG = "ClusterAdapter";
 
-    public ExpenseAdapter(Context context, Cursor cursor) {
+    public ClusterAdapter(Context context, Cursor cursor) {
         super(context, cursor);
         this.context = context;
         this.cursor = cursor;
@@ -38,54 +36,60 @@ public class ExpenseAdapter extends CursorRecyclerViewAdapter<ExpenseAdapter.Vie
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, Cursor cursor, int position) {
-        this.expenses = getExpenseDetails(cursor);
+        this.personalClusters = getPersonalClusters(cursor);
 
-        if(this.expenses == null || this.expenses.size() == 0) {
+        if (this.personalClusters == null || this.personalClusters.size() == 0) {
             return;
         }
 
-        ExpenseParcelable expense = expenses.get(position);
-        String sb = "About = " + expense.getAbout() +
-                "\n" +
-                "Amount = " + expense.getAmount();
-        viewHolder.tv.setText(sb);
+        ClusterParcelable cluster = personalClusters.get(position);
+        String s = "Title = " + cluster.getTitle() +
+                "\nTimeStamp = " + cluster.getTimestamp() +
+                "\n sum = " + cluster.getSum();
+
+        viewHolder.tv.setText(s);
     }
 
-    private static ArrayList<ExpenseParcelable> getExpenseDetails(Cursor cursor){
+    private static ArrayList<ClusterParcelable> getPersonalClusters(Cursor cursor) {
 
         if(cursor == null || cursor.getCount() == 0)
             return null;
 
-        ArrayList<ExpenseParcelable> expenses = new ArrayList<>();
+        ArrayList<ClusterParcelable> clusters = new ArrayList<>();
 
         cursor.moveToFirst();
+
+        int titleIndex = cursor.getColumnIndex(ExpenseContract.ClusterEntry.COLUMN_TITLE);
+        int timeStampIndex = cursor.getColumnIndex(ExpenseContract.ClusterEntry.COLUMN_TIMESTAMP);
+        int sumIndex = cursor.getColumnIndex(ExpenseContract.ClusterEntry.COLUMN_SUM);
+
         do {
-            String about = cursor.getString(
-                    cursor.getColumnIndex(ExpenseContract.ExpenseEntry.COLUMN_ABOUT));
-            int amount = cursor.getInt(
-                    cursor.getColumnIndex(ExpenseContract.ExpenseEntry.COLUMN_AMOUNT));
-            expenses.add(new ExpenseParcelable(about, "time here", amount, 1));
+            String title = cursor.getString(titleIndex);
+            String timeStamp = cursor.getString(timeStampIndex);
+            double sum = cursor.getDouble(sumIndex);
+
+            clusters.add(new ClusterParcelable(title, timeStamp, sum));
         }while(cursor.moveToNext());
 
-        return expenses;
+        return clusters;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(this.context)
-                .inflate(R.layout.single_row_expense, parent, false);
+                .inflate(R.layout.single_personal_clusters_row, parent, false);
         return new ViewHolder(itemView);
     }
-
+/*
     @Override
     public boolean onItemMove(int fromPosition, int toPosition) {
         if(fromPosition < toPosition){
             for(int i = fromPosition ; i < toPosition; i++){
-                Collections.swap(this.expenses, i, i+1);
+                Collections.swap(this.personalClusters, i, i+1);
             }
         } else {
             for(int i = fromPosition; i > toPosition; i--){
-                Collections.swap(expenses, i , i-1);
+                Collections.swap(personalClusters, i , i-1);
             }
         }
         notifyItemMoved(fromPosition, toPosition);
@@ -94,9 +98,9 @@ public class ExpenseAdapter extends CursorRecyclerViewAdapter<ExpenseAdapter.Vie
 
     @Override
     public void onItemDismiss(int position) {
-        this.expenses.remove(position);
+        this.personalClusters.remove(position);
         notifyItemRemoved(position);
-    }
+    }*/
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 

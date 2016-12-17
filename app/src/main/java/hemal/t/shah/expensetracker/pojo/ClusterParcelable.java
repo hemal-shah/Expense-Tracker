@@ -12,6 +12,12 @@ public class ClusterParcelable implements Parcelable {
     int is_shared;
     double sum;
 
+    public ClusterParcelable(String title, String timestamp, double sum) {
+        this.title = title;
+        this.timestamp = timestamp;
+        this.sum = sum;
+    }
+
     public ClusterParcelable(String title, String timestamp, int is_shared, double sum) {
         this.title = title;
         this.timestamp = timestamp;

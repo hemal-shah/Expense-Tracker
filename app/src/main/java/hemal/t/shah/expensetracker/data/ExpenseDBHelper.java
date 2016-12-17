@@ -12,7 +12,7 @@ import android.util.Log;
 public class ExpenseDBHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "ExpenseDBHelper";
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 9;
     private static final String DATABASE_NAME = "ExpenseDB.db";
 
     public ExpenseDBHelper(Context context) {
@@ -87,11 +87,15 @@ public class ExpenseDBHelper extends SQLiteOpenHelper {
             String title = "title " + i;
             String sql_cluster = "insert into " + ExpenseContract.ClusterEntry.TABLE_NAME
                     + "(title, sum, is_shared, timestamp)"
-                    + " values(\"" + title + "\", 100, 0 , \"time is now\")";
+                    + " values(\"" + title + "\", 100, " + (i % 2) + " , \"time is now\")";
             db.execSQL(sql_cluster);
             Log.i(TAG, "onCreate: inserted 1 row into cluster table");
+
+            double amount = 102.36 * i;
+
             String sql_expenses = "insert into " + ExpenseContract.ExpenseEntry.TABLE_NAME
-                    + "(about, amount, timestamp, cluster_id) VALUES (\"hemal\", 200.12, \"time "
+                    + "(about, amount, timestamp, cluster_id) VALUES (\"hemal\"," + amount
+                    + ", \"time "
                     + "is now\",  "
                     + (i + 1) + ");";
 

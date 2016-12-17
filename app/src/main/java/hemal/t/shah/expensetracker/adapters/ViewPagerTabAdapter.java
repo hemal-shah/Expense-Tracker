@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import hemal.t.shah.expensetracker.fragment.PersonalExpensesFragment;
+import hemal.t.shah.expensetracker.fragment.SharedExpensesFragment;
 
 /**
  * View Pager Adapter for "Personal" & "Shared" fragments.
@@ -30,7 +31,7 @@ public class ViewPagerTabAdapter extends FragmentPagerAdapter {
             case 0:
                 return new PersonalExpensesFragment();
             case 1:
-                return new PersonalExpensesFragment();
+                return new SharedExpensesFragment();
         }
         return null;
     }
