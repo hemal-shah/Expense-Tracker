@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import butterknife.BindView;
@@ -63,15 +64,18 @@ public class SharedClusterAdapter extends
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(this.context)
-                .inflate(R.layout.single_personal_clusters_row, parent, false);
+                .inflate(R.layout.single_shared_clusters_row, parent, false);
         return new ViewHolder(itemView);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
 
-        @BindView(R.id.tv_single_row_expense)
+        @BindView(R.id.tv_single_shared_clusters_row)
         TextView tv;
+
+        @BindView(R.id.bt_delete_shared_clusters)
+        Button delete;
 
         public ViewHolder(View itemView) {
             super(itemView);

@@ -6,12 +6,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.data.ExpenseContract;
+import hemal.t.shah.expensetracker.interfaces.OnCluster;
 import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
 
 /**
@@ -23,40 +25,48 @@ public class PersonalClusterAdapter extends
 
     Cursor cursor = null;
     Context context = null;
+    OnCluster onCluster = null;
 
     private static final String TAG = "PersonalClusterAdapter";
 
-    public PersonalClusterAdapter(Context context, Cursor cursor) {
+    public PersonalClusterAdapter(Context context, Cursor cursor, OnCluster onCluster) {
         super(context, cursor);
         this.context = context;
         this.cursor = cursor;
+        this.onCluster = onCluster;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, Cursor cursor, int position) {
 
-        ClusterParcelable cluster = null;
-
-        if (cursor.moveToPosition(position)) {
-            String title = cursor.getString(
-                    cursor.getColumnIndex(ExpenseContract.ClusterEntry.COLUMN_TITLE));
-            String timeStamp = cursor.getString(
-                    cursor.getColumnIndex(ExpenseContract.ClusterEntry.COLUMN_TIMESTAMP));
-            double sum = cursor.getDouble(
-                    cursor.getColumnIndex(ExpenseContract.ClusterEntry.COLUMN_SUM));
-
-            cluster = new ClusterParcelable(title, timeStamp, sum);
-        }
+        // TODO: 21/12/16 try adjusting this into if condition
+        cursor.moveToPosition(position);
 
 
-        String s = null;
-        if (cluster != null) {
-            s = "Title = " + cluster.getTitle() +
-                    "\nTimeStamp = " + cluster.getTimestamp() +
-                    "\n sum = " + cluster.getSum();
-        }
+        String title = cursor.getString(
+                cursor.getColumnIndex(ExpenseContract.ClusterEntry.COLUMN_TITLE));
+        String timeStamp = cursor.getString(
+                cursor.getColumnIndex(ExpenseContract.ClusterEntry.COLUMN_TIMESTAMP));
+        double sum = cursor.getDouble(
+                cursor.getColumnIndex(ExpenseContract.ClusterEntry.COLUMN_SUM));
+
+        final ClusterParcelable cluster = new ClusterParcelable(title, timeStamp, 0, sum);
+
+
+        String s = "Title = " + cluster.getTitle() +
+                "\nTimeStamp = " + cluster.getTimestamp() +
+                "\n sum = " + cluster.getSum();
 
         viewHolder.tv.setText(s);
+
+        viewHolder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onCluster != null) {
+                    onCluster.onDelete(0, cluster.getTitle());
+                }
+            }
+        });
     }
 
     @Override
@@ -65,32 +75,14 @@ public class PersonalClusterAdapter extends
                 .inflate(R.layout.single_personal_clusters_row, parent, false);
         return new ViewHolder(itemView);
     }
-/*
-    @Override
-    public boolean onItemMove(int fromPosition, int toPosition) {
-        if(fromPosition < toPosition){
-            for(int i = fromPosition ; i < toPosition; i++){
-                Collections.swap(this.personalClusters, i, i+1);
-            }
-        } else {
-            for(int i = fromPosition; i > toPosition; i--){
-                Collections.swap(personalClusters, i , i-1);
-            }
-        }
-        notifyItemMoved(fromPosition, toPosition);
-        return true;
-    }
-
-    @Override
-    public void onItemDismiss(int position) {
-        this.personalClusters.remove(position);
-        notifyItemRemoved(position);
-    }*/
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.tv_single_row_expense)
+        @BindView(R.id.tv_single_personal_clusters_row)
         TextView tv;
+
+        @BindView(R.id.bt_delete_personal_clusters)
+        Button delete;
 
         public ViewHolder(View itemView) {
             super(itemView);

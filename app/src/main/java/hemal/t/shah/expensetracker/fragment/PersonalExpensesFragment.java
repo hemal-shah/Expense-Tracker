@@ -18,7 +18,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.adapters.PersonalClusterAdapter;
+import hemal.t.shah.expensetracker.data.ClusterDispenser;
 import hemal.t.shah.expensetracker.data.ExpenseContract;
+import hemal.t.shah.expensetracker.interfaces.OnCluster;
 import hemal.t.shah.expensetracker.utils.SharedConstants;
 
 /**
@@ -26,7 +28,7 @@ import hemal.t.shah.expensetracker.utils.SharedConstants;
  * Created by hemal on 13/12/16.
  */
 public class PersonalExpensesFragment extends Fragment implements
-        LoaderManager.LoaderCallbacks<Cursor> {
+        LoaderManager.LoaderCallbacks<Cursor>, OnCluster {
 
     private static final String TAG = "PersonalExpenseFragment";
 
@@ -54,7 +56,7 @@ public class PersonalExpensesFragment extends Fragment implements
 
         recyclerView.hasFixedSize();
 
-        personalClusterAdapter = new PersonalClusterAdapter(context, null);
+        personalClusterAdapter = new PersonalClusterAdapter(context, null, this);
 
         recyclerView.setAdapter(personalClusterAdapter);
 
@@ -103,5 +105,17 @@ public class PersonalExpensesFragment extends Fragment implements
                 return null;
         }
 
+    }
+
+    @Override
+    public void onDelete(int is_shared, String title) {
+        ClusterDispenser dispenser = new ClusterDispenser(context.getContentResolver(), context);
+        dispenser.startDelete(
+                SharedConstants.TOKEN_DELETE_CLUSTER,
+                null, ExpenseContract.ClusterEntry.CONTENT_URI,
+                ExpenseContract.ClusterEntry.COLUMN_TITLE + " = ? AND " + ExpenseContract
+                        .ClusterEntry.COLUMN_IS_SHARED + " = ?",
+                new String[]{title, String.valueOf(is_shared)}
+        );
     }
 }
