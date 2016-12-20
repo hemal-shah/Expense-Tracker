@@ -4,4 +4,6 @@
     <string name="drawer_open">Drawer Open</string>
     <string name="drawer_closed">Drawer closed</string>
     <string name="enter_title">Enter Title</string>
+    <string name="personal">Personal</string>
+    <string name="shared">Shared</string>
 </resources>

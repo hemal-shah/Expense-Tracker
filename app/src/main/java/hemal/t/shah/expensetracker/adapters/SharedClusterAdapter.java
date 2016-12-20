@@ -15,25 +15,26 @@ import hemal.t.shah.expensetracker.data.ExpenseContract;
 import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
 
 /**
- * Adapter to show personal clusters in the main screen of the tabs.
- * Created by Hemal Shah on 10/11/16.
+ * Adapter for shared clusters tabs.
+ * Created by hemal on 20/12/16.
  */
-public class PersonalClusterAdapter extends
-        CursorRecyclerViewAdapter<PersonalClusterAdapter.ViewHolder> {
+public class SharedClusterAdapter extends
+        CursorRecyclerViewAdapter<SharedClusterAdapter.ViewHolder> {
 
     Cursor cursor = null;
     Context context = null;
 
-    private static final String TAG = "PersonalClusterAdapter";
+    private static final String TAG = "SharedClusterAdapter";
 
-    public PersonalClusterAdapter(Context context, Cursor cursor) {
+    public SharedClusterAdapter(Context context, Cursor cursor) {
         super(context, cursor);
         this.context = context;
         this.cursor = cursor;
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, Cursor cursor, int position) {
+    public void onBindViewHolder(ViewHolder viewHolder, Cursor cursor,
+            int position) {
 
         ClusterParcelable cluster = null;
 
@@ -65,29 +66,9 @@ public class PersonalClusterAdapter extends
                 .inflate(R.layout.single_personal_clusters_row, parent, false);
         return new ViewHolder(itemView);
     }
-/*
-    @Override
-    public boolean onItemMove(int fromPosition, int toPosition) {
-        if(fromPosition < toPosition){
-            for(int i = fromPosition ; i < toPosition; i++){
-                Collections.swap(this.personalClusters, i, i+1);
-            }
-        } else {
-            for(int i = fromPosition; i > toPosition; i--){
-                Collections.swap(personalClusters, i , i-1);
-            }
-        }
-        notifyItemMoved(fromPosition, toPosition);
-        return true;
-    }
-
-    @Override
-    public void onItemDismiss(int position) {
-        this.personalClusters.remove(position);
-        notifyItemRemoved(position);
-    }*/
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+
 
         @BindView(R.id.tv_single_row_expense)
         TextView tv;

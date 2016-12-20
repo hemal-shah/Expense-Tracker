@@ -6,7 +6,15 @@ package hemal.t.shah.expensetracker.utils;
  */
 public class SharedConstants {
 
-    public static final int TOKEN_ADD_NEW_PERSONAL_CLUSTER = 100;
+    //To add new cluster.
+    public static final int TOKEN_ADD_NEW_CLUSTER = 100;
+
+    //to check if title of cursor already exist.
     public static final int TOKEN_CHECK_FOR_CLUSTER_TITLE = 101;
 
+    //To load all personal clusters for recyclerView
+    public static final int CURSOR_PERSONAL = 102;
+
+    //To load shared clusters for recyclerView
+    public static final int CURSOR_SHARED = 103;
 }

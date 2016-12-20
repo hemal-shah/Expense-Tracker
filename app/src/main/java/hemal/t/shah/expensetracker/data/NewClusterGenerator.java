@@ -46,8 +46,7 @@ public class NewClusterGenerator extends AsyncQueryHandler {
                 /**
                  * It's safe to create new cluster with the provided title.
                  */
-
-                this.startInsert(SharedConstants.TOKEN_ADD_NEW_PERSONAL_CLUSTER,
+                this.startInsert(SharedConstants.TOKEN_ADD_NEW_CLUSTER,
                         null,
                         ExpenseContract.ClusterEntry.CONTENT_URI,
                         contentValues);
@@ -59,7 +58,7 @@ public class NewClusterGenerator extends AsyncQueryHandler {
     protected void onInsertComplete(int token, Object cookie, Uri uri) {
         super.onInsertComplete(token, cookie, uri);
 
-        if (token == SharedConstants.TOKEN_ADD_NEW_PERSONAL_CLUSTER) {
+        if (token == SharedConstants.TOKEN_ADD_NEW_CLUSTER) {
             if (uri.toString().startsWith(ExpenseContract.ClusterEntry.CONTENT_URI.toString())) {
                 Toast.makeText(context, "Successfully added new cluster",
                         Toast.LENGTH_SHORT).show();

@@ -12,7 +12,7 @@ import android.util.Log;
 public class ExpenseDBHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "ExpenseDBHelper";
-    private static final int DATABASE_VERSION = 9;
+    private static final int DATABASE_VERSION = 10;
     private static final String DATABASE_NAME = "ExpenseDB.db";
 
     public ExpenseDBHelper(Context context) {
@@ -50,7 +50,7 @@ public class ExpenseDBHelper extends SQLiteOpenHelper {
          */
         String sql_create_cluster_table = "CREATE TABLE " + ExpenseContract.ClusterEntry.TABLE_NAME
                 + "(" + ExpenseContract.ClusterEntry._ID + " INTEGER PRIMARY KEY , "
-                + ExpenseContract.ClusterEntry.COLUMN_TITLE + " TEXT UNIQUE NOT NULL, "
+                + ExpenseContract.ClusterEntry.COLUMN_TITLE + " TEXT NOT NULL, "
                 + ExpenseContract.ClusterEntry.COLUMN_SUM + " REAL, "
                 + ExpenseContract.ClusterEntry.COLUMN_IS_SHARED + " INTEGER NOT NULL, "
                 + ExpenseContract.ClusterEntry.COLUMN_TIMESTAMP + " TEXT);";
@@ -83,7 +83,7 @@ public class ExpenseDBHelper extends SQLiteOpenHelper {
         db.execSQL(sql_create_expenses_table);
 
         //todo delete the sample insertions
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 6; i++) {
             String title = "title " + i;
             String sql_cluster = "insert into " + ExpenseContract.ClusterEntry.TABLE_NAME
                     + "(title, sum, is_shared, timestamp)"

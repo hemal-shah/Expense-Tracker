@@ -5,6 +5,33 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+
+    <RadioGroup
+        android:id="@+id/rg_dialog_new_cluster"
+        android:layout_margin="@dimen/margin_rg_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <RadioButton
+            android:id="@+id/rb_personal_dialog_new_cluster"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/personal"
+            android:checked="true" />
+
+        <RadioButton
+            android:id="@+id/rb_shared_dialog_new_cluster"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/shared" />
+
+    </RadioGroup>
+
+
     <android.support.design.widget.TextInputLayout
         android:id="@+id/til_dialog_new_cluster"
         android:layout_width="match_parent"
@@ -26,6 +53,5 @@
             android:maxLength="15" />
 
     </android.support.design.widget.TextInputLayout>
-
 
 </LinearLayout>
