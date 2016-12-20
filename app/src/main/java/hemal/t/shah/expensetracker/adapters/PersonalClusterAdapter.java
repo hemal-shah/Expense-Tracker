@@ -17,18 +17,19 @@ import hemal.t.shah.expensetracker.data.ExpenseContract;
 import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
 
 /**
- * Adapter to show clusters in the main screen of the tabs.
- * Created by hemal on 10/11/16.
+ * Adapter to show personal clusters in the main screen of the tabs.
+ * Created by Hemal Shah on 10/11/16.
  */
-public class ClusterAdapter extends CursorRecyclerViewAdapter<ClusterAdapter.ViewHolder> {
+public class PersonalClusterAdapter extends
+        CursorRecyclerViewAdapter<PersonalClusterAdapter.ViewHolder> {
 
     Cursor cursor = null;
     Context context = null;
     ArrayList<ClusterParcelable> personalClusters = null;
 
-    private static final String TAG = "ClusterAdapter";
+    private static final String TAG = "PersonalClusterAdapter";
 
-    public ClusterAdapter(Context context, Cursor cursor) {
+    public PersonalClusterAdapter(Context context, Cursor cursor) {
         super(context, cursor);
         this.context = context;
         this.cursor = cursor;
@@ -36,42 +37,29 @@ public class ClusterAdapter extends CursorRecyclerViewAdapter<ClusterAdapter.Vie
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, Cursor cursor, int position) {
-        this.personalClusters = getPersonalClusters(cursor);
 
-        if (this.personalClusters == null || this.personalClusters.size() == 0) {
-            return;
+        ClusterParcelable cluster = null;
+
+        if (cursor.moveToPosition(position)) {
+            String title = cursor.getString(
+                    cursor.getColumnIndex(ExpenseContract.ClusterEntry.COLUMN_TITLE));
+            String timeStamp = cursor.getString(
+                    cursor.getColumnIndex(ExpenseContract.ClusterEntry.COLUMN_TIMESTAMP));
+            double sum = cursor.getDouble(
+                    cursor.getColumnIndex(ExpenseContract.ClusterEntry.COLUMN_SUM));
+
+            cluster = new ClusterParcelable(title, timeStamp, sum);
         }
 
-        ClusterParcelable cluster = personalClusters.get(position);
-        String s = "Title = " + cluster.getTitle() +
-                "\nTimeStamp = " + cluster.getTimestamp() +
-                "\n sum = " + cluster.getSum();
+
+        String s = null;
+        if (cluster != null) {
+            s = "Title = " + cluster.getTitle() +
+                    "\nTimeStamp = " + cluster.getTimestamp() +
+                    "\n sum = " + cluster.getSum();
+        }
 
         viewHolder.tv.setText(s);
-    }
-
-    private static ArrayList<ClusterParcelable> getPersonalClusters(Cursor cursor) {
-
-        if(cursor == null || cursor.getCount() == 0)
-            return null;
-
-        ArrayList<ClusterParcelable> clusters = new ArrayList<>();
-
-        cursor.moveToFirst();
-
-        int titleIndex = cursor.getColumnIndex(ExpenseContract.ClusterEntry.COLUMN_TITLE);
-        int timeStampIndex = cursor.getColumnIndex(ExpenseContract.ClusterEntry.COLUMN_TIMESTAMP);
-        int sumIndex = cursor.getColumnIndex(ExpenseContract.ClusterEntry.COLUMN_SUM);
-
-        do {
-            String title = cursor.getString(titleIndex);
-            String timeStamp = cursor.getString(timeStampIndex);
-            double sum = cursor.getDouble(sumIndex);
-
-            clusters.add(new ClusterParcelable(title, timeStamp, sum));
-        }while(cursor.moveToNext());
-
-        return clusters;
     }
 
     @Override
@@ -102,7 +90,7 @@ public class ClusterAdapter extends CursorRecyclerViewAdapter<ClusterAdapter.Vie
         notifyItemRemoved(position);
     }*/
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.tv_single_row_expense)
         TextView tv;

@@ -23,7 +23,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import hemal.t.shah.expensetracker.R;
-import hemal.t.shah.expensetracker.adapters.ClusterAdapter;
+import hemal.t.shah.expensetracker.adapters.PersonalClusterAdapter;
 import hemal.t.shah.expensetracker.data.ExpenseContract;
 import hemal.t.shah.expensetracker.data.NewClusterGenerator;
 import hemal.t.shah.expensetracker.utils.SharedConstants;
@@ -44,7 +44,7 @@ public class PersonalExpensesFragment extends Fragment implements
 
     Context context;
 
-    ClusterAdapter clusterAdapter;
+    PersonalClusterAdapter personalClusterAdapter;
 
     @Nullable
     @Override
@@ -63,9 +63,9 @@ public class PersonalExpensesFragment extends Fragment implements
 
         recyclerView.hasFixedSize();
 
-        clusterAdapter = new ClusterAdapter(context, null);
+        personalClusterAdapter = new PersonalClusterAdapter(context, null);
 
-        recyclerView.setAdapter(clusterAdapter);
+        recyclerView.setAdapter(personalClusterAdapter);
 
         getActivity().getSupportLoaderManager().initLoader(
                 CURSOR_PERSONAL,
@@ -134,12 +134,12 @@ public class PersonalExpensesFragment extends Fragment implements
 
     @Override
     public void onLoadFinished(Loader loader, Cursor data) {
-        clusterAdapter.swapCursor(data);
+        personalClusterAdapter.swapCursor(data);
     }
 
     @Override
     public void onLoaderReset(Loader loader) {
-        clusterAdapter.swapCursor(null);
+        personalClusterAdapter.swapCursor(null);
     }
 
     @Override
