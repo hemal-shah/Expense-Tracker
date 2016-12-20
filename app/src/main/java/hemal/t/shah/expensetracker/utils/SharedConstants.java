@@ -6,6 +6,7 @@ package hemal.t.shah.expensetracker.utils;
  */
 public class SharedConstants {
 
-    public static final int TOKEN_ADD_NEW_PERSONAL_CLUSTER = 1002;
+    public static final int TOKEN_ADD_NEW_PERSONAL_CLUSTER = 100;
+    public static final int TOKEN_CHECK_FOR_CLUSTER_TITLE = 101;
 
 }

@@ -14,7 +14,6 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +25,7 @@ import butterknife.OnClick;
 import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.adapters.ClusterAdapter;
 import hemal.t.shah.expensetracker.data.ExpenseContract;
-import hemal.t.shah.expensetracker.data.NewClusterCreater;
+import hemal.t.shah.expensetracker.data.NewClusterGenerator;
 import hemal.t.shah.expensetracker.utils.SharedConstants;
 
 /**
@@ -99,14 +98,8 @@ public class PersonalExpensesFragment extends Fragment implements
                     return;
                 }
 
-                Log.i(TAG, "onClick: " + title);
-                int is_shared = 0;
                 //// TODO: 17/12/16 generate timestamp here...
                 String timestamp = "new time here..";
-
-                // TODO: 17/12/16 asyntask to add new cluster
-                NewClusterCreater newClusterCreater = new NewClusterCreater(
-                        context.getContentResolver(), context);
 
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(ExpenseContract.ClusterEntry.COLUMN_TITLE, title);
@@ -114,11 +107,18 @@ public class PersonalExpensesFragment extends Fragment implements
                 contentValues.put(ExpenseContract.ClusterEntry.COLUMN_SUM, 0.0);
                 contentValues.put(ExpenseContract.ClusterEntry.COLUMN_TIMESTAMP, timestamp);
 
-                newClusterCreater.startInsert(
-                        SharedConstants.TOKEN_ADD_NEW_PERSONAL_CLUSTER,
+                NewClusterGenerator newClusterGenerator = new NewClusterGenerator(
+                        context.getContentResolver(), context, contentValues);
+
+                newClusterGenerator.startQuery(
+                        SharedConstants.TOKEN_CHECK_FOR_CLUSTER_TITLE,
                         null,
                         ExpenseContract.ClusterEntry.CONTENT_URI,
-                        contentValues);
+                        null,
+                        ExpenseContract.ClusterEntry.COLUMN_TITLE + " = ?",
+                        new String[]{title},
+                        null
+                );
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
