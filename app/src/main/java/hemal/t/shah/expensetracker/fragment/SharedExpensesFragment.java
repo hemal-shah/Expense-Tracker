@@ -11,8 +11,12 @@ import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,6 +38,12 @@ public class SharedExpensesFragment extends Fragment implements
     SharedClusterAdapter adapter = null;
 
     Context context = null;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Nullable
     @Override
@@ -102,5 +112,32 @@ public class SharedExpensesFragment extends Fragment implements
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         adapter.swapCursor(null);
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_shared_clusters, menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.sort_1_s:
+                Toast.makeText(context, "sort 1 shared", Toast.LENGTH_SHORT).show();
+                return true;
+
+            case R.id.sort_2_s:
+                Toast.makeText(context, "sort 2 shared", Toast.LENGTH_SHORT).show();
+                return true;
+
+            case R.id.sort_3_s:
+                Toast.makeText(context, "sort 3 shared", Toast.LENGTH_SHORT).show();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

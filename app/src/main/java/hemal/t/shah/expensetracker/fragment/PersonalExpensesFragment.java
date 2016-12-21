@@ -11,8 +11,12 @@ import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,6 +42,13 @@ public class PersonalExpensesFragment extends Fragment implements
     Context context;
 
     PersonalClusterAdapter personalClusterAdapter;
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Nullable
     @Override
@@ -117,5 +128,31 @@ public class PersonalExpensesFragment extends Fragment implements
                         .ClusterEntry.COLUMN_IS_SHARED + " = ?",
                 new String[]{title, String.valueOf(is_shared)}
         );
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_personal_clusters, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.sort_1:
+                Toast.makeText(context, "sort 1", Toast.LENGTH_SHORT).show();
+                return true;
+
+            case R.id.sort_2:
+                Toast.makeText(context, "sort 2", Toast.LENGTH_SHORT).show();
+                return true;
+
+            case R.id.sort_3:
+                Toast.makeText(context, "sort 3", Toast.LENGTH_SHORT).show();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

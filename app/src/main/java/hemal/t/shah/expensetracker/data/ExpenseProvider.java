@@ -9,7 +9,6 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 @SuppressWarnings("ConstantConditions")
 public class ExpenseProvider extends ContentProvider {
@@ -52,7 +51,7 @@ public class ExpenseProvider extends ContentProvider {
                         + ExpenseContract.ExpenseEntry.COLUMN_FOREIGN_CLUSTER_ID + " = "
                         + ExpenseContract.ClusterEntry.TABLE_NAME + "."
                         + ExpenseContract.ClusterEntry._ID;
-        Log.i(TAG, "static initializer: inner join for expenses table: " + innerJoinString);
+//        Log.i(TAG, "static initializer: inner join for expenses table: " + innerJoinString);
         expensesFromClusterQueryBuilder.setTables(innerJoinString);
 
         /**
