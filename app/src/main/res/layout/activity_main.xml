@@ -1,39 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/dl_activity_main"
-    android:layout_height="fill_parent"
-    android:layout_width="fill_parent"
-    android:fitsSystemWindows="true"
-    tools:openDrawer="start">
-
-    <LinearLayout
-        android:id="@+id/ll_activity_main"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/tb_activity_main"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
-
-        <FrameLayout
-            android:id="@+id/fl_activity_main"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
-    </LinearLayout>
-
-    <android.support.design.widget.NavigationView
-        android:id="@+id/nv_activity_main"
-        android:layout_gravity="start"
-        android:fitsSystemWindows="true"
-        app:headerLayout="@layout/header_layout_main_activity"
-        app:menu="@menu/drawer_main_activity"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent" />
-
-</android.support.v4.widget.DrawerLayout>
+    android:id="@+id/fl_activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity" />

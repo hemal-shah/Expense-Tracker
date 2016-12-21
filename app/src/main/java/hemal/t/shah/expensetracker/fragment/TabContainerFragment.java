@@ -10,6 +10,8 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +41,11 @@ public class TabContainerFragment extends Fragment {
     @BindView(R.id.vp_activity_tab_container)
     ViewPager viewPager;
 
+    @BindView(R.id.toolbar_activity_tab_container)
+    Toolbar toolbar;
+
     Context context;
+
 
     @Nullable
     @Override
@@ -52,6 +58,8 @@ public class TabContainerFragment extends Fragment {
         ButterKnife.bind(this, base_view);
 
         this.context = getContext();
+
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
         viewPager.setAdapter(new ViewPagerTabAdapter(getChildFragmentManager()));
         //Workaround for proper functioning of NavigationView and TabLayout

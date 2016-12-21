@@ -5,4 +5,5 @@
     <dimen name="margin_end_start_et_dialog">20dp</dimen>
     <dimen name="margin_top_et_dialog">10dp</dimen>
     <dimen name="margin_rg_dialog">20dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 </resources>
