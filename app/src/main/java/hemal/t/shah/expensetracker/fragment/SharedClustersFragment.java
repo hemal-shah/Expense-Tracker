@@ -22,15 +22,17 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.adapters.SharedClusterAdapter;
+import hemal.t.shah.expensetracker.data.ClusterDispenser;
 import hemal.t.shah.expensetracker.data.ExpenseContract;
+import hemal.t.shah.expensetracker.interfaces.OnCluster;
 import hemal.t.shah.expensetracker.utils.SharedConstants;
 
 /**
  * Displays the clusters which are shared between users.
  * Created by hemal on 17/12/16.
  */
-public class SharedExpensesFragment extends Fragment implements
-        LoaderManager.LoaderCallbacks<Cursor> {
+public class SharedClustersFragment extends Fragment implements
+        LoaderManager.LoaderCallbacks<Cursor>, OnCluster {
 
     @BindView(R.id.rv_activity_shared_clusters)
     RecyclerView recyclerView;
@@ -55,7 +57,7 @@ public class SharedExpensesFragment extends Fragment implements
 
         this.context = getContext();
 
-        adapter = new SharedClusterAdapter(this.context, null);
+        adapter = new SharedClusterAdapter(this.context, null, this);
 
 
         recyclerView.setLayoutManager(new LinearLayoutManager(
@@ -139,5 +141,26 @@ public class SharedExpensesFragment extends Fragment implements
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDelete(int is_shared, String title) {
+        ClusterDispenser dispenser = new ClusterDispenser(this.context.getContentResolver(),
+                this.context);
+
+        // TODO: 23/12/16 this can delete multiple shared fragments, take care! Later introduce
+        // firebase id.
+
+        dispenser.startDelete(SharedConstants.TOKEN_DELETE_CLUSTER,
+                null,
+                ExpenseContract.ClusterEntry.CONTENT_URI,
+                ExpenseContract.ClusterEntry.COLUMN_TITLE + "= ? AND " + ExpenseContract
+                        .ClusterEntry.COLUMN_IS_SHARED + " = " + is_shared,
+                new String[]{title});
+    }
+
+    @Override
+    public void onTouch(String title) {
+        Toast.makeText(this.context, "clicked!" + title, Toast.LENGTH_SHORT).show();
     }
 }

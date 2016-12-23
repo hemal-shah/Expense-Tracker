@@ -7,7 +7,7 @@ package hemal.t.shah.expensetracker.interfaces;
 public interface OnCluster {
 
     // TODO: 21/12/16 Later add firebase cluster id for more unique identification.
-    //Currently erroneous
     void onDelete(int is_shared, String title);
 
+    void onTouch(String title);
 }

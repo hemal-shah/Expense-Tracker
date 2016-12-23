@@ -13,6 +13,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.data.ExpenseContract;
+import hemal.t.shah.expensetracker.interfaces.OnCluster;
 import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
 
 /**
@@ -24,13 +25,15 @@ public class SharedClusterAdapter extends
 
     Cursor cursor = null;
     Context context = null;
+    OnCluster onCluster = null;
 
     private static final String TAG = "SharedClusterAdapter";
 
-    public SharedClusterAdapter(Context context, Cursor cursor) {
+    public SharedClusterAdapter(Context context, Cursor cursor, OnCluster onCluster) {
         super(context, cursor);
         this.context = context;
         this.cursor = cursor;
+        this.onCluster = onCluster;
     }
 
     @Override
@@ -59,6 +62,25 @@ public class SharedClusterAdapter extends
         }
 
         viewHolder.tv.setText(s);
+
+        final ClusterParcelable finalCluster = cluster;
+        viewHolder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onCluster != null) {
+                    onCluster.onDelete(1, finalCluster.getTitle());
+                }
+            }
+        });
+
+        viewHolder.open.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onCluster != null) {
+                    onCluster.onTouch(finalCluster.getTitle());
+                }
+            }
+        });
     }
 
     @Override
@@ -76,6 +98,9 @@ public class SharedClusterAdapter extends
 
         @BindView(R.id.bt_delete_shared_clusters)
         Button delete;
+
+        @BindView(R.id.bt_open_shared_clusters)
+        Button open;
 
         public ViewHolder(View itemView) {
             super(itemView);

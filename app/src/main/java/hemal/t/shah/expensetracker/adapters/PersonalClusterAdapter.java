@@ -67,6 +67,16 @@ public class PersonalClusterAdapter extends
                 }
             }
         });
+
+
+        viewHolder.open.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onCluster != null) {
+                    onCluster.onTouch(cluster.getTitle());
+                }
+            }
+        });
     }
 
     @Override
@@ -83,6 +93,9 @@ public class PersonalClusterAdapter extends
 
         @BindView(R.id.bt_delete_personal_clusters)
         Button delete;
+
+        @BindView(R.id.bt_open_personal_clusters)
+        Button open;
 
         public ViewHolder(View itemView) {
             super(itemView);

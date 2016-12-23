@@ -24,9 +24,17 @@
 
         <Button
             android:id="@+id/bt_delete_shared_clusters"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="delete" />
+
+        <Button
+            android:id="@+id/bt_open_shared_clusters"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="more_info" />
+
+
     </LinearLayout>
 
 </android.support.v7.widget.CardView>

@@ -23,9 +23,15 @@
 
         <Button
             android:id="@+id/bt_delete_personal_clusters"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="delete" />
+
+        <Button
+            android:id="@+id/bt_open_personal_clusters"
+            android:layout_width="match_parent"
+            android:text="more_info"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
 

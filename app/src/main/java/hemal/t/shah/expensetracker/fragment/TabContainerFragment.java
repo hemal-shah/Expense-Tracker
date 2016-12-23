@@ -121,6 +121,7 @@ public class TabContainerFragment extends Fragment {
                 contentValues.put(ExpenseContract.ClusterEntry.COLUMN_TITLE, title);
                 contentValues.put(ExpenseContract.ClusterEntry.COLUMN_IS_SHARED, is_shared);
                 contentValues.put(ExpenseContract.ClusterEntry.COLUMN_SUM, 0.0);
+                contentValues.put(ExpenseContract.ClusterEntry.COLUMN_USERS_LIST, "hemal");
                 contentValues.put(ExpenseContract.ClusterEntry.COLUMN_TIMESTAMP, timestamp);
 
                 NewClusterGenerator newClusterGenerator = new NewClusterGenerator(
