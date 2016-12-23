@@ -16,7 +16,7 @@ public class ExpenseProvider extends ContentProvider {
     private static final String TAG = "ExpenseProvider";
 
     //declaring constants for matchUri function.
-    static final int USER_DETAILS = 101, CLUSTER = 102, EXPENSE = 103, CLUSTER_USERS = 104;
+    static final int USER_DETAILS = 101, CLUSTER = 102, EXPENSE = 103;
 
     private ExpenseDBHelper dbHelper;
 
@@ -28,9 +28,6 @@ public class ExpenseProvider extends ContentProvider {
 
     //queryBuilder to know expenses in a cluster
     private static SQLiteQueryBuilder expensesFromClusterQueryBuilder = new SQLiteQueryBuilder();
-
-    //query Builder to retrieve number of participants in a cluster.
-    private static SQLiteQueryBuilder clusterUsersQueryBuilder = new SQLiteQueryBuilder();
 
     static {
         //Providing the name of the table. i.e. UserDetailsEntry.TABLE_NAME
@@ -54,12 +51,6 @@ public class ExpenseProvider extends ContentProvider {
 //        Log.i(TAG, "static initializer: inner join for expenses table: " + innerJoinString);
         expensesFromClusterQueryBuilder.setTables(innerJoinString);
 
-        /**
-         * This query builder should retrieve details of users from the clusterUsersTable.
-         * todo build this query
-         */
-        clusterUsersQueryBuilder.setTables(ExpenseContract.ClusterUserEntry.TABLE_NAME);
-
     }
 
     private static UriMatcher matcher = buildUriMatcher();
@@ -68,8 +59,6 @@ public class ExpenseProvider extends ContentProvider {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         matcher.addURI(ExpenseContract.CONTENT_AUTHORITY, ExpenseContract.PATH_EXPENSE, EXPENSE);
         matcher.addURI(ExpenseContract.CONTENT_AUTHORITY, ExpenseContract.PATH_CLUSTER, CLUSTER);
-        matcher.addURI(ExpenseContract.CONTENT_AUTHORITY, ExpenseContract.PATH_CLUSTER_USER,
-                CLUSTER_USERS);
         matcher.addURI(ExpenseContract.CONTENT_AUTHORITY, ExpenseContract.PATH_USER_DETAILS,
                 USER_DETAILS);
         return matcher;
@@ -118,15 +107,6 @@ public class ExpenseProvider extends ContentProvider {
                         null,
                         sortOrder);
                 break;
-            case CLUSTER_USERS:
-                cursor = clusterUsersQueryBuilder.query(dbHelper.getReadableDatabase(),
-                        projection,
-                        selection,
-                        selectionArgs,
-                        null,
-                        null,
-                        sortOrder);
-                break;
             default:
                 throw new UnsupportedOperationException("Check query, it's not operational");
         }
@@ -144,8 +124,6 @@ public class ExpenseProvider extends ContentProvider {
                 return ExpenseContract.ClusterEntry.CONTENT_TYPE;
             case EXPENSE:
                 return ExpenseContract.ExpenseEntry.CONTENT_TYPE;
-            case CLUSTER_USERS:
-                return ExpenseContract.ClusterUserEntry.CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown Uri: " + uri);
         }
@@ -186,14 +164,6 @@ public class ExpenseProvider extends ContentProvider {
                     updatedUri = ExpenseContract.ExpenseEntry.buildExpenseUri(_id);
                 }
                 break;
-            case CLUSTER_USERS:
-                _id = db.insert(ExpenseContract.ClusterUserEntry.TABLE_NAME,
-                        null,
-                        values);
-                if (_id > 0) {
-                    updatedUri = ExpenseContract.UserDetailsEntry.buildUserUri(_id);
-                }
-                break;
             default:
                 throw new UnsupportedOperationException("No such Uri: " + uri);
         }
@@ -229,11 +199,6 @@ public class ExpenseProvider extends ContentProvider {
                 break;
             case EXPENSE:
                 rows_deleted = db.delete(ExpenseContract.ExpenseEntry.TABLE_NAME,
-                        selection,
-                        selectionArgs);
-                break;
-            case CLUSTER_USERS:
-                rows_deleted = db.delete(ExpenseContract.ClusterUserEntry.TABLE_NAME,
                         selection,
                         selectionArgs);
                 break;

@@ -43,6 +43,9 @@ public class ExpenseContract {
         //timestamp when event occured.
         public static final String COLUMN_TIMESTAMP = "timestamp";
 
+        //indicating which user made the entry...
+        public static final String COLUMN_FOREIGN_BY_USER = "by_user";
+
         //reference to the cluster it belongs to
         public static final String COLUMN_FOREIGN_CLUSTER_ID = "cluster_id";
 
@@ -105,6 +108,9 @@ public class ExpenseContract {
         //title of the cluster. Type: String
         public static final String COLUMN_TITLE = "title";
 
+        //list of all users included in this table.
+        public static final String COLUMN_USERS_LIST = "users_list";
+
         //sum of all the expenses listed into the cluster.
         //Type: int/decimal
         public static final String COLUMN_SUM = "sum";
@@ -116,35 +122,6 @@ public class ExpenseContract {
         public static final String COLUMN_TIMESTAMP = "timestamp";
 
         public static Uri buildClusterUri(long _id) {
-            return ContentUris.withAppendedId(CONTENT_URI, _id);
-        }
-    }
-
-    /**
-     * This table indicates the co-relation between the cluster table,
-     * and the number of members in that group.
-     */
-    public static class ClusterUserEntry implements BaseColumns {
-        public static final Uri CONTENT_URI = BASE_URI.buildUpon()
-                .appendPath(PATH_CLUSTER_USER)
-                .build();
-
-        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/"
-                + CONTENT_AUTHORITY + "/" + PATH_CLUSTER_USER;
-
-        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/"
-                + CONTENT_AUTHORITY + "/" + PATH_CLUSTER_USER;
-
-        //TABLE NAME
-        public static final String TABLE_NAME = "cluster_users";
-
-        //foreign key to clusters id
-        public static final String COLUMN_FOREIGN_CLUSTER_ID = "cluster_id";
-
-        //foreign key to users id
-        public static final String COLUMN_FOREIGN_USER_ID = "user_id";
-
-        public static Uri buildClusterUsersUri(long _id) {
             return ContentUris.withAppendedId(CONTENT_URI, _id);
         }
     }
