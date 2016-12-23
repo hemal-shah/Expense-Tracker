@@ -11,7 +11,16 @@ public class ExpenseParcelable implements Parcelable {
 
     String about, timestamp;
     double amount;
-    int cluster_id;
+    int cluster_id, user_id;
+
+    public ExpenseParcelable(String about, String timestamp, double amount, int cluster_id,
+            int user_id) {
+        this.about = about;
+        this.timestamp = timestamp;
+        this.amount = amount;
+        this.cluster_id = cluster_id;
+        this.user_id = user_id;
+    }
 
     public ExpenseParcelable(String about, String timestamp, double amount, int cluster_id) {
         this.about = about;
@@ -52,11 +61,20 @@ public class ExpenseParcelable implements Parcelable {
         this.cluster_id = cluster_id;
     }
 
+    public int getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
+    }
+
     protected ExpenseParcelable(Parcel in) {
         about = in.readString();
         timestamp = in.readString();
         amount = in.readDouble();
         cluster_id = in.readInt();
+        user_id = in.readInt();
     }
 
     @Override
@@ -65,6 +83,7 @@ public class ExpenseParcelable implements Parcelable {
         dest.writeString(timestamp);
         dest.writeDouble(amount);
         dest.writeInt(cluster_id);
+        dest.writeInt(user_id);
     }
 
     @Override
