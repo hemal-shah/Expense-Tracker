@@ -2,6 +2,7 @@ package hemal.t.shah.expensetracker.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.data.ExpenseContract;
 import hemal.t.shah.expensetracker.interfaces.OnCluster;
 import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
+import hemal.t.shah.expensetracker.utils.SharedConstants;
 
 /**
  * Adapter to show personal clusters in the main screen of the tabs.
@@ -50,7 +52,7 @@ public class PersonalClusterAdapter extends
         double sum = cursor.getDouble(
                 cursor.getColumnIndex(ExpenseContract.ClusterEntry.COLUMN_SUM));
 
-        int id = cursor.getInt(cursor.getColumnIndex(ExpenseContract.ClusterEntry._ID));
+        final int id = cursor.getInt(cursor.getColumnIndex(ExpenseContract.ClusterEntry._ID));
 
         final ClusterParcelable cluster = new ClusterParcelable(title, timeStamp, 0, sum, id);
 
@@ -75,7 +77,9 @@ public class PersonalClusterAdapter extends
             @Override
             public void onClick(View v) {
                 if (onCluster != null) {
-                    onCluster.onTouch(cluster.getTitle(), cluster.getId());
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable(SharedConstants.SHARE_CLUSTER_PARCEL, cluster);
+                    onCluster.onTouch(bundle);
                 }
             }
         });

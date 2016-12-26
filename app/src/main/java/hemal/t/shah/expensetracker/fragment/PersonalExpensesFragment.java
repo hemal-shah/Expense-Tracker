@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.data.ExpenseContract;
+import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
 import hemal.t.shah.expensetracker.utils.SharedConstants;
 
 /**
@@ -26,13 +28,13 @@ import hemal.t.shah.expensetracker.utils.SharedConstants;
 public class PersonalExpensesFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor> {
 
+    private static final String TAG = "PersonalExpensesFrag";
 
     @BindView(R.id.tv_personal_expenses_fragment)
     TextView mTextView;
 
-    String title;
     Context mContext;
-    int cluster_id;
+    ClusterParcelable personalCluster;
 
     String[] projection = {
             ExpenseContract.ExpenseEntry.TABLE_NAME + "." + ExpenseContract.ExpenseEntry._ID,
@@ -57,11 +59,11 @@ public class PersonalExpensesFragment extends Fragment implements
 
         Bundle arguments = getArguments();
         if (arguments != null) {
-            title = arguments.getString(SharedConstants.SHARE_TITLE);
-            cluster_id = arguments.getInt(SharedConstants.SHARE_CLUSTER_ID);
+            personalCluster = arguments.getParcelable(SharedConstants.SHARE_CLUSTER_PARCEL);
         }
 
-        this.selectionArgs = new String[]{String.valueOf(cluster_id)};
+        this.selectionArgs = new String[]{String.valueOf(personalCluster.getId())};
+        Log.i(TAG, "onCreateView: ID : " + personalCluster.getId());
         this.mContext = getContext();
 
         View rootView = inflater.inflate(R.layout.personal_expenses_fragment, container, false);
@@ -73,7 +75,7 @@ public class PersonalExpensesFragment extends Fragment implements
                 this
         );
 
-        mTextView.setText(title);
+        mTextView.setText(personalCluster.getTitle());
         return rootView;
     }
 

@@ -11,6 +11,7 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hemal.t.shah.expensetracker.R;
+import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
 import hemal.t.shah.expensetracker.utils.SharedConstants;
 
 /**
@@ -21,7 +22,7 @@ public class SharedExpensesFragment extends Fragment {
     @BindView(R.id.tv_shared_expenses_fragment)
     TextView mTextView;
 
-    String title;
+    ClusterParcelable sharedCluster = null;
 
     @Nullable
     @Override
@@ -30,7 +31,7 @@ public class SharedExpensesFragment extends Fragment {
 
         Bundle arguments = getArguments();
         if (arguments != null) {
-            title = arguments.getString(SharedConstants.SHARE_TITLE);
+            sharedCluster = arguments.getParcelable(SharedConstants.SHARE_CLUSTER_PARCEL);
         }
 
 
@@ -38,7 +39,7 @@ public class SharedExpensesFragment extends Fragment {
         ButterKnife.bind(this, rootView);
 
 
-        mTextView.setText(title);
+        mTextView.setText(sharedCluster.getTitle());
 
         return rootView;
 

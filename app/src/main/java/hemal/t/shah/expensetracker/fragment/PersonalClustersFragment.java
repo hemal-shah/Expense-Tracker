@@ -11,6 +11,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,6 +28,7 @@ import hemal.t.shah.expensetracker.adapters.PersonalClusterAdapter;
 import hemal.t.shah.expensetracker.data.ClusterDispenser;
 import hemal.t.shah.expensetracker.data.ExpenseContract;
 import hemal.t.shah.expensetracker.interfaces.OnCluster;
+import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
 import hemal.t.shah.expensetracker.utils.SharedConstants;
 
 /**
@@ -133,11 +135,14 @@ public class PersonalClustersFragment extends Fragment implements
     }
 
     @Override
-    public void onTouch(String title, int cluster_id) {
-        Intent intent = new Intent(context, ExpensesActivity.class);
-        intent.putExtra(SharedConstants.SHARE_IS_SHARE, 0);
-        intent.putExtra(SharedConstants.SHARE_TITLE, title);
-        intent.putExtra(SharedConstants.SHARE_CLUSTER_ID, cluster_id);
+    public void onTouch(Bundle cluster) {
+
+        ClusterParcelable parcel = cluster.getParcelable(SharedConstants.SHARE_CLUSTER_PARCEL);
+        Log.i(TAG, "onTouch: " + parcel.getId());
+
+        Intent intent = new Intent(this.context, ExpensesActivity.class);
+        intent.putExtra(SharedConstants.SHARE_CLUSTER_PARCEL,
+                cluster.getParcelable(SharedConstants.SHARE_CLUSTER_PARCEL));
         startActivity(intent);
     }
 
