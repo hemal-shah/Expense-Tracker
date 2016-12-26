@@ -11,18 +11,30 @@ public class ClusterParcelable implements Parcelable {
     String title, timestamp;
     int is_shared;
     double sum;
+    int id;
+    // TODO: 26/12/16 changed to cluster id from online.
 
-    public ClusterParcelable(String title, String timestamp, double sum) {
+    public ClusterParcelable(String title, String timestamp, double sum, int id) {
         this.title = title;
         this.timestamp = timestamp;
         this.sum = sum;
+        this.id = id;
     }
 
-    public ClusterParcelable(String title, String timestamp, int is_shared, double sum) {
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public ClusterParcelable(String title, String timestamp, int is_shared, double sum, int id) {
         this.title = title;
         this.timestamp = timestamp;
         this.is_shared = is_shared;
         this.sum = sum;
+        this.id = id;
     }
 
     public String getTitle() {

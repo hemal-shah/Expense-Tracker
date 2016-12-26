@@ -1,6 +1,7 @@
 package hemal.t.shah.expensetracker.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import hemal.t.shah.expensetracker.ExpensesActivity;
 import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.adapters.SharedClusterAdapter;
 import hemal.t.shah.expensetracker.data.ClusterDispenser;
@@ -160,7 +162,11 @@ public class SharedClustersFragment extends Fragment implements
     }
 
     @Override
-    public void onTouch(String title) {
-        Toast.makeText(this.context, "clicked!" + title, Toast.LENGTH_SHORT).show();
+    public void onTouch(String title, int cluster_id) {
+        Intent intent = new Intent(context, ExpensesActivity.class);
+        intent.putExtra(SharedConstants.SHARE_IS_SHARE, 1);
+        intent.putExtra(SharedConstants.SHARE_TITLE, title);
+        intent.putExtra(SharedConstants.SHARE_CLUSTER_ID, cluster_id);
+        startActivity(intent);
     }
 }

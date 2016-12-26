@@ -36,20 +36,8 @@ public class ExpenseProvider extends ContentProvider {
         //setting normal query to invoke the clusters table.
         clustersQueryBuilder.setTables(ExpenseContract.ClusterEntry.TABLE_NAME);
 
-        /**
-         * Performing the INNER JOIN operation here.
-         * It should look something like following:
-         * expense_table INNER JOIN clusters ON expense_table.cluster_id = cluster._id
-         */
-        String innerJoinString =
-                ExpenseContract.ExpenseEntry.TABLE_NAME + " INNER JOIN " + ExpenseContract
-                        .ClusterEntry.TABLE_NAME + " ON "
-                        + ExpenseContract.ExpenseEntry.TABLE_NAME + "."
-                        + ExpenseContract.ExpenseEntry.COLUMN_FOREIGN_CLUSTER_ID + " = "
-                        + ExpenseContract.ClusterEntry.TABLE_NAME + "."
-                        + ExpenseContract.ClusterEntry._ID;
-//        Log.i(TAG, "static initializer: inner join for expenses table: " + innerJoinString);
-        expensesFromClusterQueryBuilder.setTables(innerJoinString);
+        //revoked inner join, functionality not required.
+        expensesFromClusterQueryBuilder.setTables(ExpenseContract.ExpenseEntry.TABLE_NAME);
 
     }
 

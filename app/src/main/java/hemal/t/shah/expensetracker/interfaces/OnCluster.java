@@ -9,5 +9,5 @@ public interface OnCluster {
     // TODO: 21/12/16 Later add firebase cluster id for more unique identification.
     void onDelete(int is_shared, String title);
 
-    void onTouch(String title);
+    void onTouch(String title, int cluster_id);
 }

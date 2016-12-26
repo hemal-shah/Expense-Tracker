@@ -50,7 +50,9 @@ public class SharedClusterAdapter extends
             double sum = cursor.getDouble(
                     cursor.getColumnIndex(ExpenseContract.ClusterEntry.COLUMN_SUM));
 
-            cluster = new ClusterParcelable(title, timeStamp, sum);
+            int cluster_id = cursor.getInt(cursor.getColumnIndex(ExpenseContract.ClusterEntry._ID));
+
+            cluster = new ClusterParcelable(title, timeStamp, sum, cluster_id);
         }
 
 
@@ -77,7 +79,7 @@ public class SharedClusterAdapter extends
             @Override
             public void onClick(View v) {
                 if (onCluster != null) {
-                    onCluster.onTouch(finalCluster.getTitle());
+                    onCluster.onTouch(finalCluster.getTitle(), finalCluster.getId());
                 }
             }
         });

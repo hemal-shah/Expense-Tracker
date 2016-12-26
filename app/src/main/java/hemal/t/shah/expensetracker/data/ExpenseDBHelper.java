@@ -12,7 +12,7 @@ import android.util.Log;
 public class ExpenseDBHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "ExpenseDBHelper";
-    private static final int DATABASE_VERSION = 11;
+    private static final int DATABASE_VERSION = 13;
     private static final String DATABASE_NAME = "ExpenseDB.db";
 
     public ExpenseDBHelper(Context context) {
@@ -62,8 +62,9 @@ public class ExpenseDBHelper extends SQLiteOpenHelper {
         db.execSQL(sql_create_cluster_table);
 
 
-        /**CREATE TABLE expense_table(
-         * _id INTEGER PRIMARY KEY ,
+        /**
+         * CREATE TABLE expense_table(
+         * _id INTEGER PRIMARY KEY,
          * about TEXT NOT NULL,
          * amount REAL NOT NULL,
          * timestamp TEXT,
@@ -91,25 +92,27 @@ public class ExpenseDBHelper extends SQLiteOpenHelper {
         db.execSQL(sql_create_expenses_table);
 
         //todo delete the sample insertions
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 20; i++) {
             String title = "title " + i;
             String sql_cluster = "insert into " + ExpenseContract.ClusterEntry.TABLE_NAME
                     + "(title, sum, is_shared, timestamp, users_list)"
                     + " values(\"" + title + "\", 100, " + (i % 2)
                     + " , \"time is now\", \"{\'user1\', \'user2\'}\")";
             db.execSQL(sql_cluster);
-            Log.i(TAG, "onCreate: inserted 1 row into cluster table");
+//            Log.i(TAG, "onCreate: inserted 1 row into cluster table");
 
             double amount = 102.36 * i;
 
+            String hemal = "hemal " + i;
             String sql_expenses = "insert into " + ExpenseContract.ExpenseEntry.TABLE_NAME
-                    + "(about, amount, timestamp, cluster_id, by_user) VALUES (\"hemal\"," + amount
+                    + "(about, amount, timestamp, cluster_id, by_user) VALUES (\" " + hemal + "\","
+                    + amount
                     + ", \"time "
                     + "is now\",  "
                     + (i + 1) + ", 120);";
 
             db.execSQL(sql_expenses);
-            Log.i(TAG, "onCreate: one row inserted into expenses table");
+//            Log.i(TAG, "onCreate: one row inserted into expenses table");
         }
 
     }

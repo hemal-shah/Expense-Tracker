@@ -20,4 +20,15 @@ public class SharedConstants {
 
     //to delete existing clusters.
     public static final int TOKEN_DELETE_CLUSTER = 104;
+
+    //to load expenses from personal clusters.
+    public static final int CURSOR_EXPENSES_PERSONAL = 105;
+
+    //to load expenses from shared clusters.
+    public static final int CURSOR_EXPENSES_SHARED = 106;
+
+
+    public static final String SHARE_IS_SHARE = "is_shared";
+    public static final String SHARE_TITLE = "title";
+    public static final String SHARE_CLUSTER_ID = "cluster_id";
 }

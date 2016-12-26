@@ -96,8 +96,6 @@ public class ExpenseContract {
                 .build();
 
 
-        // TODO: 23/12/16 add entry for created by. change same in ExpenseDBHelper class
-
         public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/"
                 + CONTENT_AUTHORITY + "/" + PATH_CLUSTER;
 

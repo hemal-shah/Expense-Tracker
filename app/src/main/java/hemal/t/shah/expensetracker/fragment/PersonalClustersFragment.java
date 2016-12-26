@@ -133,10 +133,11 @@ public class PersonalClustersFragment extends Fragment implements
     }
 
     @Override
-    public void onTouch(String title) {
+    public void onTouch(String title, int cluster_id) {
         Intent intent = new Intent(context, ExpensesActivity.class);
-        intent.putExtra("is_shared", 0);
-        intent.putExtra("title", title);
+        intent.putExtra(SharedConstants.SHARE_IS_SHARE, 0);
+        intent.putExtra(SharedConstants.SHARE_TITLE, title);
+        intent.putExtra(SharedConstants.SHARE_CLUSTER_ID, cluster_id);
         startActivity(intent);
     }
 

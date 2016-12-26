@@ -50,7 +50,9 @@ public class PersonalClusterAdapter extends
         double sum = cursor.getDouble(
                 cursor.getColumnIndex(ExpenseContract.ClusterEntry.COLUMN_SUM));
 
-        final ClusterParcelable cluster = new ClusterParcelable(title, timeStamp, 0, sum);
+        int id = cursor.getInt(cursor.getColumnIndex(ExpenseContract.ClusterEntry._ID));
+
+        final ClusterParcelable cluster = new ClusterParcelable(title, timeStamp, 0, sum, id);
 
 
         String s = "Title = " + cluster.getTitle() +
@@ -73,7 +75,7 @@ public class PersonalClusterAdapter extends
             @Override
             public void onClick(View v) {
                 if (onCluster != null) {
-                    onCluster.onTouch(cluster.getTitle());
+                    onCluster.onTouch(cluster.getTitle(), cluster.getId());
                 }
             }
         });

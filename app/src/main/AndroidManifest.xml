@@ -16,12 +16,17 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ExpensesActivity"
+            android:label="@string/app_name">
+
+        </activity>
+
         <provider
-            android:authorities="@string/content_authority"
             android:name=".data.ExpenseProvider"
+            android:authorities="@string/content_authority"
             android:exported="false"
-            android:syncable="true"
-            />
+            android:syncable="true" />
     </application>
 
 </manifest>
