@@ -23,8 +23,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.adapters.ViewPagerTabAdapter;
+import hemal.t.shah.expensetracker.data.DataInsertionTask;
 import hemal.t.shah.expensetracker.data.ExpenseContract;
-import hemal.t.shah.expensetracker.data.NewClusterGenerator;
 import hemal.t.shah.expensetracker.utils.SharedConstants;
 
 /**
@@ -124,7 +124,7 @@ public class TabContainerFragment extends Fragment {
                 contentValues.put(ExpenseContract.ClusterEntry.COLUMN_USERS_LIST, "hemal");
                 contentValues.put(ExpenseContract.ClusterEntry.COLUMN_TIMESTAMP, timestamp);
 
-                NewClusterGenerator newClusterGenerator = new NewClusterGenerator(
+                DataInsertionTask dataInsertionTask = new DataInsertionTask(
                         context.getContentResolver(), context, contentValues);
 
                 /**
@@ -136,14 +136,14 @@ public class TabContainerFragment extends Fragment {
                     String selection = ExpenseContract.ClusterEntry.COLUMN_TITLE + " = ?" + " AND "
                             + ExpenseContract.ClusterEntry.COLUMN_IS_SHARED + " = 0";
 
-                    newClusterGenerator.startQuery(
+                    dataInsertionTask.startQuery(
                             SharedConstants.TOKEN_CHECK_FOR_CLUSTER_TITLE,
                             null, ExpenseContract.ClusterEntry.CONTENT_URI,
                             null, selection,
                             new String[]{title}, null
                     );
                 } else if (is_shared == 1) { //shared, should be available.
-                    newClusterGenerator.startInsert(
+                    dataInsertionTask.startInsert(
                             SharedConstants.TOKEN_ADD_NEW_CLUSTER,
                             null, ExpenseContract.ClusterEntry.CONTENT_URI, contentValues
                     );

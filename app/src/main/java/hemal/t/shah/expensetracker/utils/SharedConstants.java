@@ -27,5 +27,7 @@ public class SharedConstants {
     //to load expenses from shared clusters.
     public static final int CURSOR_EXPENSES_SHARED = 106;
 
+    public static final int TOKEN_ADD_NEW_EXPENSE = 107;
+
     public static final String SHARE_CLUSTER_PARCEL = "parcel";
 }

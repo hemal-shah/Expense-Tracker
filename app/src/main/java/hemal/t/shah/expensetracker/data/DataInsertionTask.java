@@ -18,16 +18,21 @@ import hemal.t.shah.expensetracker.utils.SharedConstants;
  */
 
 
-public class NewClusterGenerator extends AsyncQueryHandler {
+public class DataInsertionTask extends AsyncQueryHandler {
 
-    private static final String TAG = "NewClusterGenerator";
+    private static final String TAG = "DataInsertionTask";
     Context context;
     ContentValues contentValues;
 
-    public NewClusterGenerator(ContentResolver cr, Context context, ContentValues contentValues) {
+    public DataInsertionTask(ContentResolver cr, Context context, ContentValues contentValues) {
         super(cr);
         this.context = context;
         this.contentValues = contentValues;
+    }
+
+    public DataInsertionTask(ContentResolver cr, Context context) {
+        super(cr);
+        this.context = context;
     }
 
     @Override
@@ -58,11 +63,16 @@ public class NewClusterGenerator extends AsyncQueryHandler {
     protected void onInsertComplete(int token, Object cookie, Uri uri) {
         super.onInsertComplete(token, cookie, uri);
 
-        if (token == SharedConstants.TOKEN_ADD_NEW_CLUSTER) {
-            if (uri.toString().startsWith(ExpenseContract.ClusterEntry.CONTENT_URI.toString())) {
+        // TODO: 30/12/16 Add snackbar here...
+        switch (token) {
+            case SharedConstants.TOKEN_ADD_NEW_CLUSTER:
                 Toast.makeText(context, "Successfully added new cluster",
                         Toast.LENGTH_SHORT).show();
-            }
+                break;
+            case SharedConstants.TOKEN_ADD_NEW_EXPENSE:
+                Toast.makeText(context, "Successfully added new expense!",
+                        Toast.LENGTH_LONG).show();
+                break;
         }
 
     }

@@ -49,7 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/enter_title"
-            android:maxLines="1"
+            android:inputType="text"
             android:maxLength="15" />
 
     </android.support.design.widget.TextInputLayout>

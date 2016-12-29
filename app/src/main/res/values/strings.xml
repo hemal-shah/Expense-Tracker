@@ -6,4 +6,6 @@
     <string name="enter_title">Enter Title</string>
     <string name="personal">Personal</string>
     <string name="shared">Shared</string>
+    <string name="enter_about">Expense Regarding</string>
+    <string name="enter_amount">Amount Spent</string>
 </resources>
