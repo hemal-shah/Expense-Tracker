@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import hemal.t.shah.expensetracker.fragment.PersonalExpensesFragment;
 import hemal.t.shah.expensetracker.fragment.SharedExpensesFragment;
@@ -35,8 +34,6 @@ public class ExpensesActivity extends AppCompatActivity {
         ClusterParcelable clusterParcelable = intent.getExtras().getParcelable(
                 SharedConstants.SHARE_CLUSTER_PARCEL);
 
-        Log.i(TAG, "onCreate: the id received is : " + clusterParcelable.getId());
-        Log.i(TAG, "onCreate: the title is " + clusterParcelable.getTitle());
         manager = getSupportFragmentManager();
         transaction = manager.beginTransaction();
 
@@ -44,14 +41,14 @@ public class ExpensesActivity extends AppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putParcelable(SharedConstants.SHARE_CLUSTER_PARCEL, clusterParcelable);
 
-        if (clusterParcelable.getIs_shared() == 0) {
+        if (clusterParcelable != null && clusterParcelable.getIs_shared() == 0) {
 
             //It's a personal fragment.
             PersonalExpensesFragment fragment = new PersonalExpensesFragment();
             fragment.setArguments(bundle);
             transaction.replace(R.id.fl_activity_expenses_loader, fragment);
 
-        } else if (clusterParcelable.getIs_shared() == 1) {
+        } else if (clusterParcelable != null && clusterParcelable.getIs_shared() == 1) {
 
             //it's a shared fragment
             SharedExpensesFragment fragment = new SharedExpensesFragment();

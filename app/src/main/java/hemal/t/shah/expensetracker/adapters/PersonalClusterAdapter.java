@@ -81,7 +81,7 @@ public class PersonalClusterAdapter extends
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(this.context)
-                .inflate(R.layout.single_personal_clusters_row, parent, false);
+                .inflate(R.layout.row_personal_clusters, parent, false);
         return new ViewHolder(itemView);
     }
 

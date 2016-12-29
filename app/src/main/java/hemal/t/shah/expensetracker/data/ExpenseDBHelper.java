@@ -2,9 +2,12 @@ package hemal.t.shah.expensetracker.data;
 
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import hemal.t.shah.expensetracker.pojo.UserDetailsParcelable;
 
 /**
  * Create, Update or Delete tables from this class.
@@ -12,7 +15,7 @@ import android.util.Log;
 public class ExpenseDBHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "ExpenseDBHelper";
-    private static final int DATABASE_VERSION = 13;
+    private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "ExpenseDB.db";
 
     public ExpenseDBHelper(Context context) {
@@ -38,6 +41,11 @@ public class ExpenseDBHelper extends SQLiteOpenHelper {
 
 //        Log.i(TAG, "onCreate: user table: " + sql_create_user_table);
         db.execSQL(sql_create_user_table);
+
+        String userQuery = "INSERT INTO " + ExpenseContract.UserDetailsEntry.TABLE_NAME
+                + " (name, email, user_id) VALUES(\'hemal\',\'hemal.shah1996\', 102)";
+
+        db.execSQL(userQuery);
 
 
         /**
@@ -97,24 +105,51 @@ public class ExpenseDBHelper extends SQLiteOpenHelper {
             String sql_cluster = "insert into " + ExpenseContract.ClusterEntry.TABLE_NAME
                     + "(title, sum, is_shared, timestamp, users_list)"
                     + " values(\"" + title + "\", 100, " + (i % 2)
-                    + " , \"time is now\", \"{\'user1\', \'user2\'}\")";
+                    + " , \"time is now\", \"{\'102\'}\")";
             db.execSQL(sql_cluster);
 //            Log.i(TAG, "onCreate: inserted 1 row into cluster table");
 
             double amount = 102.36 * i;
 
-            String hemal = "hemal " + i;
-            String sql_expenses = "insert into " + ExpenseContract.ExpenseEntry.TABLE_NAME
-                    + "(about, amount, timestamp, cluster_id, by_user) VALUES (\" " + hemal + "\","
-                    + amount
-                    + ", \"time "
-                    + "is now\",  "
-                    + (i + 1) + ", 120);";
-
-            db.execSQL(sql_expenses);
+            for (int k = 0; k < 5; k++) {
+                String hemal = "hemal " + k;
+                String sql_expenses = "insert into " + ExpenseContract.ExpenseEntry.TABLE_NAME
+                        + "(about, amount, timestamp, cluster_id, by_user) VALUES (\" " + hemal
+                        + "\","
+                        + amount
+                        + ", \"time "
+                        + "is now\",  "
+                        + (i + 1) + ", 102);";
+                db.execSQL(sql_expenses);
 //            Log.i(TAG, "onCreate: one row inserted into expenses table");
+            }
+
+
         }
 
+    }
+
+
+    public UserDetailsParcelable getUserDetails(int user_id) {
+
+        Cursor cursor = getReadableDatabase().query(ExpenseContract.UserDetailsEntry.TABLE_NAME,
+                null,
+                ExpenseContract.UserDetailsEntry.COLUMN_USER_ID + "=?",
+                new String[]{String.valueOf(user_id)},
+                null,
+                null,
+                null);
+        UserDetailsParcelable parcel = null;
+
+        if (cursor.moveToFirst()) {
+            parcel = new UserDetailsParcelable(cursor.getString(
+                    cursor.getColumnIndex(ExpenseContract.UserDetailsEntry.COLUMN_NAME)),
+                    cursor.getString(
+                            cursor.getColumnIndex(ExpenseContract.UserDetailsEntry.COLUMN_EMAIL)),
+                    cursor.getInt(cursor.getColumnIndex(ExpenseContract.UserDetailsEntry._ID))
+            );
+        }
+        return parcel;
     }
 
     @Override

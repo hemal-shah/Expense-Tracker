@@ -81,7 +81,7 @@ public class SharedClusterAdapter extends
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(this.context)
-                .inflate(R.layout.single_shared_clusters_row, parent, false);
+                .inflate(R.layout.row_shared_clusters, parent, false);
         return new ViewHolder(itemView);
     }
 

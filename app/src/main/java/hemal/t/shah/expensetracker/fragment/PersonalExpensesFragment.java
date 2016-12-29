@@ -8,15 +8,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hemal.t.shah.expensetracker.R;
+import hemal.t.shah.expensetracker.adapters.PersonalExpensesAdapter;
 import hemal.t.shah.expensetracker.data.ExpenseContract;
 import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
 import hemal.t.shah.expensetracker.utils.SharedConstants;
@@ -30,25 +31,17 @@ public class PersonalExpensesFragment extends Fragment implements
 
     private static final String TAG = "PersonalExpensesFrag";
 
-    @BindView(R.id.tv_personal_expenses_fragment)
-    TextView mTextView;
+
+    @BindView(R.id.rv_personal_expenses_fragment)
+    RecyclerView recyclerView;
+
+    PersonalExpensesAdapter adapter = null;
 
     Context mContext;
     ClusterParcelable personalCluster;
 
-    String[] projection = {
-            ExpenseContract.ExpenseEntry.TABLE_NAME + "." + ExpenseContract.ExpenseEntry._ID,
-            ExpenseContract.ExpenseEntry.TABLE_NAME + "."
-                    + ExpenseContract.ExpenseEntry.COLUMN_ABOUT,
-            ExpenseContract.ExpenseEntry.TABLE_NAME + "."
-                    + ExpenseContract.ExpenseEntry.COLUMN_AMOUNT,
-            ExpenseContract.ExpenseEntry.TABLE_NAME + "."
-                    + ExpenseContract.ExpenseEntry.COLUMN_TIMESTAMP,
-            ExpenseContract.ExpenseEntry.TABLE_NAME + "."
-                    + ExpenseContract.ExpenseEntry.COLUMN_FOREIGN_BY_USER
-    };
-
-    String selection = ExpenseContract.ExpenseEntry.COLUMN_FOREIGN_CLUSTER_ID + " = ?";
+    String selection = ExpenseContract.ExpenseEntry.TABLE_NAME + "."
+            + ExpenseContract.ExpenseEntry.COLUMN_FOREIGN_CLUSTER_ID + " = ?";
     String[] selectionArgs;
 
     @Nullable
@@ -63,11 +56,16 @@ public class PersonalExpensesFragment extends Fragment implements
         }
 
         this.selectionArgs = new String[]{String.valueOf(personalCluster.getId())};
-        Log.i(TAG, "onCreateView: ID : " + personalCluster.getId());
         this.mContext = getContext();
 
         View rootView = inflater.inflate(R.layout.personal_expenses_fragment, container, false);
         ButterKnife.bind(this, rootView);
+
+        adapter = new PersonalExpensesAdapter(this.mContext, null);
+        recyclerView.setLayoutManager(
+                new LinearLayoutManager(this.mContext, LinearLayoutManager.VERTICAL, false));
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(adapter);
 
         getActivity().getSupportLoaderManager().initLoader(
                 SharedConstants.CURSOR_EXPENSES_PERSONAL,
@@ -75,7 +73,6 @@ public class PersonalExpensesFragment extends Fragment implements
                 this
         );
 
-        mTextView.setText(personalCluster.getTitle());
         return rootView;
     }
 
@@ -87,7 +84,7 @@ public class PersonalExpensesFragment extends Fragment implements
                 return new CursorLoader(
                         this.mContext,
                         ExpenseContract.ExpenseEntry.CONTENT_URI,
-                        projection,
+                        null,
                         selection,
                         selectionArgs,
                         null
@@ -99,20 +96,11 @@ public class PersonalExpensesFragment extends Fragment implements
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        String output = mTextView.getText().toString();
-        Log.i(TAG, "onLoadFinished: size of data = " + data.getCount());
-        data.moveToFirst();
-        do {
-            output += "\n";
-            output += data.getString(
-                    data.getColumnIndex(ExpenseContract.ExpenseEntry.TABLE_NAME + "."
-                            + ExpenseContract.ExpenseEntry.COLUMN_ABOUT));
-        } while (data.moveToNext());
-        mTextView.setText(output);
+        adapter.swapCursor(data);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
+        adapter.swapCursor(null);
     }
 }
