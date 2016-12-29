@@ -6,8 +6,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import hemal.t.shah.expensetracker.fragment.PersonalExpensesFragment;
 import hemal.t.shah.expensetracker.fragment.SharedExpensesFragment;
 import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
@@ -21,6 +25,11 @@ public class ExpensesActivity extends AppCompatActivity {
 
     private static final String TAG = "ExpensesActivity";
 
+    @BindView(R.id.toolbar_activity_expenses_loader)
+    Toolbar toolbar;
+
+    ActionBar mActionBar;
+
     FragmentManager manager;
     FragmentTransaction transaction;
 
@@ -30,9 +39,21 @@ public class ExpensesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_expenses_loader);
 
+        ButterKnife.bind(this);
+        setSupportActionBar(toolbar);
+
         Intent intent = getIntent();
         ClusterParcelable clusterParcelable = intent.getExtras().getParcelable(
                 SharedConstants.SHARE_CLUSTER_PARCEL);
+
+
+        mActionBar = getSupportActionBar();
+        if(mActionBar != null){
+            mActionBar.setHomeAsUpIndicator(R.drawable.ic_clear_white_24dp);
+            mActionBar.setDisplayHomeAsUpEnabled(true);
+            mActionBar.setTitle(clusterParcelable.getTitle());
+        }
+
 
         manager = getSupportFragmentManager();
         transaction = manager.beginTransaction();
@@ -59,8 +80,13 @@ public class ExpensesActivity extends AppCompatActivity {
             //Error
             this.finish();
         }
-
-
         transaction.commit();
+    }
+
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish(); // close this activity as oppose to navigating up
+        return false;
     }
 }
