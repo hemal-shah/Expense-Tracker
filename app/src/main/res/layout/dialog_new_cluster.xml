@@ -41,8 +41,7 @@
         android:layout_marginTop="@dimen/margin_top_et_dialog"
         android:layout_marginStart="@dimen/margin_end_start_et_dialog"
         app:counterEnabled="true"
-        app:counterMaxLength="15"
-        app:errorEnabled="true">
+        app:counterMaxLength="15">
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/tiet_dialog_new_cluster"
