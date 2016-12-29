@@ -100,11 +100,13 @@ public class PersonalExpensesFragment extends Fragment implements
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         String output = mTextView.getText().toString();
+        Log.i(TAG, "onLoadFinished: size of data = " + data.getCount());
         data.moveToFirst();
         do {
             output += "\n";
             output += data.getString(
-                    data.getColumnIndex(ExpenseContract.ExpenseEntry.COLUMN_ABOUT));
+                    data.getColumnIndex(ExpenseContract.ExpenseEntry.TABLE_NAME + "."
+                            + ExpenseContract.ExpenseEntry.COLUMN_ABOUT));
         } while (data.moveToNext());
         mTextView.setText(output);
     }

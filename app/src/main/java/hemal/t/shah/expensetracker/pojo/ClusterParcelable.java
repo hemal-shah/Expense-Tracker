@@ -14,12 +14,39 @@ public class ClusterParcelable implements Parcelable {
     int id;
     // TODO: 26/12/16 changed to cluster id from online.
 
-    public ClusterParcelable(String title, String timestamp, double sum, int id) {
-        this.title = title;
-        this.timestamp = timestamp;
-        this.sum = sum;
-        this.id = id;
+    protected ClusterParcelable(Parcel in) {
+        title = in.readString();
+        timestamp = in.readString();
+        is_shared = in.readInt();
+        sum = in.readDouble();
+        id = in.readInt();
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(timestamp);
+        dest.writeInt(is_shared);
+        dest.writeDouble(sum);
+        dest.writeInt(id);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<ClusterParcelable> CREATOR = new Creator<ClusterParcelable>() {
+        @Override
+        public ClusterParcelable createFromParcel(Parcel in) {
+            return new ClusterParcelable(in);
+        }
+
+        @Override
+        public ClusterParcelable[] newArray(int size) {
+            return new ClusterParcelable[size];
+        }
+    };
 
     public int getId() {
         return id;
@@ -69,35 +96,4 @@ public class ClusterParcelable implements Parcelable {
         this.sum = sum;
     }
 
-    protected ClusterParcelable(Parcel in) {
-        title = in.readString();
-        timestamp = in.readString();
-        is_shared = in.readInt();
-        sum = in.readDouble();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(title);
-        dest.writeString(timestamp);
-        dest.writeInt(is_shared);
-        dest.writeDouble(sum);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<ClusterParcelable> CREATOR = new Creator<ClusterParcelable>() {
-        @Override
-        public ClusterParcelable createFromParcel(Parcel in) {
-            return new ClusterParcelable(in);
-        }
-
-        @Override
-        public ClusterParcelable[] newArray(int size) {
-            return new ClusterParcelable[size];
-        }
-    };
 }

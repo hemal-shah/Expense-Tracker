@@ -27,6 +27,7 @@ import hemal.t.shah.expensetracker.adapters.SharedClusterAdapter;
 import hemal.t.shah.expensetracker.data.ClusterDispenser;
 import hemal.t.shah.expensetracker.data.ExpenseContract;
 import hemal.t.shah.expensetracker.interfaces.OnCluster;
+import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
 import hemal.t.shah.expensetracker.utils.SharedConstants;
 
 /**
@@ -162,10 +163,9 @@ public class SharedClustersFragment extends Fragment implements
     }
 
     @Override
-    public void onTouch(Bundle cluster) {
+    public void onTouch(ClusterParcelable cluster) {
         Intent intent = new Intent(context, ExpensesActivity.class);
-        intent.putExtra(SharedConstants.SHARE_CLUSTER_PARCEL,
-                cluster.getParcelable(SharedConstants.SHARE_CLUSTER_PARCEL));
+        intent.putExtra(SharedConstants.SHARE_CLUSTER_PARCEL, cluster);
         startActivity(intent);
     }
 }

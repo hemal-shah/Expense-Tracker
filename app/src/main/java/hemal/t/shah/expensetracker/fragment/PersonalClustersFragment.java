@@ -11,7 +11,6 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -135,14 +134,10 @@ public class PersonalClustersFragment extends Fragment implements
     }
 
     @Override
-    public void onTouch(Bundle cluster) {
-
-        ClusterParcelable parcel = cluster.getParcelable(SharedConstants.SHARE_CLUSTER_PARCEL);
-        Log.i(TAG, "onTouch: " + parcel.getId());
+    public void onTouch(ClusterParcelable cluster) {
 
         Intent intent = new Intent(this.context, ExpensesActivity.class);
-        intent.putExtra(SharedConstants.SHARE_CLUSTER_PARCEL,
-                cluster.getParcelable(SharedConstants.SHARE_CLUSTER_PARCEL));
+        intent.putExtra(SharedConstants.SHARE_CLUSTER_PARCEL, cluster);
         startActivity(intent);
     }
 
