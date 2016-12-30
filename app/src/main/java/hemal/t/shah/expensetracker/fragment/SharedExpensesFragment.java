@@ -19,14 +19,16 @@ import butterknife.ButterKnife;
 import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.adapters.SharedExpensesAdapter;
 import hemal.t.shah.expensetracker.data.ExpenseContract;
+import hemal.t.shah.expensetracker.interfaces.OnExpense;
 import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
+import hemal.t.shah.expensetracker.pojo.ExpenseParcelable;
 import hemal.t.shah.expensetracker.utils.SharedConstants;
 
 /**
  * Created by hemal on 26/12/16.
  */
 public class SharedExpensesFragment extends Fragment implements
-        LoaderManager.LoaderCallbacks<Cursor> {
+        LoaderManager.LoaderCallbacks<Cursor>, OnExpense {
 
     private static final String TAG = "SharedExpensesFrag";
 
@@ -64,7 +66,7 @@ public class SharedExpensesFragment extends Fragment implements
                 false
         ));
 
-        this.adapter = new SharedExpensesAdapter(this.mContext, null);
+        this.adapter = new SharedExpensesAdapter(this.mContext, null, this);
 
         this.mRecyclerView.setAdapter(adapter);
 
@@ -103,5 +105,20 @@ public class SharedExpensesFragment extends Fragment implements
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         this.adapter.swapCursor(null);
+    }
+
+    @Override
+    public void delete(ExpenseParcelable expenseParcelable) {
+        String where = ExpenseContract.ExpenseEntry.COLUMN_ABOUT + "=? AND "
+                + ExpenseContract.ExpenseEntry.COLUMN_AMOUNT + " = ? AND "
+                + ExpenseContract.ExpenseEntry.COLUMN_FOREIGN_CLUSTER_ID + " = ?";
+
+        getActivity().getContentResolver().delete(
+                ExpenseContract.ExpenseEntry.CONTENT_URI,
+                where,
+                new String[]{expenseParcelable.getAbout(),
+                        String.valueOf(expenseParcelable.getAmount()),
+                        String.valueOf(expenseParcelable.getCluster_id())}
+        );
     }
 }

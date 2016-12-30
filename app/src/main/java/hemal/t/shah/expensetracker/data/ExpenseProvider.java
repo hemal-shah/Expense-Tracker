@@ -41,7 +41,7 @@ public class ExpenseProvider extends ContentProvider {
          *
          */
         expensesFromClusterQueryBuilder.setTables(ExpenseContract.ExpenseEntry.TABLE_NAME);
-
+// TODO: 30/12/16 delete expenses when cluster is deleted
 
     }
 

@@ -19,7 +19,9 @@ import butterknife.ButterKnife;
 import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.adapters.PersonalExpensesAdapter;
 import hemal.t.shah.expensetracker.data.ExpenseContract;
+import hemal.t.shah.expensetracker.interfaces.OnExpense;
 import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
+import hemal.t.shah.expensetracker.pojo.ExpenseParcelable;
 import hemal.t.shah.expensetracker.utils.SharedConstants;
 
 /**
@@ -27,7 +29,7 @@ import hemal.t.shah.expensetracker.utils.SharedConstants;
  * Created by hemal on 23/12/16.
  */
 public class PersonalExpensesFragment extends Fragment implements
-        LoaderManager.LoaderCallbacks<Cursor> {
+        LoaderManager.LoaderCallbacks<Cursor>, OnExpense {
 
     private static final String TAG = "PersonalExpensesFrag";
 
@@ -61,7 +63,7 @@ public class PersonalExpensesFragment extends Fragment implements
         View rootView = inflater.inflate(R.layout.personal_expenses_fragment, container, false);
         ButterKnife.bind(this, rootView);
 
-        adapter = new PersonalExpensesAdapter(this.mContext, null);
+        adapter = new PersonalExpensesAdapter(this.mContext, null, this);
         recyclerView.setLayoutManager(
                 new LinearLayoutManager(this.mContext, LinearLayoutManager.VERTICAL, false));
         recyclerView.setHasFixedSize(true);
@@ -102,5 +104,21 @@ public class PersonalExpensesFragment extends Fragment implements
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         adapter.swapCursor(null);
+    }
+
+    @Override
+    public void delete(ExpenseParcelable expenseParcelable) {
+
+        String where = ExpenseContract.ExpenseEntry.COLUMN_ABOUT + "=? AND "
+                + ExpenseContract.ExpenseEntry.COLUMN_AMOUNT + " = ? AND "
+                + ExpenseContract.ExpenseEntry.COLUMN_FOREIGN_CLUSTER_ID + " = ?";
+
+        getActivity().getContentResolver().delete(
+                ExpenseContract.ExpenseEntry.CONTENT_URI,
+                where,
+                new String[]{expenseParcelable.getAbout(),
+                        String.valueOf(expenseParcelable.getAmount()),
+                        String.valueOf(expenseParcelable.getCluster_id())}
+        );
     }
 }

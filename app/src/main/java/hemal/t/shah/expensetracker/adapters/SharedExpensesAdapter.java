@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import butterknife.BindView;
@@ -13,6 +14,7 @@ import butterknife.ButterKnife;
 import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.data.ExpenseContract;
 import hemal.t.shah.expensetracker.data.ExpenseDBHelper;
+import hemal.t.shah.expensetracker.interfaces.OnExpense;
 import hemal.t.shah.expensetracker.pojo.ExpenseParcelable;
 import hemal.t.shah.expensetracker.pojo.UserDetailsParcelable;
 
@@ -24,11 +26,13 @@ public class SharedExpensesAdapter extends
 
     Context mContext;
     Cursor mCursor;
+    OnExpense mExpense;
 
-    public SharedExpensesAdapter(Context context, Cursor cursor) {
+    public SharedExpensesAdapter(Context context, Cursor cursor, OnExpense mExpense) {
         super(context, cursor);
         this.mContext = context;
         this.mCursor = cursor;
+        this.mExpense = mExpense;
     }
 
     @Override
@@ -57,7 +61,8 @@ public class SharedExpensesAdapter extends
             String timeStamp = cursor.getString(index_timestamp);
             int cluster_id = cursor.getInt(index_cluster_id);
             int user_id = cursor.getInt(index_user_id);
-            ExpenseParcelable expense = new ExpenseParcelable(about, timeStamp, amount, cluster_id,
+            final ExpenseParcelable expense = new ExpenseParcelable(about, timeStamp, amount,
+                    cluster_id,
                     user_id);
 
             ExpenseDBHelper helper = new ExpenseDBHelper(this.mContext);
@@ -67,6 +72,15 @@ public class SharedExpensesAdapter extends
                     + userDetailsParcelable.getName()
                     + "\n" + userDetailsParcelable.getEmail();
             viewHolder.tv.setText(text);
+
+            viewHolder.delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mExpense != null) {
+                        mExpense.delete(expense);
+                    }
+                }
+            });
         }
     }
 
@@ -83,6 +97,10 @@ public class SharedExpensesAdapter extends
 
         @BindView(R.id.sample_2)
         TextView tv;
+
+        @BindView(R.id.bt_delete_s_expense)
+        Button delete;
+
 
         public ViewHolder(View itemView) {
             super(itemView);
