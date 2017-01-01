@@ -9,14 +9,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.data.ExpenseContract;
-import hemal.t.shah.expensetracker.data.ExpenseDBHelper;
 import hemal.t.shah.expensetracker.interfaces.OnExpense;
 import hemal.t.shah.expensetracker.pojo.ExpenseParcelable;
-import hemal.t.shah.expensetracker.pojo.UserDetailsParcelable;
 
 /**
  * Created by hemal on 29/12/16.
@@ -27,6 +28,8 @@ public class SharedExpensesAdapter extends
     Context mContext;
     Cursor mCursor;
     OnExpense mExpense;
+
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     public SharedExpensesAdapter(Context context, Cursor cursor, OnExpense mExpense) {
         super(context, cursor);
@@ -53,7 +56,7 @@ public class SharedExpensesAdapter extends
                 ExpenseContract.ExpenseEntry.COLUMN_FOREIGN_CLUSTER_ID
         );
         index_user_id = cursor.getColumnIndex(
-                ExpenseContract.ExpenseEntry.COLUMN_FOREIGN_BY_USER
+                ExpenseContract.ExpenseEntry.COLUMN_BY_USER
         );
         if (cursor.moveToPosition(position)) {
             String about = cursor.getString(index_about);
@@ -65,12 +68,14 @@ public class SharedExpensesAdapter extends
                     cluster_id,
                     user_id);
 
-            ExpenseDBHelper helper = new ExpenseDBHelper(this.mContext);
-            UserDetailsParcelable userDetailsParcelable = helper.getUserDetails(user_id);
 
-            String text = about + "\n" + amount + "\n" + timeStamp + "\n" + user_id + "\n"
-                    + userDetailsParcelable.getName()
-                    + "\n" + userDetailsParcelable.getEmail();
+            String text = about + "\n" + amount + "\n" + timeStamp + "\n" + user_id + "\n";
+            if(user != null){
+                text += "Name = " + user.getDisplayName() + "\n email = " + user.getEmail();
+            }
+
+
+
             viewHolder.tv.setText(text);
 
             viewHolder.delete.setOnClickListener(new View.OnClickListener() {

@@ -27,6 +27,10 @@ public class SharedClusterAdapter extends
     Context context = null;
     OnCluster onCluster = null;
 
+
+    String[] projection = new String[]{"SUM(" + ExpenseContract.ExpenseEntry.COLUMN_AMOUNT + ")"};
+    String selection = ExpenseContract.ExpenseEntry.COLUMN_FOREIGN_CLUSTER_ID + " = ?";
+
     private static final String TAG = "SharedClusterAdapter";
 
     public SharedClusterAdapter(Context context, Cursor cursor, OnCluster onCluster) {
@@ -45,24 +49,38 @@ public class SharedClusterAdapter extends
                     cursor.getColumnIndex(ExpenseContract.ClusterEntry.COLUMN_TITLE));
             String timeStamp = cursor.getString(
                     cursor.getColumnIndex(ExpenseContract.ClusterEntry.COLUMN_TIMESTAMP));
-            double sum = cursor.getDouble(
-                    cursor.getColumnIndex(ExpenseContract.ClusterEntry.COLUMN_SUM));
+
 
             int cluster_id = cursor.getInt(cursor.getColumnIndex(ExpenseContract.ClusterEntry._ID));
 
-            final ClusterParcelable cluster = new ClusterParcelable(title, timeStamp, 1, sum,
+            final ClusterParcelable cluster = new ClusterParcelable(title, timeStamp, 1,
                     cluster_id);
 
+
+            Cursor sumCursor = this.context.getContentResolver().query(
+                    ExpenseContract.ExpenseEntry.CONTENT_URI,
+                    projection,
+                    selection,
+                    new String[]{String.valueOf(cluster.getId())},
+                    null,
+                    null
+            );
+
             String s = "Title = " + cluster.getTitle() +
-                    "\nTimeStamp = " + cluster.getTimestamp() +
-                    "\n sum = " + cluster.getSum();
+                    "\nTimeStamp = " + cluster.getTimestamp();
+
+            if (sumCursor != null && sumCursor.moveToFirst()) {
+                s += "\n Sum = " + sumCursor.getDouble(0);
+                sumCursor.close();
+            }
+
 
             viewHolder.tv.setText(s);
             viewHolder.delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (onCluster != null) {
-                        onCluster.onDelete(1, cluster.getTitle());
+                        onCluster.onDelete(cluster);
                     }
                 }
             });

@@ -11,6 +11,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,7 +25,7 @@ import butterknife.ButterKnife;
 import hemal.t.shah.expensetracker.ExpensesActivity;
 import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.adapters.PersonalClusterAdapter;
-import hemal.t.shah.expensetracker.data.ClusterDispenser;
+import hemal.t.shah.expensetracker.data.DataDispenser;
 import hemal.t.shah.expensetracker.data.ExpenseContract;
 import hemal.t.shah.expensetracker.interfaces.OnCluster;
 import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
@@ -101,7 +102,6 @@ public class PersonalClustersFragment extends Fragment implements
                 String[] projection = {
                         ExpenseContract.ClusterEntry._ID,
                         ExpenseContract.ClusterEntry.COLUMN_TITLE,
-                        ExpenseContract.ClusterEntry.COLUMN_SUM,
                         ExpenseContract.ClusterEntry.COLUMN_TIMESTAMP};
 
                 String selection = ExpenseContract.ClusterEntry.COLUMN_IS_SHARED + " = ?";
@@ -122,14 +122,23 @@ public class PersonalClustersFragment extends Fragment implements
     }
 
     @Override
-    public void onDelete(int is_shared, String title) {
-        ClusterDispenser dispenser = new ClusterDispenser(context.getContentResolver(), context);
+    public void onDelete(ClusterParcelable cluster) {
+        DataDispenser dispenser = new DataDispenser(context.getContentResolver(), context);
         dispenser.startDelete(
                 SharedConstants.TOKEN_DELETE_CLUSTER,
                 null, ExpenseContract.ClusterEntry.CONTENT_URI,
-                ExpenseContract.ClusterEntry.COLUMN_TITLE + " = ? AND " + ExpenseContract
-                        .ClusterEntry.COLUMN_IS_SHARED + " = " + is_shared,
-                new String[]{title}
+                ExpenseContract.ClusterEntry._ID + "=?",
+                new String[]{String.valueOf(cluster.getId())}
+        );
+
+        Log.i(TAG, "onDelete: starting deletion of expenses");
+
+        dispenser.startDelete(
+                SharedConstants.TOKEN_DELETE_EXPENSES,
+                null,
+                ExpenseContract.ExpenseEntry.CONTENT_URI,
+                ExpenseContract.ExpenseEntry.COLUMN_FOREIGN_CLUSTER_ID + "= ?",
+                new String[]{String.valueOf(cluster.getId())}
         );
     }
 

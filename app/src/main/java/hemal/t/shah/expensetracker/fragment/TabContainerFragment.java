@@ -46,7 +46,6 @@ public class TabContainerFragment extends Fragment {
 
     Context context;
 
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -70,12 +69,13 @@ public class TabContainerFragment extends Fragment {
             }
         });
 
+
         return base_view;
     }
 
 
     @OnClick(R.id.fab_activity_tab_container)
-    public void fabNewPersonalCluster() {
+    public void fabNewCluster() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
         builder.setCancelable(true);
         builder.setTitle("Add new Cluster");
@@ -120,7 +120,6 @@ public class TabContainerFragment extends Fragment {
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(ExpenseContract.ClusterEntry.COLUMN_TITLE, title);
                 contentValues.put(ExpenseContract.ClusterEntry.COLUMN_IS_SHARED, is_shared);
-                contentValues.put(ExpenseContract.ClusterEntry.COLUMN_SUM, 0.0);
                 contentValues.put(ExpenseContract.ClusterEntry.COLUMN_USERS_LIST, "hemal");
                 contentValues.put(ExpenseContract.ClusterEntry.COLUMN_TIMESTAMP, timestamp);
 

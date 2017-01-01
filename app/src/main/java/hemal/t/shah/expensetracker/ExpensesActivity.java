@@ -141,7 +141,7 @@ public class ExpensesActivity extends AppCompatActivity {
                         );
                         contentValues.put(ExpenseContract.ExpenseEntry.COLUMN_AMOUNT, amount);
                         // TODO: 30/12/16 change to user id here.
-                        contentValues.put(ExpenseContract.ExpenseEntry.COLUMN_FOREIGN_BY_USER, 102);
+                        contentValues.put(ExpenseContract.ExpenseEntry.COLUMN_BY_USER, 102);
                         contentValues.put(ExpenseContract.ExpenseEntry.COLUMN_FOREIGN_CLUSTER_ID,
                                 clusterParcelable.getId());
                         contentValues.put(ExpenseContract.ExpenseEntry.COLUMN_TIMESTAMP, time);

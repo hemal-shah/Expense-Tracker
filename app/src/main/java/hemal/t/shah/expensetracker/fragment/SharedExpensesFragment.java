@@ -18,6 +18,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.adapters.SharedExpensesAdapter;
+import hemal.t.shah.expensetracker.data.DataDispenser;
 import hemal.t.shah.expensetracker.data.ExpenseContract;
 import hemal.t.shah.expensetracker.interfaces.OnExpense;
 import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
@@ -109,13 +110,15 @@ public class SharedExpensesFragment extends Fragment implements
 
     @Override
     public void delete(ExpenseParcelable expenseParcelable) {
-        String where = ExpenseContract.ExpenseEntry.COLUMN_ABOUT + "=? AND "
-                + ExpenseContract.ExpenseEntry.COLUMN_AMOUNT + " = ? AND "
-                + ExpenseContract.ExpenseEntry.COLUMN_FOREIGN_CLUSTER_ID + " = ?";
-
-        getActivity().getContentResolver().delete(
+        DataDispenser dispenser = new DataDispenser(this.mContext.getContentResolver(),
+                this.mContext);
+        dispenser.startDelete(
+                SharedConstants.TOKEN_DELETE_EXPENSES,
+                null,
                 ExpenseContract.ExpenseEntry.CONTENT_URI,
-                where,
+                ExpenseContract.ExpenseEntry.COLUMN_ABOUT + " = ? AND " + ExpenseContract
+                        .ExpenseEntry.COLUMN_AMOUNT + " = ? AND "
+                        + ExpenseContract.ExpenseEntry.COLUMN_FOREIGN_CLUSTER_ID + "= ?",
                 new String[]{expenseParcelable.getAbout(),
                         String.valueOf(expenseParcelable.getAmount()),
                         String.valueOf(expenseParcelable.getCluster_id())}

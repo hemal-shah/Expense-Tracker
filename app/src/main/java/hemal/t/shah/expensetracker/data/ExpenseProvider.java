@@ -16,12 +16,10 @@ public class ExpenseProvider extends ContentProvider {
     private static final String TAG = "ExpenseProvider";
 
     //declaring constants for matchUri function.
-    static final int USER_DETAILS = 101, CLUSTER = 102, EXPENSE = 103;
+    static final int CLUSTER = 102, EXPENSE = 103;
 
     private ExpenseDBHelper dbHelper;
 
-    //queryBuilder object to query user details table.
-    private static SQLiteQueryBuilder userDetailsQueryBuilder = new SQLiteQueryBuilder();
 
     //queryBuilder object to query clusters
     private static SQLiteQueryBuilder clustersQueryBuilder = new SQLiteQueryBuilder();
@@ -30,8 +28,6 @@ public class ExpenseProvider extends ContentProvider {
     private static SQLiteQueryBuilder expensesFromClusterQueryBuilder = new SQLiteQueryBuilder();
 
     static {
-        //Providing the name of the table. i.e. UserDetailsEntry.TABLE_NAME
-        userDetailsQueryBuilder.setTables(ExpenseContract.UserDetailsEntry.TABLE_NAME);
 
         //setting normal query to invoke the clusters table.
         clustersQueryBuilder.setTables(ExpenseContract.ClusterEntry.TABLE_NAME);
@@ -51,8 +47,7 @@ public class ExpenseProvider extends ContentProvider {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         matcher.addURI(ExpenseContract.CONTENT_AUTHORITY, ExpenseContract.PATH_EXPENSE, EXPENSE);
         matcher.addURI(ExpenseContract.CONTENT_AUTHORITY, ExpenseContract.PATH_CLUSTER, CLUSTER);
-        matcher.addURI(ExpenseContract.CONTENT_AUTHORITY, ExpenseContract.PATH_USER_DETAILS,
-                USER_DETAILS);
+
         return matcher;
     }
 
@@ -81,15 +76,6 @@ public class ExpenseProvider extends ContentProvider {
                         sortOrder
                 );
                 break;
-            case USER_DETAILS:
-                cursor = userDetailsQueryBuilder.query(dbHelper.getReadableDatabase(),
-                        projection,
-                        selection,
-                        selectionArgs,
-                        null,
-                        null,
-                        sortOrder);
-                break;
             case CLUSTER:
                 cursor = clustersQueryBuilder.query(dbHelper.getReadableDatabase(),
                         projection,
@@ -110,8 +96,6 @@ public class ExpenseProvider extends ContentProvider {
     @Override
     public String getType(@NonNull Uri uri) {
         switch (matcher.match(uri)) {
-            case USER_DETAILS:
-                return ExpenseContract.UserDetailsEntry.CONTENT_TYPE;
             case CLUSTER:
                 return ExpenseContract.ClusterEntry.CONTENT_TYPE;
             case EXPENSE:
@@ -130,15 +114,6 @@ public class ExpenseProvider extends ContentProvider {
         Uri updatedUri = null;
         long _id;
         switch (matcher.match(uri)) {
-
-            case USER_DETAILS:
-                _id = db.insert(ExpenseContract.UserDetailsEntry.TABLE_NAME,
-                        null,
-                        values);
-                if (_id > 0) {
-                    updatedUri = ExpenseContract.UserDetailsEntry.buildUserUri(_id);
-                }
-                break;
 
             case CLUSTER:
                 _id = db.insert(ExpenseContract.ClusterEntry.TABLE_NAME,
@@ -177,12 +152,6 @@ public class ExpenseProvider extends ContentProvider {
 
         switch (matcher.match(uri)) {
 
-            case USER_DETAILS:
-                rows_deleted = db.delete(ExpenseContract.UserDetailsEntry.TABLE_NAME,
-                        selection,
-                        selectionArgs
-                );
-                break;
             case CLUSTER:
                 rows_deleted = db.delete(ExpenseContract.ClusterEntry.TABLE_NAME,
                         selection,

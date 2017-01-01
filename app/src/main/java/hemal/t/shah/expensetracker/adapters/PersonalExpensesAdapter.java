@@ -9,14 +9,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.data.ExpenseContract;
-import hemal.t.shah.expensetracker.data.ExpenseDBHelper;
 import hemal.t.shah.expensetracker.interfaces.OnExpense;
 import hemal.t.shah.expensetracker.pojo.ExpenseParcelable;
-import hemal.t.shah.expensetracker.pojo.UserDetailsParcelable;
 
 /**
  * Adapter for expenses in personal clusters.
@@ -27,6 +28,7 @@ public class PersonalExpensesAdapter extends
 
     Context mContext;
     Cursor mCursor;
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     OnExpense mExpense;
 
     public PersonalExpensesAdapter(Context context, Cursor cursor, OnExpense mExpense) {
@@ -54,7 +56,7 @@ public class PersonalExpensesAdapter extends
                 ExpenseContract.ExpenseEntry.COLUMN_FOREIGN_CLUSTER_ID
         );
         index_user_id = cursor.getColumnIndex(
-                ExpenseContract.ExpenseEntry.COLUMN_FOREIGN_BY_USER
+                ExpenseContract.ExpenseEntry.COLUMN_BY_USER
         );
 
 
@@ -68,12 +70,11 @@ public class PersonalExpensesAdapter extends
                     cluster_id,
                     user_id);
 
-            ExpenseDBHelper helper = new ExpenseDBHelper(this.mContext);
-            UserDetailsParcelable userDetailsParcelable = helper.getUserDetails(user_id);
 
-            String text = about + "\n" + amount + "\n" + timeStamp + "\n" + user_id + "\n"
-                    + userDetailsParcelable.getName()
-                    + "\n" + userDetailsParcelable.getEmail();
+            String text = about + "\n" + amount + "\n" + timeStamp + "\n" + user_id + "\n";
+            if(user != null){
+                text += "Name = " + user.getDisplayName() + "\n email = " + user.getEmail();
+            }
             viewHolder.tv.setText(text);
 
             viewHolder.delete.setOnClickListener(new View.OnClickListener() {

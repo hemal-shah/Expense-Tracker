@@ -27,6 +27,10 @@ public class PersonalClusterAdapter extends
     Context context = null;
     OnCluster onCluster = null;
 
+
+    String[] projection = new String[]{"SUM(" + ExpenseContract.ExpenseEntry.COLUMN_AMOUNT + ")"};
+    String selection = ExpenseContract.ExpenseEntry.COLUMN_FOREIGN_CLUSTER_ID + " = ?";
+
     private static final String TAG = "PersonalClusterAdapter";
 
     public PersonalClusterAdapter(Context context, Cursor cursor, OnCluster onCluster) {
@@ -44,15 +48,26 @@ public class PersonalClusterAdapter extends
                     cursor.getColumnIndex(ExpenseContract.ClusterEntry.COLUMN_TITLE));
             String timeStamp = cursor.getString(
                     cursor.getColumnIndex(ExpenseContract.ClusterEntry.COLUMN_TIMESTAMP));
-            double sum = cursor.getDouble(
-                    cursor.getColumnIndex(ExpenseContract.ClusterEntry.COLUMN_SUM));
 
             int id = cursor.getInt(cursor.getColumnIndex(ExpenseContract.ClusterEntry._ID));
-            final ClusterParcelable cluster = new ClusterParcelable(title, timeStamp, 0, sum, id);
+            final ClusterParcelable cluster = new ClusterParcelable(title, timeStamp, 0, id);
+
+            Cursor sumCursor = this.context.getContentResolver().query(
+                    ExpenseContract.ExpenseEntry.CONTENT_URI,
+                    projection,
+                    selection,
+                    new String[]{String.valueOf(cluster.getId())},
+                    null,
+                    null
+            );
 
             String text =
-                    "Title = " + cluster.getTitle() + "\nTimeStamp = " + cluster.getTimestamp()
-                            + "\n sum = " + cluster.getSum();
+                    "Title = " + cluster.getTitle() + "\nTimeStamp = " + cluster.getTimestamp();
+
+            if (sumCursor != null && sumCursor.moveToFirst()) {
+                text += "\n Sum = " + sumCursor.getDouble(0);
+                sumCursor.close();
+            }
 
             viewHolder.tv.setText(text);
 
@@ -60,7 +75,7 @@ public class PersonalClusterAdapter extends
                 @Override
                 public void onClick(View v) {
                     if (onCluster != null) {
-                        onCluster.onDelete(0, cluster.getTitle());
+                        onCluster.onDelete(cluster);
                     }
                 }
             });
