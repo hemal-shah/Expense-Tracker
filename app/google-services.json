@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "793195540555",
+    "firebase_url": "https://expense-tracker-873c4.firebaseio.com",
+    "project_id": "expense-tracker-873c4",
+    "storage_bucket": "expense-tracker-873c4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:793195540555:android:8d1aeb4b1c75288c",
+        "android_client_info": {
+          "package_name": "hemal.t.shah.expensetracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "793195540555-r32n6m9tu7t98mvq0udlah7hj8nsb02g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "hemal.t.shah.expensetracker",
+            "certificate_hash": "564E2C7E19D5E1C677284FBF51383EFB0122A7DF"
+          }
+        },
+        {
+          "client_id": "793195540555-bbgf1b60kg5bq90mck444e4rrmgcglje.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTpqvSPlDoJypZGg9Dk3ayJs4ySdHmCC8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "793195540555-bbgf1b60kg5bq90mck444e4rrmgcglje.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
