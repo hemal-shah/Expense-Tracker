@@ -3,7 +3,7 @@ apply plugin: 'android-apt'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.0"
+    buildToolsVersion "25.0.2"
 
     defaultConfig {
         applicationId "hemal.t.shah.expensetracker"
@@ -20,7 +20,6 @@ android {
     }
 
     repositories {
-
         maven { url 'https://maven.fabric.io/public' }
     }
 }
