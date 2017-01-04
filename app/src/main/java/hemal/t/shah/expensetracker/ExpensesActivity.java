@@ -15,7 +15,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Toast;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -132,8 +131,7 @@ public class ExpensesActivity extends AppCompatActivity {
 
                         double amount = Double.parseDouble(amount_string);
 
-                        // TODO: 30/12/16 handle time
-                        String time = "time is new...";
+                        long time = System.currentTimeMillis();
 
                         ContentValues contentValues = new ContentValues();
                         contentValues.put(

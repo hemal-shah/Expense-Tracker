@@ -10,6 +10,7 @@ public class TimeTravelException extends Exception {
     public TimeTravelException(){
         System.out.println("The end time should be larger than start time.");
     }
+
     public TimeTravelException(String s) {
         super(s);
         System.out.println("The end time should be larger than start time.");

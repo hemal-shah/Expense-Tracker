@@ -12,11 +12,51 @@ import android.util.Log;
 public class ExpenseDBHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "ExpenseDBHelper";
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 6;
     private static final String DATABASE_NAME = "ExpenseDB.db";
 
     public ExpenseDBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+
+    private static void dummyInserts(SQLiteDatabase db) {
+        //todo delete the sample insertions
+        for (int i = 0; i < 10; i++) {
+            long time = System.currentTimeMillis();
+            String title = "title " + i;
+            String sql_cluster = "insert into "
+                + ExpenseContract.ClusterEntry.TABLE_NAME
+                + "(title, is_shared, timestamp, users_list)"
+                + " values(\""
+                + title
+                + "\", "
+                + (i % 2)
+                + " , "
+                + time
+                + ", \"{\'102\'}\")";
+            db.execSQL(sql_cluster);
+            Log.i(TAG, "onCreate: inserted 1 row into cluster table");
+
+            double amount = 102.36 * i;
+
+            for (int k = 0; k < 2; k++) {
+                long TIME = System.currentTimeMillis();
+                String hemal = "hemal " + k;
+                String sql_expenses = "insert into "
+                    + ExpenseContract.ExpenseEntry.TABLE_NAME
+                    + "(about, amount, timestamp, cluster_id, by_user) VALUES (\" "
+                    + hemal
+                    + "\","
+                    + amount
+                    + ", "
+                    + TIME
+                    + ",  "
+                    + (i + 1)
+                    + ", 102);";
+                db.execSQL(sql_expenses);
+                Log.i(TAG, "onCreate: one row inserted into expenses table");
+            }
+        }
     }
 
     @Override
@@ -36,7 +76,8 @@ public class ExpenseDBHelper extends SQLiteOpenHelper {
                 + ExpenseContract.ClusterEntry.COLUMN_TITLE + " TEXT NOT NULL, "
                 + ExpenseContract.ClusterEntry.COLUMN_USERS_LIST + " TEXT NOT NULL, "
                 + ExpenseContract.ClusterEntry.COLUMN_IS_SHARED + " INTEGER NOT NULL, "
-                + ExpenseContract.ClusterEntry.COLUMN_TIMESTAMP + " TEXT);";
+            + ExpenseContract.ClusterEntry.COLUMN_TIMESTAMP
+            + " LONG);";
 
         Log.i(TAG, "onCreate: cluster table: " + sql_create_cluster_table);
         db.execSQL(sql_create_cluster_table);
@@ -57,7 +98,8 @@ public class ExpenseDBHelper extends SQLiteOpenHelper {
                 + "(" + ExpenseContract.ExpenseEntry._ID + " INTEGER PRIMARY KEY , "
                 + ExpenseContract.ExpenseEntry.COLUMN_ABOUT + " TEXT NOT NULL, "
                 + ExpenseContract.ExpenseEntry.COLUMN_AMOUNT + " REAL NOT NULL, "
-                + ExpenseContract.ExpenseEntry.COLUMN_TIMESTAMP + " TEXT, "
+            + ExpenseContract.ExpenseEntry.COLUMN_TIMESTAMP
+            + " LONG, "
                 + ExpenseContract.ExpenseEntry.COLUMN_BY_USER + " INTEGER NOT NULL, "
                 + ExpenseContract.ExpenseEntry.COLUMN_FOREIGN_CLUSTER_ID + " INTEGER, "
                 + " FOREIGN KEY(" + ExpenseContract.ExpenseEntry.COLUMN_FOREIGN_CLUSTER_ID + ") "
@@ -71,35 +113,6 @@ public class ExpenseDBHelper extends SQLiteOpenHelper {
 
 
     }
-
-    private static void dummyInserts(SQLiteDatabase db) {
-        //todo delete the sample insertions
-        for (int i = 0; i < 10; i++) {
-            String title = "title " + i;
-            String sql_cluster = "insert into " + ExpenseContract.ClusterEntry.TABLE_NAME
-                    + "(title, is_shared, timestamp, users_list)"
-                    + " values(\"" + title + "\", " + (i % 2)
-                    + " , \"time is now\", \"{\'102\'}\")";
-            db.execSQL(sql_cluster);
-            Log.i(TAG, "onCreate: inserted 1 row into cluster table");
-
-            double amount = 102.36 * i;
-
-            for (int k = 0; k < 2; k++) {
-                String hemal = "hemal " + k;
-                String sql_expenses = "insert into " + ExpenseContract.ExpenseEntry.TABLE_NAME
-                        + "(about, amount, timestamp, cluster_id, by_user) VALUES (\" " + hemal
-                        + "\","
-                        + amount
-                        + ", \"time "
-                        + "is now\",  "
-                        + (i + 1) + ", 102);";
-                db.execSQL(sql_expenses);
-                Log.i(TAG, "onCreate: one row inserted into expenses table");
-            }
-        }
-    }
-
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
