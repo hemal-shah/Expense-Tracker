@@ -20,11 +20,16 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.adapters.ViewPagerTabAdapter;
 import hemal.t.shah.expensetracker.data.DataInsertionTask;
 import hemal.t.shah.expensetracker.data.ExpenseContract;
 import hemal.t.shah.expensetracker.utils.SharedConstants;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Fragment that contains the "Personal" & "Shared" tabs for the MainActivity.
@@ -40,6 +45,8 @@ public class TabContainerFragment extends Fragment {
 
   @BindView(R.id.toolbar_activity_tab_container) Toolbar toolbar;
 
+  DatabaseReference reference;
+
   Context context;
 
   @Nullable @Override
@@ -51,6 +58,8 @@ public class TabContainerFragment extends Fragment {
     ButterKnife.bind(this, base_view);
 
     this.context = getContext();
+
+    reference = FirebaseDatabase.getInstance().getReference();
 
     ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
@@ -130,6 +139,8 @@ public class TabContainerFragment extends Fragment {
         } else if (is_shared == 1) { //shared, should be available.
           dataInsertionTask.startInsert(SharedConstants.TOKEN_ADD_NEW_CLUSTER, null,
               ExpenseContract.ClusterEntry.CONTENT_URI, contentValues);
+
+          addNewSharedCluster(title, timestamp);
         }
       }
     });
@@ -142,4 +153,19 @@ public class TabContainerFragment extends Fragment {
     AlertDialog dialog = builder.create();
     dialog.show();
   }
+
+  private void addNewSharedCluster(String title, long timeStamp) {
+    FirebaseAuth auth = FirebaseAuth.getInstance();
+    if (auth.getCurrentUser() != null) {
+      Map<String, Object> cluster = new HashMap<>();
+
+      cluster.put("title", title);
+      cluster.put("timeStamp", timeStamp);
+      cluster.put("createdBy", auth.getCurrentUser().getUid());
+      cluster.put("expenses", "expenses here.");
+
+      reference.child("shared_clusters").child(reference.push().getKey()).updateChildren(cluster);
+    }
+  }
+
 }

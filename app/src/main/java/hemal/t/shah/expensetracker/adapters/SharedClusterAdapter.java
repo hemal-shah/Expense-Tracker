@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import com.hemal.shah.TimeTravel;
+import com.hemal.shah.TimeTravelException;
 import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.data.ExpenseContract;
 import hemal.t.shah.expensetracker.interfaces.OnCluster;
@@ -39,8 +41,15 @@ public class SharedClusterAdapter
     if (cursor.moveToPosition(position)) {
       String title =
           cursor.getString(cursor.getColumnIndex(ExpenseContract.ClusterEntry.COLUMN_TITLE));
-      String timeStamp =
-          cursor.getString(cursor.getColumnIndex(ExpenseContract.ClusterEntry.COLUMN_TIMESTAMP));
+      String timeStamp = "";
+      long startTime =
+          cursor.getLong(cursor.getColumnIndex(ExpenseContract.ClusterEntry.COLUMN_TIMESTAMP));
+
+      try {
+        timeStamp = TimeTravel.getTimeElapsed(startTime, System.currentTimeMillis());
+      } catch (TimeTravelException e) {
+        e.printStackTrace();
+      }
 
       int cluster_id = cursor.getInt(cursor.getColumnIndex(ExpenseContract.ClusterEntry._ID));
 
