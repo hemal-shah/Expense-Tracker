@@ -4,6 +4,7 @@ package hemal.t.shah.expensetracker.utils;
  * Simple utility class that stores all necessary constants.
  * Created by hemal on 17/12/16.
  */
+@SuppressWarnings("SpellCheckingInspection")
 public class SharedConstants {
 
     //To add new cluster.
@@ -33,4 +34,19 @@ public class SharedConstants {
     public static final int TOKEN_ADD_NEW_EXPENSE = 107;
 
     public static final String SHARE_CLUSTER_PARCEL = "parcel";
+
+    //Firebase Constants start here...
+    public static final String FIREBASE_PATH_SHARED_CLUSTERS = "shared_clusters";
+    public static final String FIREBASE_PATH_PERSONAL_CLUSTERS = "personal_clusters";
+    public static final String FIREBASE_TITLE = "title";
+    public static final String FIREBASE_USER_UID = "uid";
+    public static final String FIREBASE_USER_NAME = "name";
+    public static final String FIREBASE_ABOUT = "about";
+    public static final String FIREBASE_AMOUNT = "amount";
+    public static final String FIREBASE_CREATED_BY = "user_id";
+    public static final String FIREBASE_EXPENSES = "expenses";
+    public static final String FIREBASE_BY_USER = "by_user";
+    public static final String FIREBASE_EMAIL = "email";
+    public static final String FIREBASE_PROFILE_URL = "profile_url";
+    public static final String FIREBASE_TIME_STAMP = "timestamp";
 }

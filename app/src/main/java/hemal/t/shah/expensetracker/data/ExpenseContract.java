@@ -10,85 +10,71 @@ import android.provider.BaseColumns;
  */
 public class ExpenseContract {
 
-    //The authority for ContentProvider
-    public static final String CONTENT_AUTHORITY = "hemal.t.shah.expensetracker";
+    //The authority for ContentProvider, generally the package name.
+    static final String CONTENT_AUTHORITY = "hemal.t.shah.expensetracker";
+    static final String PATH_EXPENSE = "expenses";//for table of expense
+    static final String PATH_CLUSTER = "clusters";//for table of clusters.
+    //Construct base URI for content, just like https://website it's content://authority
+    private static final Uri BASE_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
-    public static final Uri BASE_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
-
-
-    public static final String PATH_EXPENSE = "expenses";
-    public static final String PATH_CLUSTER = "clusters";
-
-    public static final class ExpenseEntry implements BaseColumns{
-        public static final Uri CONTENT_URI = BASE_URI.buildUpon()
-                .appendPath(PATH_EXPENSE)
-                .build();
-
-        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/"
-                + CONTENT_AUTHORITY + "/" + PATH_EXPENSE;
-        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/"
-                + CONTENT_AUTHORITY + "/" + PATH_EXPENSE;
-
+    /**
+     * Represents the Expenses Table in our SQLite table.
+     */
+    public static final class ExpenseEntry implements BaseColumns {
+        public static final Uri CONTENT_URI = BASE_URI.buildUpon().appendPath(PATH_EXPENSE).build();
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_EXPENSE;
         //table name
         public static final String TABLE_NAME = "expense_table";
-
         //regarding what aspect expense was made.
         public static final String COLUMN_ABOUT = "about"; //varchar
-
         //the amount paid
         public static final String COLUMN_AMOUNT = "amount"; //int
-
         //timestamp when event occured.
         public static final String COLUMN_TIMESTAMP = "timestamp";
-
-        //indicating which user made the entry...
-        public static final String COLUMN_BY_USER = "by_user";
-
-        //reference to the cluster it belongs to
+        //firebase user UID
+        public static final String COLUMN_BY_FIREBASE_USER_UID = "by_user";
+        //firebase expense key
+        public static final String COLUMN_FIREBASE_EXPENSE_KEY = "expense_key_firebase";
+        //firebase username, email, profile url as below:
+        public static final String COLUMN_FIREBASE_USER_NAME = "firebaes_uname";
+        public static final String COLUMN_FIREBASE_USER_EMAIL = "firebase_u_email";
+        public static final String COLUMN_FIREBASE_USER_URL = "firebase_profile_photo_url";
+        //reference to the cluster it belongs to in offline database.
         public static final String COLUMN_FOREIGN_CLUSTER_ID = "cluster_id";
+        //store key generated from firebase for the cluster it is contained in.
+        public static final String FIREBASE_CLUSTER_KEY = "firebase_cluster_key";
+        static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_EXPENSE;
 
-        public static Uri buildExpenseUri(long _id){
+        static Uri buildExpenseUri(long _id) {
             return ContentUris.withAppendedId(CONTENT_URI, _id);
         }
     }
 
     /**
      * Clusters denote both shared and personal clusters.
-     * User array would be stored for shared clusters.
      * is_shared(integer) would be 1 if shared cluster, else 0.
      */
     public static final class ClusterEntry implements BaseColumns {
-        public static final Uri CONTENT_URI = BASE_URI.buildUpon()
-                .appendPath(PATH_CLUSTER)
-                .build();
-
-
-        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/"
-                + CONTENT_AUTHORITY + "/" + PATH_CLUSTER;
-
-        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/"
-                + CONTENT_AUTHORITY + "/" + PATH_CLUSTER;
-
-
-        //name of the table
-        public static final String TABLE_NAME = "clusters";
-
+        public static final Uri CONTENT_URI = BASE_URI.buildUpon().appendPath(PATH_CLUSTER).build();
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_CLUSTER;
         //title of the cluster. Type: String
         public static final String COLUMN_TITLE = "title";
-
-        //list of all users included in this table.
-        public static final String COLUMN_USERS_LIST = "users_list";
-
-
         //0 = personal; 1 = shared
         public static final String COLUMN_IS_SHARED = "is_shared";
-
         //timestamp on when the cluster was created.
         public static final String COLUMN_TIMESTAMP = "timestamp";
+        //key generated by firebase
+        public static final String COLUMN_FIREBASE_CLUSTER_KEY = "firebase_cluster_key";
+        static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_CLUSTER;
+        //name of the table
+        static final String TABLE_NAME = "clusters";
 
-        public static Uri buildClusterUri(long _id) {
+        static Uri buildClusterUri(long _id) {
             return ContentUris.withAppendedId(CONTENT_URI, _id);
         }
     }
-
 }

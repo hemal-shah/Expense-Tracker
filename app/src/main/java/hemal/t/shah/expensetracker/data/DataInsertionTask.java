@@ -21,8 +21,8 @@ import hemal.t.shah.expensetracker.utils.SharedConstants;
 public class DataInsertionTask extends AsyncQueryHandler {
 
     private static final String TAG = "DataInsertionTask";
-    Context context;
-    ContentValues contentValues;
+    private Context context;
+    private ContentValues contentValues;
 
     public DataInsertionTask(ContentResolver cr, Context context, ContentValues contentValues) {
         super(cr);
@@ -45,16 +45,18 @@ public class DataInsertionTask extends AsyncQueryHandler {
                  * If code execution enters this block, it indicates that the
                  * title is already in use, abort insertion of data.
                  */
-
+                // TODO: 6/1/17 try to make a snackbar
                 Toast.makeText(this.context, "Title is present!", Toast.LENGTH_SHORT).show();
             } else {
                 /**
                  * It's safe to create new cluster with the provided title.
                  */
-                this.startInsert(SharedConstants.TOKEN_ADD_NEW_CLUSTER,
+                this.startInsert(
+                        SharedConstants.TOKEN_ADD_NEW_CLUSTER,
                         null,
                         ExpenseContract.ClusterEntry.CONTENT_URI,
-                        contentValues);
+                        contentValues
+                );
             }
         }
     }

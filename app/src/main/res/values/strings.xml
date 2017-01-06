@@ -1,11 +1,16 @@
 <resources>
-    <string name="content_authority">hemal.t.shah.expensetracker</string>
-    <string name="app_name">Expense Tracker</string>
-    <string name="drawer_open">Drawer Open</string>
-    <string name="drawer_closed">Drawer closed</string>
-    <string name="enter_title">Enter Title</string>
-    <string name="personal">Personal</string>
-    <string name="shared">Shared</string>
-    <string name="enter_about">Expense Regarding</string>
-    <string name="enter_amount">Amount Spent</string>
+    <string name="content_authority" translatable="false">hemal.t.shah.expensetracker</string>
+    <string name="app_name" translatable="false">Expense Tracker</string>
+    <string name="enter_title" translatable="true">Enter Title</string>
+    <string name="personal" translatable="true">Personal</string>
+    <string name="shared" translatable="true">Shared</string>
+    <string name="enter_about" translatable="true">Expense Regarding</string>
+    <string name="enter_amount" translatable="true">Amount Spent</string>
+    <string name="are_you_sure" translatable="true">Are you sure?</string>
+    <string name="delete_confirm" translatable="true">Delete!</string>
+    <string name="cancel" translatable="true">Cancel</string>
+    <string name="add_expense" translatable="true">New Expense</string>
+    <string name="add" translatable="true">Add!</string>
+    <string name="error_string_length" translatable="true">Length should be between 3 to 15 characters.</string>
+    <string name="create_cluster" translatable="true">Create Cluster</string>
 </resources>

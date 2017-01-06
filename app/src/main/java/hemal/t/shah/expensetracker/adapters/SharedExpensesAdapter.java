@@ -8,95 +8,109 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+
 import com.hemal.shah.TimeTravel;
 import com.hemal.shah.TimeTravelException;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import hemal.t.shah.expensetracker.R;
-import hemal.t.shah.expensetracker.data.ExpenseContract;
+import hemal.t.shah.expensetracker.data.ExpenseContract.ExpenseEntry;
 import hemal.t.shah.expensetracker.interfaces.OnExpense;
 import hemal.t.shah.expensetracker.pojo.ExpenseParcelable;
+import hemal.t.shah.expensetracker.pojo.FirebaseUserDetails;
 
 /**
  * Created by hemal on 29/12/16.
  */
 public class SharedExpensesAdapter
-    extends CursorRecyclerViewAdapter<SharedExpensesAdapter.ViewHolder> {
+        extends CursorRecyclerViewAdapter<SharedExpensesAdapter.ViewHolder> {
 
-  Context mContext;
-  Cursor mCursor;
-  OnExpense mExpense;
+    private Context mContext;
+    private OnExpense mExpense;
 
-  FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    public SharedExpensesAdapter(Context context, Cursor cursor, OnExpense mExpense) {
+        super(context, cursor);
+        this.mContext = context;
+        this.mExpense = mExpense;
+    }
 
-  public SharedExpensesAdapter(Context context, Cursor cursor, OnExpense mExpense) {
-    super(context, cursor);
-    this.mContext = context;
-    this.mCursor = cursor;
-    this.mExpense = mExpense;
-  }
+    @Override
+    public void onBindViewHolder(ViewHolder viewHolder, Cursor cursor, int position) {
 
-  @Override public void onBindViewHolder(ViewHolder viewHolder, Cursor cursor, int position) {
-    int index_about, index_amount, index_timestamp, index_cluster_id, index_user_id;
+        int index_about, index_amount, index_timestamp, index_cluster_key,
+                index_user_key, index_user_name, index_user_email, index_user_url, index_expense_key;
 
-    index_about = cursor.getColumnIndex(ExpenseContract.ExpenseEntry.COLUMN_ABOUT);
-    index_amount = cursor.getColumnIndex(ExpenseContract.ExpenseEntry.COLUMN_AMOUNT);
-    index_timestamp = cursor.getColumnIndex(ExpenseContract.ExpenseEntry.COLUMN_TIMESTAMP);
-    index_cluster_id =
-        cursor.getColumnIndex(ExpenseContract.ExpenseEntry.COLUMN_FOREIGN_CLUSTER_ID);
-    index_user_id = cursor.getColumnIndex(ExpenseContract.ExpenseEntry.COLUMN_BY_USER);
-    if (cursor.moveToPosition(position)) {
-      String about = cursor.getString(index_about);
-      double amount = cursor.getDouble(index_amount);
-      String timeStamp = "";
-      long startTime = cursor.getLong(index_timestamp);
+        index_about = cursor.getColumnIndex(ExpenseEntry.COLUMN_ABOUT);
+        index_amount = cursor.getColumnIndex(ExpenseEntry.COLUMN_AMOUNT);
+        index_timestamp = cursor.getColumnIndex(ExpenseEntry.COLUMN_TIMESTAMP);
+        index_user_key = cursor.getColumnIndex(ExpenseEntry.COLUMN_BY_FIREBASE_USER_UID);
+        index_cluster_key = cursor.getColumnIndex(ExpenseEntry.FIREBASE_CLUSTER_KEY);
+        index_user_name = cursor.getColumnIndex(ExpenseEntry.COLUMN_FIREBASE_USER_NAME);
+        index_user_url = cursor.getColumnIndex(ExpenseEntry.COLUMN_FIREBASE_USER_URL);
+        index_user_email = cursor.getColumnIndex(ExpenseEntry.COLUMN_FIREBASE_USER_EMAIL);
+        index_expense_key = cursor.getColumnIndex(ExpenseEntry.COLUMN_FIREBASE_EXPENSE_KEY);
 
-      try {
-        timeStamp = TimeTravel.getTimeElapsed(startTime, System.currentTimeMillis());
-      } catch (TimeTravelException e) {
-        e.printStackTrace();
-      }
 
-      int cluster_id = cursor.getInt(index_cluster_id);
-      int user_id = cursor.getInt(index_user_id);
-      final ExpenseParcelable expense =
-          new ExpenseParcelable(about, timeStamp, amount, cluster_id, user_id);
+        if (cursor.moveToPosition(position)) {
+            String about = cursor.getString(index_about);
+            double amount = cursor.getDouble(index_amount);
+            String timeStamp = "";
+            long startTime = cursor.getLong(index_timestamp);
+            String cluster_key = cursor.getString(index_cluster_key);
+            String user_key = cursor.getString(index_user_key);
+            String name = cursor.getString(index_user_name);
+            String email = cursor.getString(index_user_email);
+            String expense_key = cursor.getString(index_expense_key);
+            String url = cursor.getString(index_user_url);
+            try {
+                timeStamp = TimeTravel.getTimeElapsed(startTime, System.currentTimeMillis());
+            } catch (TimeTravelException e) {
+                e.printStackTrace();
+            }
 
-      String text = about + "\n" + amount + "\n" + timeStamp + "\n" + user_id + "\n";
-      if (user != null) {
-        text += "Name = " + user.getDisplayName() + "\n email = " + user.getEmail();
-      }
+            FirebaseUserDetails userDetails = new FirebaseUserDetails(
+                    name, email, user_key, url
+            );
 
-      viewHolder.tv.setText(text);
+            final ExpenseParcelable expense =
+                    new ExpenseParcelable(about, cluster_key, user_key, userDetails, amount, expense_key);
 
-      viewHolder.delete.setOnClickListener(new View.OnClickListener() {
-        @Override public void onClick(View v) {
-          if (mExpense != null) {
-            mExpense.delete(expense);
-          }
+
+            String text = about + "\n" + amount + "\n" + timeStamp + "\n" + user_key + "\n";
+            text += name + "\n" + email + "\n" + url + "\n";
+            viewHolder.tv.setText(text);
+
+            viewHolder.delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mExpense != null) {
+                        mExpense.delete(expense);
+                    }
+                }
+            });
         }
-      });
     }
-  }
 
-  @Override public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-    View itemView =
-        LayoutInflater.from(this.mContext).inflate(R.layout.row_shared_expenses, parent, false);
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View itemView =
+                LayoutInflater.from(this.mContext).inflate(R.layout.row_shared_expenses, parent, false);
 
-    return new ViewHolder(itemView);
-  }
-
-  class ViewHolder extends RecyclerView.ViewHolder {
-
-    @BindView(R.id.sample_2) TextView tv;
-
-    @BindView(R.id.bt_delete_s_expense) Button delete;
-
-    ViewHolder(View itemView) {
-      super(itemView);
-      ButterKnife.bind(this, itemView);
+        return new ViewHolder(itemView);
     }
-  }
+
+    class ViewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.sample_2)
+        TextView tv;
+
+        @BindView(R.id.bt_delete_s_expense)
+        Button delete;
+
+        ViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+    }
 }

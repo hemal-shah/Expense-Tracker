@@ -20,6 +20,7 @@ import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.adapters.SharedExpensesAdapter;
 import hemal.t.shah.expensetracker.data.DataDispenser;
 import hemal.t.shah.expensetracker.data.ExpenseContract;
+import hemal.t.shah.expensetracker.data.ExpenseContract.ExpenseEntry;
 import hemal.t.shah.expensetracker.interfaces.OnExpense;
 import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
 import hemal.t.shah.expensetracker.pojo.ExpenseParcelable;
@@ -55,7 +56,7 @@ public class SharedExpensesFragment extends Fragment implements
             sharedCluster = arguments.getParcelable(SharedConstants.SHARE_CLUSTER_PARCEL);
         }
 
-        this.selectionArgs = new String[]{String.valueOf(sharedCluster.getId())};
+        this.selectionArgs = new String[]{String.valueOf(sharedCluster.getOffline_id())};
         this.mContext = getContext();
 
         View rootView = inflater.inflate(R.layout.shared_expenses_fragment, container, false);
@@ -116,12 +117,11 @@ public class SharedExpensesFragment extends Fragment implements
                 SharedConstants.TOKEN_DELETE_EXPENSES,
                 null,
                 ExpenseContract.ExpenseEntry.CONTENT_URI,
-                ExpenseContract.ExpenseEntry.COLUMN_ABOUT + " = ? AND " + ExpenseContract
-                        .ExpenseEntry.COLUMN_AMOUNT + " = ? AND "
-                        + ExpenseContract.ExpenseEntry.COLUMN_FOREIGN_CLUSTER_ID + "= ?",
+                ExpenseEntry.COLUMN_FIREBASE_EXPENSE_KEY + " = ? AND "
+                        + ExpenseEntry.FIREBASE_CLUSTER_KEY + "= ?",
                 new String[]{expenseParcelable.getAbout(),
-                        String.valueOf(expenseParcelable.getAmount()),
-                        String.valueOf(expenseParcelable.getCluster_id())}
+                        String.valueOf(expenseParcelable.getFirebase_expense_key()),
+                        String.valueOf(expenseParcelable.getFirebase_cluster_ref_key())}
         );
     }
 }

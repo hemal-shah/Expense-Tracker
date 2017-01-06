@@ -1,6 +1,8 @@
 package hemal.t.shah.expensetracker.fragment;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -9,9 +11,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,6 +22,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.DatabaseReference.CompletionListener;
+import com.google.firebase.database.FirebaseDatabase;
+
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hemal.t.shah.expensetracker.ExpensesActivity;
@@ -27,6 +37,8 @@ import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.adapters.SharedClusterAdapter;
 import hemal.t.shah.expensetracker.data.DataDispenser;
 import hemal.t.shah.expensetracker.data.ExpenseContract;
+import hemal.t.shah.expensetracker.data.ExpenseContract.ClusterEntry;
+import hemal.t.shah.expensetracker.data.ExpenseContract.ExpenseEntry;
 import hemal.t.shah.expensetracker.interfaces.OnCluster;
 import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
 import hemal.t.shah.expensetracker.utils.SharedConstants;
@@ -38,11 +50,19 @@ import hemal.t.shah.expensetracker.utils.SharedConstants;
 public class SharedClustersFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor>, OnCluster {
 
+    private static final String TAG = "SharedClustersFragment";
     @BindView(R.id.rv_activity_shared_clusters)
     RecyclerView recyclerView;
-
-    private static final String TAG = "SharedClustersFragment";
+    @BindString(R.string.are_you_sure)
+    String ARE_YOU_SURE;
+    @BindString(R.string.cancel)
+    String CANCEL;
+    @BindString(R.string.delete_confirm)
+    String DELETE_CONFIRM;
     SharedClusterAdapter adapter = null;
+
+    FirebaseUser user;
+    DatabaseReference reference;
 
     Context context = null;
 
@@ -62,8 +82,10 @@ public class SharedClustersFragment extends Fragment implements
 
         this.context = getContext();
 
-        adapter = new SharedClusterAdapter(this.context, null, this);
+        this.reference = FirebaseDatabase.getInstance().getReference();
+        this.user = FirebaseAuth.getInstance().getCurrentUser();
 
+        adapter = new SharedClusterAdapter(this.context, null, this);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(
                 context,
@@ -88,19 +110,13 @@ public class SharedClustersFragment extends Fragment implements
         switch (id) {
             case SharedConstants.CURSOR_SHARED:
 
-                String[] projection = {
-                        ExpenseContract.ClusterEntry._ID,
-                        ExpenseContract.ClusterEntry.COLUMN_TITLE,
-                        ExpenseContract.ClusterEntry.COLUMN_TIMESTAMP};
-
-                String selection = ExpenseContract.ClusterEntry.COLUMN_IS_SHARED + " = ?";
-                String[] selectionArgs = {"1"};
+                String selection = ExpenseContract.ClusterEntry.COLUMN_IS_SHARED + " = 1";
                 return new CursorLoader(
                         context,
                         ExpenseContract.ClusterEntry.CONTENT_URI,
-                        projection,
+                        null,
                         selection,
-                        selectionArgs,
+                        null,
                         null
                 );
 
@@ -148,24 +164,62 @@ public class SharedClustersFragment extends Fragment implements
     }
 
     @Override
-    public void onDelete(ClusterParcelable clusterParcelable) {
-        DataDispenser dispenser = new DataDispenser(context.getContentResolver(), context);
-        dispenser.startDelete(
-                SharedConstants.TOKEN_DELETE_CLUSTER,
-                null, ExpenseContract.ClusterEntry.CONTENT_URI,
-                ExpenseContract.ClusterEntry._ID + "=?",
-                new String[]{String.valueOf(clusterParcelable.getId())}
-        );
+    public void onDelete(final ClusterParcelable cluster) {
 
-        Log.i(TAG, "onDelete: starting deletion of expenses");
 
-        dispenser.startDelete(
-                SharedConstants.TOKEN_DELETE_EXPENSES,
-                null,
-                ExpenseContract.ExpenseEntry.CONTENT_URI,
-                ExpenseContract.ExpenseEntry.COLUMN_FOREIGN_CLUSTER_ID + "= ?",
-                new String[]{String.valueOf(clusterParcelable.getId())}
-        );
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
+
+
+        builder.setTitle(ARE_YOU_SURE)
+                .setCancelable(true)
+                .setPositiveButton(DELETE_CONFIRM, new OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        //First deleting cluster offline!
+                        DataDispenser dispenser = new DataDispenser(context.getContentResolver(), context);
+                        dispenser.startDelete(
+                                SharedConstants.TOKEN_DELETE_CLUSTER,
+                                null,
+                                ClusterEntry.CONTENT_URI,
+                                ClusterEntry._ID + "= ? AND " + ClusterEntry.COLUMN_FIREBASE_CLUSTER_KEY + " = ?",
+                                new String[]{String.valueOf(cluster.getOffline_id()),
+                                        cluster.getFirebase_cluster_id()}
+                        );
+
+                        //Remove all expenses from expenses table as well!
+                        dispenser.startDelete(
+                                SharedConstants.TOKEN_DELETE_EXPENSES,
+                                null,
+                                ExpenseEntry.CONTENT_URI,
+                                ExpenseEntry.COLUMN_FOREIGN_CLUSTER_ID + "= ?",
+                                new String[]{String.valueOf(cluster.getOffline_id())}
+                        );
+
+                        //Now, let's remove data from firebase.
+                        if (cluster.getIs_shared() == 1) {
+                            //Delete from Shared clusters branch
+                            reference.child(SharedConstants.FIREBASE_PATH_SHARED_CLUSTERS)
+                                    .child(cluster.getFirebase_cluster_id())
+                                    .removeValue(new CompletionListener() {
+                                        @Override
+                                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                            Toast.makeText(context, "Removed Shared Cluster", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                        }
+                    }
+                })
+                .setNegativeButton(CANCEL, new OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
     }
 
     @Override
