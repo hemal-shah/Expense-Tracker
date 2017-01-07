@@ -51,6 +51,7 @@ public class PersonalExpensesAdapter
         index_user_name = cursor.getColumnIndex(ExpenseEntry.COLUMN_FIREBASE_USER_NAME);
         index_user_url = cursor.getColumnIndex(ExpenseEntry.COLUMN_FIREBASE_USER_URL);
         index_user_email = cursor.getColumnIndex(ExpenseEntry.COLUMN_FIREBASE_USER_EMAIL);
+        index_cluster_key = cursor.getColumnIndex(ExpenseEntry.FIREBASE_CLUSTER_KEY);
         index_expense_key = cursor.getColumnIndex(ExpenseEntry.COLUMN_FIREBASE_EXPENSE_KEY);
 
         if (cursor.moveToPosition(position)) {
@@ -59,6 +60,7 @@ public class PersonalExpensesAdapter
             long starttime = cursor.getLong(index_timestamp);
             String user_id = cursor.getString(index_user_key);
             String name = cursor.getString(index_user_name);
+            String cluster_key = cursor.getString(index_cluster_key);
             String email = cursor.getString(index_user_email);
             String expense_key = cursor.getString(index_expense_key);
             String url = cursor.getString(index_user_url);
@@ -72,7 +74,7 @@ public class PersonalExpensesAdapter
 
 
             final ExpenseParcelable expense =
-                    new ExpenseParcelable(about, expense_key, user_id, amount, expense_key);
+                    new ExpenseParcelable(about, cluster_key, user_id, amount, expense_key);
 
             String text = about + "\n" + amount + "\n" + timeStamp + "\n" + user_id + "\n";
             text += name + "\n" + email + "\n" + url + "\n";

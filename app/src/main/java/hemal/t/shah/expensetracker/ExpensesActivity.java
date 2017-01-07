@@ -188,6 +188,7 @@ public class ExpensesActivity extends AppCompatActivity {
         contentValues.put(ExpenseEntry.COLUMN_AMOUNT, amount);
         contentValues.put(ExpenseEntry.COLUMN_FOREIGN_CLUSTER_ID,
                 clusterParcelable.getOffline_id());
+        contentValues.put(ExpenseEntry.FIREBASE_CLUSTER_KEY, cluster_key);
         contentValues.put(ExpenseEntry.COLUMN_FIREBASE_EXPENSE_KEY, expense_key);
         contentValues.put(ExpenseEntry.COLUMN_BY_FIREBASE_USER_UID, user.getUid());
         contentValues.put(ExpenseEntry.COLUMN_FIREBASE_USER_EMAIL, user.getEmail());

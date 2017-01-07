@@ -10,22 +10,20 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import hemal.t.shah.expensetracker.data.ExpenseContract.ClusterEntry;
+import hemal.t.shah.expensetracker.data.ExpenseContract.ExpenseEntry;
+
 @SuppressWarnings("ConstantConditions")
 public class ExpenseProvider extends ContentProvider {
 
-    private static final String TAG = "ExpenseProvider";
-
     //declaring constants for matchUri function.
     static final int CLUSTER = 102, EXPENSE = 103;
-
-    private ExpenseDBHelper dbHelper;
-
-
+    private static final String TAG = "ExpenseProvider";
     //queryBuilder object to query clusters
     private static SQLiteQueryBuilder clustersQueryBuilder = new SQLiteQueryBuilder();
-
     //queryBuilder to know expenses in a cluster
     private static SQLiteQueryBuilder expensesFromClusterQueryBuilder = new SQLiteQueryBuilder();
+    private static UriMatcher matcher = buildUriMatcher();
 
     static {
 
@@ -41,7 +39,7 @@ public class ExpenseProvider extends ContentProvider {
 
     }
 
-    private static UriMatcher matcher = buildUriMatcher();
+    private ExpenseDBHelper dbHelper;
 
     private static UriMatcher buildUriMatcher() {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -142,6 +140,7 @@ public class ExpenseProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
+
         final SQLiteDatabase db = dbHelper.getReadableDatabase();
         int rows_deleted;
 
@@ -153,15 +152,18 @@ public class ExpenseProvider extends ContentProvider {
         switch (matcher.match(uri)) {
 
             case CLUSTER:
-                rows_deleted = db.delete(ExpenseContract.ClusterEntry.TABLE_NAME,
+                rows_deleted = db.delete(
+                        ClusterEntry.TABLE_NAME,
                         selection,
                         selectionArgs
                 );
                 break;
             case EXPENSE:
-                rows_deleted = db.delete(ExpenseContract.ExpenseEntry.TABLE_NAME,
+                rows_deleted = db.delete(
+                        ExpenseEntry.TABLE_NAME,
                         selection,
-                        selectionArgs);
+                        selectionArgs
+                );
                 break;
             default:
                 throw new UnsupportedOperationException("Check query, not operational!");

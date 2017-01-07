@@ -14,7 +14,7 @@ import hemal.t.shah.expensetracker.data.ExpenseContract.ExpenseEntry;
 class ExpenseDBHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "ExpenseDBHelper";
-    private static final int DATABASE_VERSION = 8;
+    private static final int DATABASE_VERSION = 9;
     private static final String DATABASE_NAME = "ExpenseDB.db";
 
     ExpenseDBHelper(Context context) {
@@ -52,6 +52,7 @@ class ExpenseDBHelper extends SQLiteOpenHelper {
          * timestamp LONG,
          * expense_key_firebase TEXT NOT NULL,
          * by_user TEXT NOT NULL,
+         * firebase_cluster_key TEXT NOT NULL,
          * firebaes_uname TEXT,
          * firebase_u_email TEX,
          * firebase_profile_photo_url TEXT,
@@ -65,6 +66,7 @@ class ExpenseDBHelper extends SQLiteOpenHelper {
                 + ExpenseEntry.COLUMN_ABOUT + " TEXT NOT NULL, "
                 + ExpenseEntry.COLUMN_AMOUNT + " REAL NOT NULL, "
                 + ExpenseEntry.COLUMN_TIMESTAMP + " LONG, "
+                + ExpenseEntry.FIREBASE_CLUSTER_KEY + " TEXT NOT NULL,"
                 + ExpenseEntry.COLUMN_FIREBASE_EXPENSE_KEY + " TEXT NOT NULL,"
                 + ExpenseEntry.COLUMN_BY_FIREBASE_USER_UID + " TEXT NOT NULL,"
                 + ExpenseEntry.COLUMN_FIREBASE_USER_NAME + " TEXT,"

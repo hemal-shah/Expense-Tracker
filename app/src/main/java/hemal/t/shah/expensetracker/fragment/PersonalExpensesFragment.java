@@ -10,9 +10,17 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.DatabaseReference.CompletionListener;
+import com.google.firebase.database.FirebaseDatabase;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,6 +43,7 @@ public class PersonalExpensesFragment extends Fragment implements
 
     private static final String TAG = "PersonalExpensesFrag";
 
+    DatabaseReference reference;
 
     @BindView(R.id.rv_personal_expenses_fragment)
     RecyclerView recyclerView;
@@ -61,6 +70,8 @@ public class PersonalExpensesFragment extends Fragment implements
 
         this.selectionArgs = new String[]{String.valueOf(personalCluster.getOffline_id())};
         this.mContext = getContext();
+
+        reference = FirebaseDatabase.getInstance().getReference();
 
         View rootView = inflater.inflate(R.layout.personal_expenses_fragment, container, false);
         ButterKnife.bind(this, rootView);
@@ -113,15 +124,28 @@ public class PersonalExpensesFragment extends Fragment implements
 
         DataDispenser dispenser = new DataDispenser(this.mContext.getContentResolver(),
                 this.mContext);
+
         dispenser.startDelete(
                 SharedConstants.TOKEN_DELETE_EXPENSES,
                 null,
                 ExpenseEntry.CONTENT_URI,
-                ExpenseEntry.COLUMN_FIREBASE_EXPENSE_KEY + " = ? AND "
-                        + ExpenseEntry.FIREBASE_CLUSTER_KEY + "= ?",
-                new String[]{expenseParcelable.getAbout(),
-                        String.valueOf(expenseParcelable.getFirebase_expense_key()),
-                        String.valueOf(expenseParcelable.getFirebase_cluster_ref_key())}
+                ExpenseEntry.COLUMN_FIREBASE_EXPENSE_KEY + " = ?",
+                new String[]{String.valueOf(expenseParcelable.getFirebase_expense_key())}
         );
+
+        Log.i(TAG, "delete: " + expenseParcelable.getFirebase_cluster_ref_key());
+        Log.i(TAG, "delete:  " + expenseParcelable.getFirebase_expense_key());
+        reference.child(SharedConstants.FIREBASE_PATH_PERSONAL_CLUSTERS)
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(expenseParcelable.getFirebase_cluster_ref_key())
+                .child(SharedConstants.FIREBASE_EXPENSES)
+                .child(expenseParcelable.getFirebase_expense_key())
+                .removeValue(new CompletionListener() {
+                    @Override
+                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                        Toast.makeText(mContext, "Deleted!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
     }
 }
