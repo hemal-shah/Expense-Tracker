@@ -204,8 +204,6 @@ public class ExpensesActivity extends AppCompatActivity {
         Map<String, Object> expense = new HashMap<>();
         expense.put(SharedConstants.FIREBASE_ABOUT, about);
         expense.put(SharedConstants.FIREBASE_AMOUNT, amount);
-//        expense.put(SharedConstants.FIREBASE_BY_USER, user);
-        // TODO: 7/1/17 add user details here
         expense.put(SharedConstants.FIREBASE_TIME_STAMP, timeStamp);
 
         if (is_shared == 0) {
@@ -222,10 +220,13 @@ public class ExpensesActivity extends AppCompatActivity {
                         }
                     });
         } else if (is_shared == 1) {
+            expense.put(SharedConstants.FIREBASE_USER_NAME, user.getDisplayName());
+            expense.put(SharedConstants.FIREBASE_EMAIL, user.getEmail());
+            expense.put(SharedConstants.FIREBASE_PROFILE_URL, user.getPhotoUrl().toString());
             reference.child(SharedConstants.FIREBASE_PATH_SHARED_CLUSTERS)
                     .child(cluster_key)
                     .child(SharedConstants.FIREBASE_EXPENSES)
-                    .child(reference.push().getKey())
+                    .child(expense_key)
                     .updateChildren(expense, new CompletionListener() {
                         // TODO: 7/1/17 remove
                         @Override

@@ -221,12 +221,13 @@ public class TabContainerFragment extends Fragment {
                         contentValues);
                 Log.i(TAG, "addNewCluster: inserted into offline database");
 
-                cluster.put(SharedConstants.FIREBASE_CREATED_BY, user.getUid());
+//                cluster.put(SharedConstants.FIREBASE_CREATED_BY, user.getUid());
                 cluster.put(SharedConstants.FIREBASE_EMAIL, user.getEmail());
                 cluster.put(SharedConstants.FIREBASE_USER_NAME, user.getDisplayName());
-                cluster.put(SharedConstants.FIREBASE_PROFILE_URL, user.getPhotoUrl());
+                cluster.put(SharedConstants.FIREBASE_PROFILE_URL, user.getPhotoUrl().toString());
 
                 Log.i(TAG, "addNewCluster: hashmap generated");
+                Log.i(TAG, "addNewCluster: " + cluster_key);
                 reference.child(SharedConstants.FIREBASE_PATH_SHARED_CLUSTERS)
                         .child(cluster_key)
                         .updateChildren(cluster);
