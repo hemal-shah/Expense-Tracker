@@ -1,6 +1,8 @@
 package hemal.t.shah.expensetracker.fragment;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,9 +10,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +23,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.DatabaseReference.CompletionListener;
 import com.google.firebase.database.FirebaseDatabase;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hemal.t.shah.expensetracker.R;
@@ -43,6 +46,16 @@ public class SharedExpensesFragment extends Fragment implements
 
     @BindView(R.id.rv_shared_expenses_fragment)
     RecyclerView mRecyclerView;
+
+
+    @BindString(R.string.are_you_sure)
+    String ARE_YOU_SURE;
+
+    @BindString(R.string.cancel)
+    String CANCEL;
+
+    @BindString(R.string.delete_confirm)
+    String DELETE_CONFIRM;
 
     ClusterParcelable sharedCluster = null;
 
@@ -122,31 +135,50 @@ public class SharedExpensesFragment extends Fragment implements
     }
 
     @Override
-    public void delete(ExpenseParcelable expenseParcelable) {
-        DataDispenser dispenser = new DataDispenser(this.mContext.getContentResolver(),
-                this.mContext);
-        dispenser.startDelete(
-                SharedConstants.TOKEN_DELETE_EXPENSES,
-                null,
-                ExpenseContract.ExpenseEntry.CONTENT_URI,
-                ExpenseEntry.COLUMN_FIREBASE_EXPENSE_KEY + " = ? ",
-                new String[]{
-                        String.valueOf(expenseParcelable.getFirebase_expense_key())}
-        );
+    public void delete(final ExpenseParcelable expenseParcelable) {
 
-        Log.i(TAG, "delete: " + expenseParcelable.getFirebase_cluster_ref_key());
-        Log.i(TAG, "delete: " + expenseParcelable.getFirebase_expense_key());
-        reference.child(SharedConstants.FIREBASE_PATH_SHARED_CLUSTERS)
-                .child(expenseParcelable.getFirebase_cluster_ref_key())
-                .child(SharedConstants.FIREBASE_EXPENSES)
-                .child(expenseParcelable.getFirebase_expense_key())
-                .removeValue(new CompletionListener() {
-                    // TODO: 7/1/17 delete this.
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.mContext);
+        builder.setTitle(ARE_YOU_SURE)
+                .setCancelable(true)
+                .setNegativeButton(CANCEL, new OnClickListener() {
                     @Override
-                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                        Toast.makeText(mContext, "Deleted from firebase!", Toast.LENGTH_SHORT).show();
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setPositiveButton(DELETE_CONFIRM, new OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        DataDispenser dispenser = new DataDispenser(mContext.getContentResolver(),
+                                mContext);
+                        dispenser.startDelete(
+                                SharedConstants.TOKEN_DELETE_EXPENSES,
+                                null,
+                                ExpenseContract.ExpenseEntry.CONTENT_URI,
+                                ExpenseEntry.COLUMN_FIREBASE_EXPENSE_KEY + " = ? ",
+                                new String[]{
+                                        String.valueOf(expenseParcelable.getFirebase_expense_key())}
+                        );
+
+                        reference.child(SharedConstants.FIREBASE_PATH_SHARED_CLUSTERS)
+                                .child(expenseParcelable.getFirebase_cluster_ref_key())
+                                .child(SharedConstants.FIREBASE_EXPENSES)
+                                .child(expenseParcelable.getFirebase_expense_key())
+                                .removeValue(new CompletionListener() {
+                                    // TODO: 7/1/17 delete this.
+                                    @Override
+                                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                        Toast.makeText(mContext, "Deleted from firebase!", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
                     }
                 });
+
+        builder.create().show();
+
+
 
     }
 }

@@ -59,7 +59,6 @@ class ExpenseDBHelper extends SQLiteOpenHelper {
          * cluster_id INTEGER,
          * FOREIGN KEY(cluster_id) REFERENCES clusters(_id) );
          */
-        // TODO: 7/1/17 add one column firebase_cluster_key
         String sql_create_expenses_table = "CREATE TABLE "
                 + ExpenseContract.ExpenseEntry.TABLE_NAME
                 + "(" + ExpenseEntry._ID + " INTEGER PRIMARY KEY , "
