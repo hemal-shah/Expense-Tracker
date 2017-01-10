@@ -5,4 +5,8 @@
         android:id="@+id/menu_settings"
         android:title="Settings"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/sign_out"
+        android:title="Sign Out"
+        app:showAsAction="never" />
 </menu>

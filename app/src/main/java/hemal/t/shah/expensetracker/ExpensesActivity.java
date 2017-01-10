@@ -222,7 +222,11 @@ public class ExpensesActivity extends AppCompatActivity {
         } else if (is_shared == 1) {
             expense.put(SharedConstants.FIREBASE_USER_NAME, user.getDisplayName());
             expense.put(SharedConstants.FIREBASE_EMAIL, user.getEmail());
-            expense.put(SharedConstants.FIREBASE_PROFILE_URL, user.getPhotoUrl().toString());
+            if (user.getPhotoUrl() != null) {
+                expense.put(SharedConstants.FIREBASE_PROFILE_URL, user.getPhotoUrl().toString());
+            } else {
+                expense.put(SharedConstants.FIREBASE_PROFILE_URL, "");
+            }
             reference.child(SharedConstants.FIREBASE_PATH_SHARED_CLUSTERS)
                     .child(cluster_key)
                     .child(SharedConstants.FIREBASE_EXPENSES)

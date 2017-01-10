@@ -29,6 +29,15 @@ public class DataDispenser extends AsyncQueryHandler {
                 break;
             case SharedConstants.TOKEN_DELETE_EXPENSES:
                 Toast.makeText(this.context, "Deleted expenses", Toast.LENGTH_SHORT).show();
+                break;
+            case SharedConstants.TOKEN_CLEAR_TABLE_CLUSTER:
+                Toast.makeText(context, "cleared cluster table for clean up",
+                        Toast.LENGTH_SHORT).show();
+                break;
+            case SharedConstants.TOKEN_CLEAR_TABLE_EXPENSE:
+                Toast.makeText(context, "cleared expense table for clean up",
+                        Toast.LENGTH_SHORT).show();
+                break;
         }
     }
 }

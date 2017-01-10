@@ -3,6 +3,7 @@ package hemal.t.shah.expensetracker.adapters;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,6 +52,7 @@ public class PersonalClusterAdapter
             long startTime = cursor.getLong(index_timestamp);
             String timeStamp = "";
             try {
+                Log.i(TAG, "onBindViewHolder: starttime " + startTime);
                 timeStamp = TimeTravel.getTimeElapsed(startTime, System.currentTimeMillis());
             } catch (TimeTravelException e) {
                 e.printStackTrace();

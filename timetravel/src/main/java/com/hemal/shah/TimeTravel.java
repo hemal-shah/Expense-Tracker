@@ -33,7 +33,7 @@ public class TimeTravel {
         if (hours_ago > 24) {
             //Time is more than 24 hours, hence return the string in format of date.
             Date date = new Date(start);
-            SimpleDateFormat format = new SimpleDateFormat("dd MMM, YYYY", Locale.ENGLISH);
+            SimpleDateFormat format = new SimpleDateFormat("dd MMM, yyyy", Locale.ENGLISH);
             answer = format.format(date);
         } else if (hours_ago >= 1 && hours_ago <= 24) {
             answer = ((int) hours_ago) + " Hour ago";

@@ -23,6 +23,7 @@ public class ExpenseParcelable implements Parcelable {
     private String about, firebase_cluster_ref_key, firebase_user_uid, firebase_expense_key;
     private FirebaseUserDetails userDetails; //No need to store this in offline table
     private double amount;
+    private long timeStamp;
 
     /**
      * Use this cluster for shared expense details
@@ -47,6 +48,18 @@ public class ExpenseParcelable implements Parcelable {
         this.firebase_user_uid = firebase_user_uid;
         this.amount = amount;
         this.firebase_expense_key = firebase_expense_key;
+    }
+
+
+    public ExpenseParcelable(String about, String firebase_cluster_ref_key,
+            String firebase_user_uid,
+            double amount, String firebase_expense_key, long timeStamp) {
+        this.about = about;
+        this.firebase_cluster_ref_key = firebase_cluster_ref_key;
+        this.firebase_user_uid = firebase_user_uid;
+        this.amount = amount;
+        this.firebase_expense_key = firebase_expense_key;
+        this.timeStamp = timeStamp;
     }
 
     protected ExpenseParcelable(Parcel in) {
@@ -112,6 +125,14 @@ public class ExpenseParcelable implements Parcelable {
 
     public void setAmount(double amount) {
         this.amount = amount;
+    }
+
+    public long getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(long timeStamp) {
+        this.timeStamp = timeStamp;
     }
 
     @Override
