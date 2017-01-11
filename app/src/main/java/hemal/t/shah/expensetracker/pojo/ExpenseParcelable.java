@@ -28,7 +28,8 @@ public class ExpenseParcelable implements Parcelable {
     /**
      * Use this cluster for shared expense details
      */
-    public ExpenseParcelable(String about, String firebase_cluster_ref_key, String firebase_user_uid,
+    public ExpenseParcelable(String about, String firebase_cluster_ref_key,
+            String firebase_user_uid,
             FirebaseUserDetails userDetails, double amount, String firebase_expense_key) {
         this.about = about;
         this.firebase_cluster_ref_key = firebase_cluster_ref_key;
@@ -41,7 +42,8 @@ public class ExpenseParcelable implements Parcelable {
     /**
      * Use this constructor for personal cluster details.
      */
-    public ExpenseParcelable(String about, String firebase_cluster_ref_key, String firebase_user_uid,
+    public ExpenseParcelable(String about, String firebase_cluster_ref_key,
+            String firebase_user_uid,
             double amount, String firebase_expense_key) {
         this.about = about;
         this.firebase_cluster_ref_key = firebase_cluster_ref_key;
@@ -49,7 +51,6 @@ public class ExpenseParcelable implements Parcelable {
         this.amount = amount;
         this.firebase_expense_key = firebase_expense_key;
     }
-
 
     public ExpenseParcelable(String about, String firebase_cluster_ref_key,
             String firebase_user_uid,

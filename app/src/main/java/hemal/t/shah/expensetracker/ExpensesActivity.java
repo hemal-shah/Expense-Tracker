@@ -98,7 +98,7 @@ public class ExpensesActivity extends AppCompatActivity {
         if (mActionBar != null) {
             mActionBar.setHomeAsUpIndicator(R.drawable.ic_clear_white_24dp);
             mActionBar.setDisplayHomeAsUpEnabled(true);
-            mActionBar.setTitle(clusterParcelable.getTitle());
+            mActionBar.setTitle(clusterParcelable.getTitle().toUpperCase());
         }
 
         manager = getSupportFragmentManager();
@@ -186,8 +186,6 @@ public class ExpensesActivity extends AppCompatActivity {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ExpenseEntry.COLUMN_ABOUT, about);
         contentValues.put(ExpenseEntry.COLUMN_AMOUNT, amount);
-        contentValues.put(ExpenseEntry.COLUMN_FOREIGN_CLUSTER_ID,
-                clusterParcelable.getOffline_id());
         contentValues.put(ExpenseEntry.FIREBASE_CLUSTER_KEY, cluster_key);
         contentValues.put(ExpenseEntry.COLUMN_FIREBASE_EXPENSE_KEY, expense_key);
         contentValues.put(ExpenseEntry.COLUMN_BY_FIREBASE_USER_UID, user.getUid());

@@ -177,13 +177,14 @@ public class SharedClustersFragment extends Fragment implements
                     public void onClick(DialogInterface dialog, int which) {
 
                         //First deleting cluster offline!
-                        DataDispenser dispenser = new DataDispenser(context.getContentResolver(), context);
+                        DataDispenser dispenser = new DataDispenser(context.getContentResolver(),
+                                context);
                         dispenser.startDelete(
                                 SharedConstants.TOKEN_DELETE_CLUSTER,
                                 null,
                                 ClusterEntry.CONTENT_URI,
-                                ClusterEntry._ID + "= ? AND " + ClusterEntry.COLUMN_FIREBASE_CLUSTER_KEY + " = ?",
-                                new String[]{String.valueOf(cluster.getOffline_id()),
+                                ClusterEntry.COLUMN_FIREBASE_CLUSTER_KEY + " = ?",
+                                new String[]{
                                         cluster.getFirebase_cluster_id()}
                         );
 
@@ -192,8 +193,8 @@ public class SharedClustersFragment extends Fragment implements
                                 SharedConstants.TOKEN_DELETE_EXPENSES,
                                 null,
                                 ExpenseEntry.CONTENT_URI,
-                                ExpenseEntry.COLUMN_FOREIGN_CLUSTER_ID + "= ?",
-                                new String[]{String.valueOf(cluster.getOffline_id())}
+                                ExpenseEntry.FIREBASE_CLUSTER_KEY + "= ?",
+                                new String[]{String.valueOf(cluster.getFirebase_cluster_id())}
                         );
 
                         //Now, let's remove data from firebase.
@@ -203,8 +204,10 @@ public class SharedClustersFragment extends Fragment implements
                                     .child(cluster.getFirebase_cluster_id())
                                     .removeValue(new CompletionListener() {
                                         @Override
-                                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                            Toast.makeText(context, "Removed Shared Cluster", Toast.LENGTH_SHORT).show();
+                                        public void onComplete(DatabaseError databaseError,
+                                                DatabaseReference databaseReference) {
+                                            Toast.makeText(context, "Removed Shared Cluster",
+                                                    Toast.LENGTH_SHORT).show();
                                         }
                                     });
                         }

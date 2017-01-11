@@ -6,7 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,7 +41,8 @@ public class PersonalExpensesAdapter
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, Cursor cursor, int position) {
         int index_about, index_amount, index_timestamp, index_cluster_key,
-                index_user_key, index_user_name, index_user_email, index_user_url, index_expense_key;
+                index_user_key, index_user_name, index_user_email, index_user_url,
+                index_expense_key;
 
         index_about = cursor.getColumnIndex(ExpenseEntry.COLUMN_ABOUT);
         index_amount = cursor.getColumnIndex(ExpenseEntry.COLUMN_AMOUNT);
@@ -76,10 +77,9 @@ public class PersonalExpensesAdapter
             final ExpenseParcelable expense =
                     new ExpenseParcelable(about, cluster_key, user_id, amount, expense_key);
 
-            String text = about + "\n" + amount + "\n" + timeStamp + "\n" + user_id + "\n";
-            text += name + "\n" + email + "\n" + url + "\n";
-
-            viewHolder.tv.setText(text);
+            viewHolder.about.setText(about);
+            viewHolder.amount.setText(String.valueOf(amount));
+            viewHolder.time.setText(timeStamp);
 
             viewHolder.delete.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -96,18 +96,26 @@ public class PersonalExpensesAdapter
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View itemView =
-                LayoutInflater.from(this.mContext).inflate(R.layout.row_personal_expenses, parent, false);
+                LayoutInflater.from(this.mContext).inflate(R.layout.row_personal_expenses, parent,
+                        false);
 
         return new ViewHolder(itemView);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.bt_delete_p_expense)
-        Button delete;
 
-        @BindView(R.id.tv_sample)
-        TextView tv;
+        @BindView(R.id.ib_delete_p_expenses)
+        ImageButton delete;
+
+        @BindView(R.id.tv_time_p_expenses)
+        TextView time;
+
+        @BindView(R.id.tv_about_p_expenses)
+        TextView about;
+
+        @BindView(R.id.tv_amount_p_expenses)
+        TextView amount;
 
         ViewHolder(View itemView) {
             super(itemView);

@@ -3,7 +3,6 @@ package hemal.t.shah.expensetracker.data;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import hemal.t.shah.expensetracker.data.ExpenseContract.ClusterEntry;
 import hemal.t.shah.expensetracker.data.ExpenseContract.ExpenseEntry;
@@ -14,7 +13,7 @@ import hemal.t.shah.expensetracker.data.ExpenseContract.ExpenseEntry;
 class ExpenseDBHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "ExpenseDBHelper";
-    private static final int DATABASE_VERSION = 9;
+    private static final int DATABASE_VERSION = 10;
     private static final String DATABASE_NAME = "ExpenseDB.db";
 
     ExpenseDBHelper(Context context) {
@@ -41,7 +40,6 @@ class ExpenseDBHelper extends SQLiteOpenHelper {
                 + ClusterEntry.COLUMN_IS_SHARED + " INTEGER NOT NULL, "
                 + ClusterEntry.COLUMN_TIMESTAMP + " LONG);";
 
-        Log.i(TAG, "onCreate: cluster table: " + sql_create_cluster_table);
         db.execSQL(sql_create_cluster_table);
 
         /**
@@ -55,9 +53,7 @@ class ExpenseDBHelper extends SQLiteOpenHelper {
          * firebase_cluster_key TEXT NOT NULL,
          * firebaes_uname TEXT,
          * firebase_u_email TEX,
-         * firebase_profile_photo_url TEXT,
-         * cluster_id INTEGER,
-         * FOREIGN KEY(cluster_id) REFERENCES clusters(_id) );
+         * firebase_profile_photo_url TEXT);
          */
         String sql_create_expenses_table = "CREATE TABLE "
                 + ExpenseContract.ExpenseEntry.TABLE_NAME
@@ -70,19 +66,13 @@ class ExpenseDBHelper extends SQLiteOpenHelper {
                 + ExpenseEntry.COLUMN_BY_FIREBASE_USER_UID + " TEXT NOT NULL,"
                 + ExpenseEntry.COLUMN_FIREBASE_USER_NAME + " TEXT,"
                 + ExpenseEntry.COLUMN_FIREBASE_USER_EMAIL + " TEX,"
-                + ExpenseEntry.COLUMN_FIREBASE_USER_URL + " TEXT,"
-                + ExpenseEntry.COLUMN_FOREIGN_CLUSTER_ID + " INTEGER, "
-                + " FOREIGN KEY(" + ExpenseEntry.COLUMN_FOREIGN_CLUSTER_ID + ") "
-                + "REFERENCES " + ClusterEntry.TABLE_NAME
-                + "(" + ClusterEntry._ID + ") );";
+                + ExpenseEntry.COLUMN_FIREBASE_USER_URL + " TEXT);";
 
-        Log.i(TAG, "onCreate: expenses table: " + sql_create_expenses_table);
         db.execSQL(sql_create_expenses_table);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        //TODO Don't push to production.
         db.execSQL("DROP TABLE IF EXISTS " + ExpenseContract.ClusterEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + ExpenseContract.ExpenseEntry.TABLE_NAME);
         onCreate(db);

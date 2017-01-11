@@ -2,36 +2,89 @@
 
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cv_single_personal_clusters_row"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="20dp"
-    android:layout_marginRight="20dp"
+    android:layout_marginLeft="30dp"
+    android:layout_marginRight="30dp"
     android:layout_marginTop="20dp"
-    app:cardElevation="4dp">
+    app:cardElevation="4dp"
+    >
+
 
     <LinearLayout
+        android:id="@+id/ll_p_cluster"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        android:orientation="horizontal"
+        >
 
-        <TextView
-            android:id="@+id/tv_single_personal_clusters_row"
-            android:layout_width="match_parent"
+        <FrameLayout
+            android:layout_width="4dp"
             android:layout_height="match_parent"
-            android:textSize="30sp" />
+            android:background="@color/primary"
+            />
 
-        <Button
-            android:id="@+id/bt_delete_personal_clusters"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="delete" />
+            android:orientation="vertical"
+            >
 
-        <Button
-            android:id="@+id/bt_open_personal_clusters"
-            android:layout_width="match_parent"
-            android:text="more_info"
-            android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/tv_p_cluster_title"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:textAllCaps="true"
+                android:textColor="@color/accent"
+                android:textSize="20sp"
+                tools:text="title goes here"
+                />
+
+            <TextView
+                android:id="@+id/tv_p_cluster_timestamp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:textSize="12sp"
+                tools:text="timestamp goes here"
+                />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                >
+
+                <ImageButton
+                    android:id="@+id/ib_more_info_p_cluster"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_margin="7dp"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_info_outline_black_24dp"
+                    />
+
+
+                <ImageButton
+                    android:id="@+id/ib_delete_p_cluster"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_margin="7dp"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_delete_black_24dp"
+                    />
+
+            </FrameLayout>
+
+        </LinearLayout>
     </LinearLayout>
 
 

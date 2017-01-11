@@ -65,7 +65,7 @@ public class SharedExpensesFragment extends Fragment implements
 
     SharedExpensesAdapter adapter;
 
-    String selection = ExpenseContract.ExpenseEntry.COLUMN_FOREIGN_CLUSTER_ID + " = ?";
+    String selection = ExpenseEntry.FIREBASE_CLUSTER_KEY + " = ?";
     String[] selectionArgs;
 
     @Nullable
@@ -78,7 +78,7 @@ public class SharedExpensesFragment extends Fragment implements
             sharedCluster = arguments.getParcelable(SharedConstants.SHARE_CLUSTER_PARCEL);
         }
 
-        this.selectionArgs = new String[]{String.valueOf(sharedCluster.getOffline_id())};
+        this.selectionArgs = new String[]{String.valueOf(sharedCluster.getFirebase_cluster_id())};
         this.mContext = getContext();
 
         reference = FirebaseDatabase.getInstance().getReference();

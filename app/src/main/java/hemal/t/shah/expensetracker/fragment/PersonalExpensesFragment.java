@@ -66,8 +66,7 @@ public class PersonalExpensesFragment extends Fragment implements
     Context mContext;
     ClusterParcelable personalCluster;
 
-    String selection = ExpenseContract.ExpenseEntry.TABLE_NAME + "."
-            + ExpenseContract.ExpenseEntry.COLUMN_FOREIGN_CLUSTER_ID + " = ?";
+    String selection = ExpenseEntry.FIREBASE_CLUSTER_KEY + " = ?";
     String[] selectionArgs;
 
     @Nullable
@@ -81,8 +80,9 @@ public class PersonalExpensesFragment extends Fragment implements
             personalCluster = arguments.getParcelable(SharedConstants.SHARE_CLUSTER_PARCEL);
         }
 
-        this.selectionArgs = new String[]{String.valueOf(personalCluster.getOffline_id())};
+        this.selectionArgs = new String[]{String.valueOf(personalCluster.getFirebase_cluster_id())};
         this.mContext = getContext();
+
 
         reference = FirebaseDatabase.getInstance().getReference();
 

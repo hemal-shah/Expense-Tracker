@@ -60,7 +60,7 @@ public class SharedClusterAdapter
             String firebase_cluster_key = cursor.getString(index_firebase_key);
 
             final ClusterParcelable cluster = new ClusterParcelable(
-                    title, firebase_cluster_key, 1, startTime, cluster_id
+                    title, null, firebase_cluster_key, 1, startTime
             );
 
             String s = "Title = " + cluster.getTitle() +
@@ -90,7 +90,8 @@ public class SharedClusterAdapter
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView =
-                LayoutInflater.from(this.context).inflate(R.layout.row_shared_clusters, parent, false);
+                LayoutInflater.from(this.context).inflate(R.layout.row_shared_clusters, parent,
+                        false);
         return new ViewHolder(itemView);
     }
 

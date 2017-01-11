@@ -17,7 +17,7 @@ public class ClusterParcelable implements Parcelable {
         }
     };
     private String title, created_by_user, firebase_cluster_id;
-    private int is_shared, offline_id;
+    private int is_shared;
     private long timeStamp;
 
     public ClusterParcelable(String title, String created_by_user, String firebase_cluster_id,
@@ -29,29 +29,12 @@ public class ClusterParcelable implements Parcelable {
         this.timeStamp = timeStamp;
     }
 
-    public ClusterParcelable(String title, String firebase_cluster_id, int is_shared, long timeStamp, int id) {
-        this.title = title;
-        this.offline_id = id;
-        this.firebase_cluster_id = firebase_cluster_id;
-        this.is_shared = is_shared;
-        this.timeStamp = timeStamp;
-    }
-
-    public ClusterParcelable(String title, String created_by_user, int is_shared, int offline_id,
-            long timeStamp) {
-        this.title = title;
-        this.created_by_user = created_by_user;
-        this.is_shared = is_shared;
-        this.offline_id = offline_id;
-        this.timeStamp = timeStamp;
-    }
 
     protected ClusterParcelable(Parcel in) {
         title = in.readString();
         created_by_user = in.readString();
         firebase_cluster_id = in.readString();
         is_shared = in.readInt();
-        offline_id = in.readInt();
         timeStamp = in.readLong();
     }
 
@@ -61,7 +44,6 @@ public class ClusterParcelable implements Parcelable {
         dest.writeString(created_by_user);
         dest.writeString(firebase_cluster_id);
         dest.writeInt(is_shared);
-        dest.writeInt(offline_id);
         dest.writeLong(timeStamp);
     }
 
@@ -100,14 +82,6 @@ public class ClusterParcelable implements Parcelable {
 
     public void setIs_shared(int is_shared) {
         this.is_shared = is_shared;
-    }
-
-    public int getOffline_id() {
-        return offline_id;
-    }
-
-    public void setOffline_id(int offline_id) {
-        this.offline_id = offline_id;
     }
 
     public long getTimeStamp() {

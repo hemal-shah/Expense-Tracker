@@ -3,11 +3,12 @@ package hemal.t.shah.expensetracker.adapters;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hemal.shah.TimeTravel;
@@ -52,7 +53,6 @@ public class PersonalClusterAdapter
             long startTime = cursor.getLong(index_timestamp);
             String timeStamp = "";
             try {
-                Log.i(TAG, "onBindViewHolder: starttime " + startTime);
                 timeStamp = TimeTravel.getTimeElapsed(startTime, System.currentTimeMillis());
             } catch (TimeTravelException e) {
                 e.printStackTrace();
@@ -61,13 +61,16 @@ public class PersonalClusterAdapter
             int id = cursor.getInt(index_id);
             String cluster_key = cursor.getString(index_firebase_key);
             final ClusterParcelable cluster = new ClusterParcelable(
-                    title, cluster_key, 0, startTime, id
+                    title, null, cluster_key, 0, startTime
             );
 
-            String text = "Title = " + cluster.getTitle() + "\nTimeStamp = " + timeStamp;
+            //setting the title
+            viewHolder.title.setText(cluster.getTitle());
 
-            viewHolder.tv.setText(text);
+            //setting the timestamp
+            viewHolder.timeStamp.setText(timeStamp);
 
+            //setting action to perform on delete click..
             viewHolder.delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -77,7 +80,17 @@ public class PersonalClusterAdapter
                 }
             });
 
-            viewHolder.open.setOnClickListener(new View.OnClickListener() {
+            viewHolder.card.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (onCluster != null) {
+                        onCluster.onTouch(cluster);
+                    }
+                }
+            });
+
+            //Action to perform when clicked on more_info
+            viewHolder.more_info.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (onCluster != null) {
@@ -91,20 +104,27 @@ public class PersonalClusterAdapter
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView =
-                LayoutInflater.from(this.context).inflate(R.layout.row_personal_clusters, parent, false);
+                LayoutInflater.from(this.context).inflate(R.layout.row_personal_clusters, parent,
+                        false);
         return new ViewHolder(itemView);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.tv_single_personal_clusters_row)
-        TextView tv;
+        @BindView(R.id.ll_p_cluster)
+        LinearLayout card;
 
-        @BindView(R.id.bt_delete_personal_clusters)
-        Button delete;
+        @BindView(R.id.tv_p_cluster_title)
+        TextView title;
 
-        @BindView(R.id.bt_open_personal_clusters)
-        Button open;
+        @BindView(R.id.tv_p_cluster_timestamp)
+        TextView timeStamp;
+
+        @BindView(R.id.ib_delete_p_cluster)
+        ImageButton delete;
+
+        @BindView(R.id.ib_more_info_p_cluster)
+        ImageButton more_info;
 
         ViewHolder(View itemView) {
             super(itemView);

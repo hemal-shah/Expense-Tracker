@@ -93,11 +93,11 @@ public class PersonalClustersFragment extends Fragment implements
         user = FirebaseAuth.getInstance().getCurrentUser();
 
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(
-                context,
-                LinearLayoutManager.VERTICAL,
-                false
-        ));
+        recyclerView.setLayoutManager(
+                new LinearLayoutManager(
+                        context, LinearLayoutManager.VERTICAL, false
+                )
+        );
 
         recyclerView.hasFixedSize();
 
@@ -156,13 +156,14 @@ public class PersonalClustersFragment extends Fragment implements
                     public void onClick(DialogInterface dialog, int which) {
 
                         //First deleting cluster offline!
-                        DataDispenser dispenser = new DataDispenser(context.getContentResolver(), context);
+                        DataDispenser dispenser = new DataDispenser(context.getContentResolver(),
+                                context);
                         dispenser.startDelete(
                                 SharedConstants.TOKEN_DELETE_CLUSTER,
                                 null,
                                 ClusterEntry.CONTENT_URI,
-                                ClusterEntry._ID + "= ? AND " + ClusterEntry.COLUMN_FIREBASE_CLUSTER_KEY + " = ?",
-                                new String[]{String.valueOf(cluster.getOffline_id()),
+                                ClusterEntry.COLUMN_FIREBASE_CLUSTER_KEY + " = ?",
+                                new String[]{
                                         cluster.getFirebase_cluster_id()}
                         );
 
@@ -171,8 +172,8 @@ public class PersonalClustersFragment extends Fragment implements
                                 SharedConstants.TOKEN_DELETE_EXPENSES,
                                 null,
                                 ExpenseEntry.CONTENT_URI,
-                                ExpenseEntry.COLUMN_FOREIGN_CLUSTER_ID + "= ?",
-                                new String[]{String.valueOf(cluster.getOffline_id())}
+                                ExpenseEntry.FIREBASE_CLUSTER_KEY + "= ?",
+                                new String[]{String.valueOf(cluster.getFirebase_cluster_id())}
                         );
 
                         //Now, let's remove data from firebase.
@@ -184,9 +185,11 @@ public class PersonalClustersFragment extends Fragment implements
                                     .removeValue(new CompletionListener() {
                                         // TODO: 7/1/17 maybe remove completion listener
                                         @Override
-                                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                        public void onComplete(DatabaseError databaseError,
+                                                DatabaseReference databaseReference) {
                                             if (databaseError == null) {
-                                                Toast.makeText(context, "Removed Successfully!", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(context, "Removed Successfully!",
+                                                        Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                     });

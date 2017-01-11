@@ -90,7 +90,7 @@ public class TabContainerFragment extends Fragment {
         if (user != null) {
             if (mActionBar != null) {
                 mActionBar.setTitle(user.getDisplayName());
-                mActionBar.setSubtitle(user.getEmail());
+//                mActionBar.setSubtitle(user.getEmail());
             }
         }
 
