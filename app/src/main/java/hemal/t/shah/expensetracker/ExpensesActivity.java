@@ -54,6 +54,9 @@ public class ExpensesActivity extends AppCompatActivity {
     @BindString(R.string.add)
     String ADD;
 
+    @BindString(R.string.no_description_provided)
+    String NO_DESCRIPTION_PROVIDED;
+
     @BindString(R.string.error_string_length)
     String ERROR_STRING;
 
@@ -140,6 +143,8 @@ public class ExpensesActivity extends AppCompatActivity {
                 (TextInputEditText) dialogView.findViewById(R.id.tiet_about_dialog);
         final TextInputEditText et_amount =
                 (TextInputEditText) dialogView.findViewById(R.id.tiet_amount_dialog);
+        final TextInputEditText et_description =
+                (TextInputEditText) dialogView.findViewById(R.id.tiet_describe_dialog);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(ADD_EXPENSE)
@@ -158,13 +163,19 @@ public class ExpensesActivity extends AppCompatActivity {
                         String amount_string = et_amount.getText().toString();
                         if (amount_string.length() < 0) {
                             // TODO: 17/12/16 add snackbar here
-                            Toast.makeText(ExpensesActivity.this, ENTER_AMOUNT, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ExpensesActivity.this, ENTER_AMOUNT,
+                                    Toast.LENGTH_SHORT).show();
                             dialog.dismiss();
                         }
 
                         double amount = Double.parseDouble(amount_string);
 
-                        addExpense(about, amount);
+                        String description = et_description.getText().toString();
+                        if (description.length() == 0) {
+                            description = NO_DESCRIPTION_PROVIDED;
+                        }
+
+                        addExpense(about, amount, description);
                     }
                 })
                 .setNegativeButton(CANCEL, new DialogInterface.OnClickListener() {
@@ -177,7 +188,7 @@ public class ExpensesActivity extends AppCompatActivity {
                 .create().show();
     }
 
-    private void addExpense(String about, double amount) {
+    private void addExpense(String about, double amount, String description) {
 
         long timeStamp = System.currentTimeMillis();
 
@@ -188,10 +199,12 @@ public class ExpensesActivity extends AppCompatActivity {
         contentValues.put(ExpenseEntry.COLUMN_AMOUNT, amount);
         contentValues.put(ExpenseEntry.FIREBASE_CLUSTER_KEY, cluster_key);
         contentValues.put(ExpenseEntry.COLUMN_FIREBASE_EXPENSE_KEY, expense_key);
+        contentValues.put(ExpenseEntry.COLUMN_DESCRIBE, description);
         contentValues.put(ExpenseEntry.COLUMN_BY_FIREBASE_USER_UID, user.getUid());
         contentValues.put(ExpenseEntry.COLUMN_FIREBASE_USER_EMAIL, user.getEmail());
         contentValues.put(ExpenseEntry.COLUMN_FIREBASE_USER_NAME, user.getDisplayName());
-        contentValues.put(ExpenseEntry.COLUMN_FIREBASE_USER_URL, String.valueOf(user.getPhotoUrl()));
+        contentValues.put(ExpenseEntry.COLUMN_FIREBASE_USER_URL,
+                String.valueOf(user.getPhotoUrl()));
         contentValues.put(ExpenseContract.ExpenseEntry.COLUMN_TIMESTAMP, timeStamp);
 
         DataInsertionTask task = new DataInsertionTask(getContentResolver(), ExpensesActivity.this);
@@ -202,6 +215,7 @@ public class ExpensesActivity extends AppCompatActivity {
         Map<String, Object> expense = new HashMap<>();
         expense.put(SharedConstants.FIREBASE_ABOUT, about);
         expense.put(SharedConstants.FIREBASE_AMOUNT, amount);
+        expense.put(SharedConstants.FIREBASE_DESCRIPTION, description);
         expense.put(SharedConstants.FIREBASE_TIME_STAMP, timeStamp);
 
         if (is_shared == 0) {
@@ -213,8 +227,10 @@ public class ExpensesActivity extends AppCompatActivity {
                     .updateChildren(expense, new CompletionListener() {
                         // TODO: 7/1/17 remove
                         @Override
-                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                            Toast.makeText(ExpensesActivity.this, "Added!", Toast.LENGTH_SHORT).show();
+                        public void onComplete(DatabaseError databaseError,
+                                DatabaseReference databaseReference) {
+                            Toast.makeText(ExpensesActivity.this, "Added!",
+                                    Toast.LENGTH_SHORT).show();
                         }
                     });
         } else if (is_shared == 1) {
@@ -232,8 +248,10 @@ public class ExpensesActivity extends AppCompatActivity {
                     .updateChildren(expense, new CompletionListener() {
                         // TODO: 7/1/17 remove
                         @Override
-                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                            Toast.makeText(ExpensesActivity.this, "Added!", Toast.LENGTH_SHORT).show();
+                        public void onComplete(DatabaseError databaseError,
+                                DatabaseReference databaseReference) {
+                            Toast.makeText(ExpensesActivity.this, "Added!",
+                                    Toast.LENGTH_SHORT).show();
                         }
                     });
         }

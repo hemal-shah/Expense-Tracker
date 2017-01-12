@@ -4,7 +4,6 @@
     android:id="@+id/ll_activity_expenses_loader"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
     android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_activity_join_cluster"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        />
+
+    <EditText
+        android:id="@+id/et_join_cluster"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter 6 digit code here"
+        />
+
+    <Button
+        android:id="@+id/bt_join_cluster"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="JOIN"
+        android:textSize="20sp"
+        />
+
+</LinearLayout>

@@ -71,8 +71,12 @@ public class SharedConstants {
     public static final String FIREBASE_AMOUNT = "amount";
     public static final String FIREBASE_CREATED_BY = "user_id";
     public static final String FIREBASE_EXPENSES = "expenses";
+    public static final String FIREBASE_DESCRIPTION = "description";
     public static final String FIREBASE_BY_USER = "by_user";
     public static final String FIREBASE_EMAIL = "email";
     public static final String FIREBASE_PROFILE_URL = "profile_url";
     public static final String FIREBASE_TIME_STAMP = "timestamp";
+    public static final String FIREBASE_PATH_CLUSTER_ID = "shared_clusters_join_id";
+    public static final String FIREBASE_USERS_IN_CLUSTERS = "users_in_clusters";
+    public static final String FIREBASE_CLUSTERS_OF_USERS = "clusters_of_users";
 }

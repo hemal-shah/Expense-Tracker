@@ -34,9 +34,11 @@ public class ExpenseContract {
         //the amount paid
         public static final String COLUMN_AMOUNT = "amount"; //int
 
-        //timestamp when event occured.
+        //timestamp when event occurred.
         public static final String COLUMN_TIMESTAMP = "timestamp";
 
+        //A short description of the expense
+        public static final String COLUMN_DESCRIBE = "description";
         //firebase user UID
         public static final String COLUMN_BY_FIREBASE_USER_UID = "by_user";
 

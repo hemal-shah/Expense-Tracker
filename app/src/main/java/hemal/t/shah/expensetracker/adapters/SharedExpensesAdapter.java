@@ -39,7 +39,8 @@ public class SharedExpensesAdapter
     public void onBindViewHolder(ViewHolder viewHolder, Cursor cursor, int position) {
 
         int index_about, index_amount, index_timestamp, index_cluster_key,
-                index_user_key, index_user_name, index_user_email, index_user_url, index_expense_key;
+                index_user_key, index_user_name, index_user_email, index_user_url,
+                index_expense_key, index_description;
 
         index_about = cursor.getColumnIndex(ExpenseEntry.COLUMN_ABOUT);
         index_amount = cursor.getColumnIndex(ExpenseEntry.COLUMN_AMOUNT);
@@ -50,7 +51,7 @@ public class SharedExpensesAdapter
         index_user_url = cursor.getColumnIndex(ExpenseEntry.COLUMN_FIREBASE_USER_URL);
         index_user_email = cursor.getColumnIndex(ExpenseEntry.COLUMN_FIREBASE_USER_EMAIL);
         index_expense_key = cursor.getColumnIndex(ExpenseEntry.COLUMN_FIREBASE_EXPENSE_KEY);
-
+        index_description = cursor.getColumnIndex(ExpenseEntry.COLUMN_DESCRIBE);
 
         if (cursor.moveToPosition(position)) {
             String about = cursor.getString(index_about);
@@ -63,6 +64,7 @@ public class SharedExpensesAdapter
             String email = cursor.getString(index_user_email);
             String expense_key = cursor.getString(index_expense_key);
             String url = cursor.getString(index_user_url);
+            String description = cursor.getString(index_description);
             try {
                 timeStamp = TimeTravel.getTimeElapsed(startTime, System.currentTimeMillis());
             } catch (TimeTravelException e) {
@@ -74,7 +76,8 @@ public class SharedExpensesAdapter
             );
 
             final ExpenseParcelable expense =
-                    new ExpenseParcelable(about, cluster_key, user_key, userDetails, amount, expense_key);
+                    new ExpenseParcelable(about, cluster_key, user_key, userDetails, amount,
+                            expense_key, description);
 
 
             String text = about + "\n" + amount + "\n" + timeStamp + "\n" + user_key + "\n";
@@ -95,7 +98,8 @@ public class SharedExpensesAdapter
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView =
-                LayoutInflater.from(this.mContext).inflate(R.layout.row_shared_expenses, parent, false);
+                LayoutInflater.from(this.mContext).inflate(R.layout.row_shared_expenses, parent,
+                        false);
 
         return new ViewHolder(itemView);
     }

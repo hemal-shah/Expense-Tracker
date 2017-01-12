@@ -13,7 +13,7 @@ import hemal.t.shah.expensetracker.data.ExpenseContract.ExpenseEntry;
 class ExpenseDBHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "ExpenseDBHelper";
-    private static final int DATABASE_VERSION = 10;
+    private static final int DATABASE_VERSION = 13;
     private static final String DATABASE_NAME = "ExpenseDB.db";
 
     ExpenseDBHelper(Context context) {
@@ -49,10 +49,11 @@ class ExpenseDBHelper extends SQLiteOpenHelper {
          * amount REAL NOT NULL,
          * timestamp LONG,
          * expense_key_firebase TEXT NOT NULL,
-         * by_user TEXT NOT NULL,
+         * by_user TEXT,
+         * description TEXT,
          * firebase_cluster_key TEXT NOT NULL,
          * firebaes_uname TEXT,
-         * firebase_u_email TEX,
+         * firebase_u_email TEXT,
          * firebase_profile_photo_url TEXT);
          */
         String sql_create_expenses_table = "CREATE TABLE "
@@ -61,9 +62,10 @@ class ExpenseDBHelper extends SQLiteOpenHelper {
                 + ExpenseEntry.COLUMN_ABOUT + " TEXT NOT NULL, "
                 + ExpenseEntry.COLUMN_AMOUNT + " REAL NOT NULL, "
                 + ExpenseEntry.COLUMN_TIMESTAMP + " LONG, "
+                + ExpenseEntry.COLUMN_DESCRIBE + " TEXT, "
                 + ExpenseEntry.FIREBASE_CLUSTER_KEY + " TEXT NOT NULL,"
                 + ExpenseEntry.COLUMN_FIREBASE_EXPENSE_KEY + " TEXT NOT NULL,"
-                + ExpenseEntry.COLUMN_BY_FIREBASE_USER_UID + " TEXT NOT NULL,"
+                + ExpenseEntry.COLUMN_BY_FIREBASE_USER_UID + " TEXT ,"
                 + ExpenseEntry.COLUMN_FIREBASE_USER_NAME + " TEXT,"
                 + ExpenseEntry.COLUMN_FIREBASE_USER_EMAIL + " TEX,"
                 + ExpenseEntry.COLUMN_FIREBASE_USER_URL + " TEXT);";

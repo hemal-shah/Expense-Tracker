@@ -3,6 +3,8 @@ package hemal.t.shah.expensetracker.fragment;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -31,6 +33,7 @@ import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import hemal.t.shah.expensetracker.JoinSharedCluster;
 import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.adapters.ViewPagerTabAdapter;
 import hemal.t.shah.expensetracker.data.DataInsertionTask;
@@ -57,6 +60,18 @@ public class TabContainerFragment extends Fragment {
 
     @BindString(R.string.create_cluster)
     String CREATE_CLUSTER;
+
+    @BindString(R.string.create)
+    String CREATE;
+
+    @BindString(R.string.join_cluster)
+    String JOIN_CLUSTER;
+
+    @BindString(R.string.error_string_length)
+    String STRING_LENGTH_ERROR;
+
+    @BindString(R.string.cancel)
+    String CANCEL;
 
     ActionBar mActionBar;
     FirebaseUser user;
@@ -113,9 +128,10 @@ public class TabContainerFragment extends Fragment {
         final TextInputEditText et_new_personal_cluster =
                 (TextInputEditText) dialogView.findViewById(R.id.tiet_dialog_new_cluster);
 
-        final RadioGroup radioGroup = (RadioGroup) dialogView.findViewById(R.id.rg_dialog_new_cluster);
+        final RadioGroup radioGroup = (RadioGroup) dialogView.findViewById(
+                R.id.rg_dialog_new_cluster);
 
-        builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(CREATE, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
@@ -123,7 +139,7 @@ public class TabContainerFragment extends Fragment {
 
                 if (title.length() <= 3 || title.length() >= 15) {
                     // TODO: 17/12/16 add snackbar here
-                    Toast.makeText(context, "Length should be between 3 to 15 characters.",
+                    Toast.makeText(context, STRING_LENGTH_ERROR,
                             Toast.LENGTH_SHORT).show();
                     dialog.dismiss();
                 }
@@ -140,12 +156,22 @@ public class TabContainerFragment extends Fragment {
                 addNewCluster(title, is_shared);
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(CANCEL, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
             }
         });
+
+        builder.setNeutralButton(JOIN_CLUSTER, new OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(context, JoinSharedCluster.class);
+                startActivity(intent);
+                dialog.dismiss();
+            }
+        });
+
         builder.setView(dialogView);
         AlertDialog dialog = builder.create();
         dialog.show();
@@ -232,12 +258,61 @@ public class TabContainerFragment extends Fragment {
                 reference.child(SharedConstants.FIREBASE_PATH_SHARED_CLUSTERS)
                         .child(cluster_key)
                         .updateChildren(cluster);
+
+
+                /**
+                 * Create a child in the "clusters_of_users" which indicates
+                 * which user is participating in which joined clusters.
+                 */
+                Map<String, Object> addClusterIdToUsers = new HashMap<>();
+                addClusterIdToUsers.put(SharedConstants.FIREBASE_PATH_SHARED_CLUSTERS, cluster_key);
+
+                reference.child(SharedConstants.FIREBASE_CLUSTERS_OF_USERS)
+                        .child(user.getUid())
+                        .push()
+                        .updateChildren(addClusterIdToUsers);
+
+
+                /**
+                 * Create a child in the "users_in_clusters" node in firebase,
+                 * which contains, which users are joined in which clusters.
+                 */
+                Map<String, Object> addUserIdToClusters = new HashMap<>();
+                addUserIdToClusters.put(SharedConstants.FIREBASE_USER_UID, user.getUid());
+
+                reference.child(SharedConstants.FIREBASE_USERS_IN_CLUSTERS)
+                        .child(cluster_key)
+                        .push()
+                        .updateChildren(addUserIdToClusters);
+
+                /**
+                 * Generate a random key for the cluster,
+                 * so that, this key can be later use, for users to join
+                 * this cluster.
+                 */
+                String randomKey = generateRandomNumber();
+                Map<String, Object> addKeyForJoin = new HashMap<>();
+                addKeyForJoin.put(randomKey, cluster_key);
+                reference.child(SharedConstants.FIREBASE_PATH_CLUSTER_ID)
+                        .push()
+                        .updateChildren(addKeyForJoin);
             }
 
         } else {
             // TODO: 6/1/17 Add intent to redirect to sign in
-            Toast.makeText(context, "You are not signed in. Sign in to continue", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "You are not signed in. Sign in to continue",
+                    Toast.LENGTH_SHORT).show();
         }
+    }
 
+
+    /**
+     * Simple function that finds the system's current time,
+     * and takes 6 digits, from middle,and returns them.
+     *
+     * @return The generated number in String format.
+     */
+    public String generateRandomNumber() {
+        return String.valueOf(System.currentTimeMillis()).substring(3, 9);
     }
 }

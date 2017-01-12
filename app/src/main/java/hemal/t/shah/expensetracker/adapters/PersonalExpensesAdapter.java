@@ -42,13 +42,14 @@ public class PersonalExpensesAdapter
     public void onBindViewHolder(ViewHolder viewHolder, Cursor cursor, int position) {
         int index_about, index_amount, index_timestamp, index_cluster_key,
                 index_user_key, index_user_name, index_user_email, index_user_url,
-                index_expense_key;
+                index_expense_key, index_description;
 
         index_about = cursor.getColumnIndex(ExpenseEntry.COLUMN_ABOUT);
         index_amount = cursor.getColumnIndex(ExpenseEntry.COLUMN_AMOUNT);
         index_timestamp = cursor.getColumnIndex(ExpenseEntry.COLUMN_TIMESTAMP);
         index_user_key = cursor.getColumnIndex(ExpenseEntry.COLUMN_BY_FIREBASE_USER_UID);
         index_cluster_key = cursor.getColumnIndex(ExpenseEntry.FIREBASE_CLUSTER_KEY);
+        index_description = cursor.getColumnIndex(ExpenseEntry.COLUMN_DESCRIBE);
         index_user_name = cursor.getColumnIndex(ExpenseEntry.COLUMN_FIREBASE_USER_NAME);
         index_user_url = cursor.getColumnIndex(ExpenseEntry.COLUMN_FIREBASE_USER_URL);
         index_user_email = cursor.getColumnIndex(ExpenseEntry.COLUMN_FIREBASE_USER_EMAIL);
@@ -65,6 +66,7 @@ public class PersonalExpensesAdapter
             String email = cursor.getString(index_user_email);
             String expense_key = cursor.getString(index_expense_key);
             String url = cursor.getString(index_user_url);
+            String description = cursor.getString(index_description);
 
             String timeStamp = "";
             try {
@@ -75,12 +77,13 @@ public class PersonalExpensesAdapter
 
 
             final ExpenseParcelable expense =
-                    new ExpenseParcelable(about, cluster_key, user_id, amount, expense_key);
+                    new ExpenseParcelable(about, cluster_key, user_id, amount, expense_key,
+                            description);
 
             viewHolder.about.setText(about);
             viewHolder.amount.setText(String.valueOf(amount));
             viewHolder.time.setText(timeStamp);
-
+            viewHolder.description.setText(description);
             viewHolder.delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -116,6 +119,9 @@ public class PersonalExpensesAdapter
 
         @BindView(R.id.tv_amount_p_expenses)
         TextView amount;
+
+        @BindView(R.id.tv_description_p_expenses)
+        TextView description;
 
         ViewHolder(View itemView) {
             super(itemView);

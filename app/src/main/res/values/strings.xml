@@ -16,6 +16,10 @@
     <string name="sort_a_z">A - Z</string>
     <string name="sort_z_a">Z - A</string>
     <string name="filter">Filter</string>
+    <string name="create">Create</string>
+    <string name="join_cluster">Join Cluster</string>
     <string name="sort_l_h">Low - High</string>
+    <string name="no_description_provided">No description provided.</string>
     <string name="sort_h_l">High - Low</string>
+    <string name="describe">Additional Details (Optional)</string>
 </resources>

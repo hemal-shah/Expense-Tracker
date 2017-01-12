@@ -120,6 +120,8 @@ public class PersonalExpensesFragment extends Fragment implements
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
+        // TODO: 13/1/17 only load required fields from data, instead of null
+
         switch (id) {
             case SharedConstants.CURSOR_EXPENSES_PERSONAL:
 
@@ -184,18 +186,28 @@ public class PersonalExpensesFragment extends Fragment implements
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         adapter.swapCursor(data);
+
+        /**
+         * No calculation needed if length of data is zero.
+         */
+        if (data.getCount() == 0) return;
+
+        /**
+         * Load & Calculate the sum and display it in the action bar
+         * subtitle.
+         */
+        int index_amount = data.getColumnIndex(
+                ExpenseEntry.COLUMN_AMOUNT
+        );
         double total = 0;
         for (int i = 0; i < data.getCount(); i++) {
             data.moveToPosition(i);
-            double amount = data.getDouble(
-                    data.getColumnIndex(
-                            ExpenseEntry.COLUMN_AMOUNT
-                    )
-            );
+            double amount = data.getDouble(index_amount);
             total += amount;
         }
 
         if (mActionBar != null && total != 0) {
+
             mActionBar.setSubtitle("Total : " + total);
         }
 
