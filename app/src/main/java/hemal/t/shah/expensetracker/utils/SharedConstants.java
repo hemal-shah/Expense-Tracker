@@ -27,8 +27,22 @@ public class SharedConstants {
 
     //to delete existing clusters.
     public static final int TOKEN_DELETE_CLUSTER = 104;
+
     //to load expenses from personal clusters.
     public static final int CURSOR_EXPENSES_PERSONAL = 105;
+
+    //sort p expenses a to z
+    public static final int CURSOR_EXPENSES_PERSONAL_A_Z = 113;
+
+    //sort p expenses z to a
+    public static final int CURSOR_EXPENSES_PERSONAL_Z_A = 114;
+
+    //sort p expenses highest to lowest
+    public static final int CURSOR_EXPENSES_PERSONAL_H_L = 115;
+
+    //sort p expenses lowest to highest
+    public static final int CURSOR_EXPENSES_PERSONAL_L_H = 116;
+
 
     //to load expenses from shared clusters.
     public static final int CURSOR_EXPENSES_SHARED = 106;

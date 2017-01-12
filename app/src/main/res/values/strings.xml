@@ -16,4 +16,6 @@
     <string name="sort_a_z">A - Z</string>
     <string name="sort_z_a">Z - A</string>
     <string name="filter">Filter</string>
+    <string name="sort_l_h">Low - High</string>
+    <string name="sort_h_l">High - Low</string>
 </resources>

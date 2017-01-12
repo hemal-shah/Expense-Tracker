@@ -14,6 +14,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -30,7 +33,6 @@ import butterknife.ButterKnife;
 import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.adapters.PersonalExpensesAdapter;
 import hemal.t.shah.expensetracker.data.DataDispenser;
-import hemal.t.shah.expensetracker.data.ExpenseContract;
 import hemal.t.shah.expensetracker.data.ExpenseContract.ExpenseEntry;
 import hemal.t.shah.expensetracker.interfaces.OnExpense;
 import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
@@ -68,6 +70,12 @@ public class PersonalExpensesFragment extends Fragment implements
 
     String selection = ExpenseEntry.FIREBASE_CLUSTER_KEY + " = ?";
     String[] selectionArgs;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Nullable
     @Override
@@ -111,11 +119,49 @@ public class PersonalExpensesFragment extends Fragment implements
             case SharedConstants.CURSOR_EXPENSES_PERSONAL:
                 return new CursorLoader(
                         this.mContext,
-                        ExpenseContract.ExpenseEntry.CONTENT_URI,
+                        ExpenseEntry.CONTENT_URI,
                         null,
                         selection,
                         selectionArgs,
                         null
+                );
+            case SharedConstants.CURSOR_EXPENSES_PERSONAL_A_Z:
+                return new CursorLoader(
+                        this.mContext,
+                        ExpenseEntry.CONTENT_URI,
+                        null,
+                        selection,
+                        selectionArgs,
+                        ExpenseEntry.COLUMN_ABOUT + " COLLATE NOCASE ASC"
+                );
+            case SharedConstants.CURSOR_EXPENSES_PERSONAL_Z_A:
+                return new CursorLoader(
+                        this.mContext,
+                        ExpenseEntry.CONTENT_URI,
+                        null,
+                        selection,
+                        selectionArgs,
+                        ExpenseEntry.COLUMN_ABOUT + " COLLATE NOCASE DESC"
+                );
+
+            case SharedConstants.CURSOR_EXPENSES_PERSONAL_H_L:
+                return new CursorLoader(
+                        this.mContext,
+                        ExpenseEntry.CONTENT_URI,
+                        null,
+                        selection,
+                        selectionArgs,
+                        ExpenseEntry.COLUMN_AMOUNT + " DESC"
+                );
+
+            case SharedConstants.CURSOR_EXPENSES_PERSONAL_L_H:
+                return new CursorLoader(
+                        this.mContext,
+                        ExpenseEntry.CONTENT_URI,
+                        null,
+                        selection,
+                        selectionArgs,
+                        ExpenseEntry.COLUMN_AMOUNT + " ASC"
                 );
             default:
                 return null;
@@ -156,7 +202,8 @@ public class PersonalExpensesFragment extends Fragment implements
                                 null,
                                 ExpenseEntry.CONTENT_URI,
                                 ExpenseEntry.COLUMN_FIREBASE_EXPENSE_KEY + " = ?",
-                                new String[]{String.valueOf(expenseParcelable.getFirebase_expense_key())}
+                                new String[]{
+                                        String.valueOf(expenseParcelable.getFirebase_expense_key())}
                         );
 
                         reference.child(SharedConstants.FIREBASE_PATH_PERSONAL_CLUSTERS)
@@ -168,12 +215,47 @@ public class PersonalExpensesFragment extends Fragment implements
                                     @Override
                                     public void onComplete(DatabaseError databaseError,
                                             DatabaseReference databaseReference) {
-                                        Toast.makeText(mContext, "Deleted!", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(mContext, "Deleted!",
+                                                Toast.LENGTH_SHORT).show();
                                     }
                                 });
                     }
                 });
 
         builder.create().show();
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_personal_expenses, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int TOKEN = -1;
+        switch (item.getItemId()) {
+            case R.id.menu_p_expense_a_z:
+                TOKEN = SharedConstants.CURSOR_EXPENSES_PERSONAL_A_Z;
+                break;
+            case R.id.menu_p_expense_h_l:
+                TOKEN = SharedConstants.CURSOR_EXPENSES_PERSONAL_H_L;
+                break;
+            case R.id.menu_p_expense_l_h:
+                TOKEN = SharedConstants.CURSOR_EXPENSES_PERSONAL_L_H;
+                break;
+            case R.id.menu_p_expense_z_a:
+                TOKEN = SharedConstants.CURSOR_EXPENSES_PERSONAL_Z_A;
+                break;
+            default:
+                return false;
+        }
+        getActivity().getSupportLoaderManager().initLoader(
+                TOKEN,
+                null,
+                this
+        );
+        return true;
     }
 }

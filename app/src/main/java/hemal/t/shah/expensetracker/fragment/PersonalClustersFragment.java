@@ -87,7 +87,7 @@ public class PersonalClustersFragment extends Fragment implements
 
         context = getContext();
 
-        //Gettings firebase ready
+        //Getting firebase ready
         reference = FirebaseDatabase.getInstance().getReference();
         user = FirebaseAuth.getInstance().getCurrentUser();
 

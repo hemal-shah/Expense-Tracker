@@ -3,20 +3,28 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/menu_filter_personal_clusters"
+        android:id="@+id/item_container_p_expenses"
         android:icon="@drawable/ic_sort_white_24dp"
         android:title="@string/filter"
         app:showAsAction="always">
 
         <menu>
             <item
-                android:id="@+id/sort_a_z"
+                android:id="@+id/menu_p_expense_a_z"
                 android:icon="@drawable/ic_keyboard_arrow_right_black_24dp"
                 android:title="@string/sort_a_z" />
             <item
-                android:id="@+id/sort_z_a"
+                android:id="@+id/menu_p_expense_z_a"
                 android:icon="@drawable/ic_keyboard_arrow_left_black_24dp"
                 android:title="@string/sort_z_a" />
+            <item
+                android:id="@+id/menu_p_expense_h_l"
+                android:icon="@drawable/ic_trending_down_black_24dp"
+                android:title="@string/sort_h_l" />
+            <item
+                android:id="@+id/menu_p_expense_l_h"
+                android:icon="@drawable/ic_trending_up_black_24dp"
+                android:title="@string/sort_l_h" />
         </menu>
 
     </item>
