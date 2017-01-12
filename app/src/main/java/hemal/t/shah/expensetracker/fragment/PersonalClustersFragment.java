@@ -229,7 +229,6 @@ public class PersonalClustersFragment extends Fragment implements
 
     @Override
     public void onTouch(ClusterParcelable cluster) {
-
         Intent intent = new Intent(this.context, ExpensesActivity.class);
         intent.putExtra(SharedConstants.SHARE_CLUSTER_PARCEL, cluster);
         startActivity(intent);

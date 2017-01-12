@@ -10,7 +10,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -53,7 +55,6 @@ public class PersonalExpensesFragment extends Fragment implements
     @BindView(R.id.rv_personal_expenses_fragment)
     RecyclerView recyclerView;
 
-
     @BindString(R.string.are_you_sure)
     String ARE_YOU_SURE;
 
@@ -62,6 +63,8 @@ public class PersonalExpensesFragment extends Fragment implements
 
     @BindString(R.string.delete_confirm)
     String DELETE_CONFIRM;
+
+    ActionBar mActionBar;
 
     PersonalExpensesAdapter adapter = null;
 
@@ -91,6 +94,8 @@ public class PersonalExpensesFragment extends Fragment implements
         this.selectionArgs = new String[]{String.valueOf(personalCluster.getFirebase_cluster_id())};
         this.mContext = getContext();
 
+        //getting action bar reference from parent activity
+        mActionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
 
         reference = FirebaseDatabase.getInstance().getReference();
 
@@ -117,6 +122,7 @@ public class PersonalExpensesFragment extends Fragment implements
 
         switch (id) {
             case SharedConstants.CURSOR_EXPENSES_PERSONAL:
+
                 return new CursorLoader(
                         this.mContext,
                         ExpenseEntry.CONTENT_URI,
@@ -125,7 +131,9 @@ public class PersonalExpensesFragment extends Fragment implements
                         selectionArgs,
                         null
                 );
+
             case SharedConstants.CURSOR_EXPENSES_PERSONAL_A_Z:
+
                 return new CursorLoader(
                         this.mContext,
                         ExpenseEntry.CONTENT_URI,
@@ -134,7 +142,9 @@ public class PersonalExpensesFragment extends Fragment implements
                         selectionArgs,
                         ExpenseEntry.COLUMN_ABOUT + " COLLATE NOCASE ASC"
                 );
+
             case SharedConstants.CURSOR_EXPENSES_PERSONAL_Z_A:
+
                 return new CursorLoader(
                         this.mContext,
                         ExpenseEntry.CONTENT_URI,
@@ -145,6 +155,7 @@ public class PersonalExpensesFragment extends Fragment implements
                 );
 
             case SharedConstants.CURSOR_EXPENSES_PERSONAL_H_L:
+
                 return new CursorLoader(
                         this.mContext,
                         ExpenseEntry.CONTENT_URI,
@@ -155,6 +166,7 @@ public class PersonalExpensesFragment extends Fragment implements
                 );
 
             case SharedConstants.CURSOR_EXPENSES_PERSONAL_L_H:
+
                 return new CursorLoader(
                         this.mContext,
                         ExpenseEntry.CONTENT_URI,
@@ -163,6 +175,7 @@ public class PersonalExpensesFragment extends Fragment implements
                         selectionArgs,
                         ExpenseEntry.COLUMN_AMOUNT + " ASC"
                 );
+
             default:
                 return null;
         }
@@ -171,6 +184,21 @@ public class PersonalExpensesFragment extends Fragment implements
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         adapter.swapCursor(data);
+        double total = 0;
+        for (int i = 0; i < data.getCount(); i++) {
+            data.moveToPosition(i);
+            double amount = data.getDouble(
+                    data.getColumnIndex(
+                            ExpenseEntry.COLUMN_AMOUNT
+                    )
+            );
+            total += amount;
+        }
+
+        if (mActionBar != null && total != 0) {
+            mActionBar.setSubtitle("Total : " + total);
+        }
+
     }
 
     @Override
