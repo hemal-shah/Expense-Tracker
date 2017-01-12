@@ -3,21 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/menu_filter_personal_clusters"
-        android:title="Filter"
-        app:showAsAction="always"
-        android:icon="@drawable/ic_filter_list_white_24dp">
+        android:icon="@drawable/ic_filter_list_white_24dp"
+        android:title="@string/filter"
+        app:showAsAction="always">
 
         <menu>
             <item
-                android:id="@+id/sort_1"
-                android:title="sort 1" />
+                android:id="@+id/sort_a_z"
+                android:title="@string/sort_a_z" />
             <item
-                android:id="@+id/sort_2"
-                android:title="sort 2" />
-            <item
-                android:id="@+id/sort_3"
-                android:title="sort 3" />
-
+                android:id="@+id/sort_z_a"
+                android:title="@string/sort_z_a" />
         </menu>
 
     </item>

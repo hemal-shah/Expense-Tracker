@@ -36,7 +36,6 @@ import hemal.t.shah.expensetracker.ExpensesActivity;
 import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.adapters.PersonalClusterAdapter;
 import hemal.t.shah.expensetracker.data.DataDispenser;
-import hemal.t.shah.expensetracker.data.ExpenseContract;
 import hemal.t.shah.expensetracker.data.ExpenseContract.ClusterEntry;
 import hemal.t.shah.expensetracker.data.ExpenseContract.ExpenseEntry;
 import hemal.t.shah.expensetracker.interfaces.OnCluster;
@@ -125,16 +124,36 @@ public class PersonalClustersFragment extends Fragment implements
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
+        String selection = ClusterEntry.COLUMN_IS_SHARED + " = 0";
         switch (id) {
             case SharedConstants.CURSOR_PERSONAL:
-                String selection = ExpenseContract.ClusterEntry.COLUMN_IS_SHARED + " = 0";
                 return new CursorLoader(
                         context,
-                        ExpenseContract.ClusterEntry.CONTENT_URI,
+                        ClusterEntry.CONTENT_URI,
                         null,
                         selection,
                         null,
                         null
+                );
+
+            case SharedConstants.CURSOR_PERSONAL_A_Z:
+                return new CursorLoader(
+                        context,
+                        ClusterEntry.CONTENT_URI,
+                        null,
+                        selection,
+                        null,
+                        ClusterEntry.COLUMN_TITLE + " ASC"
+                );
+
+            case SharedConstants.CURSOR_PERSONAL_Z_A:
+                return new CursorLoader(
+                        context,
+                        ClusterEntry.CONTENT_URI,
+                        null,
+                        selection,
+                        null,
+                        ClusterEntry.COLUMN_TITLE + " DESC"
                 );
 
             default:
@@ -226,16 +245,22 @@ public class PersonalClustersFragment extends Fragment implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.sort_1:
-                Toast.makeText(context, "sort 1", Toast.LENGTH_SHORT).show();
+            case R.id.sort_a_z:
+                getActivity().getSupportLoaderManager()
+                        .initLoader(
+                                SharedConstants.CURSOR_PERSONAL_A_Z,
+                                null,
+                                this
+                        );
                 return true;
 
-            case R.id.sort_2:
-                Toast.makeText(context, "sort 2", Toast.LENGTH_SHORT).show();
-                return true;
-
-            case R.id.sort_3:
-                Toast.makeText(context, "sort 3", Toast.LENGTH_SHORT).show();
+            case R.id.sort_z_a:
+                getActivity().getSupportLoaderManager()
+                        .initLoader(
+                                SharedConstants.CURSOR_PERSONAL_Z_A,
+                                null,
+                                this
+                        );
                 return true;
         }
 

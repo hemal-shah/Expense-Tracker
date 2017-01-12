@@ -16,6 +16,12 @@ public class SharedConstants {
     //To load all personal clusters for recyclerView
     public static final int CURSOR_PERSONAL = 102;
 
+    //sort cursor a to z
+    public static final int CURSOR_PERSONAL_A_Z = 111;
+
+    //sort cursor z to a
+    public static final int CURSOR_PERSONAL_Z_A = 112;
+
     //To load shared clusters for recyclerView
     public static final int CURSOR_SHARED = 103;
 

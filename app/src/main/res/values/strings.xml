@@ -13,4 +13,7 @@
     <string name="add" translatable="true">Add!</string>
     <string name="error_string_length" translatable="true">Length should be between 3 to 15 characters.</string>
     <string name="create_cluster" translatable="true">Create Cluster</string>
+    <string name="sort_a_z">A - Z</string>
+    <string name="sort_z_a">Z - A</string>
+    <string name="filter">Filter</string>
 </resources>
