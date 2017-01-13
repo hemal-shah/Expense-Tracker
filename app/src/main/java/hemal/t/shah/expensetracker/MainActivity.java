@@ -34,6 +34,7 @@ import hemal.t.shah.expensetracker.data.ExpenseContract.ExpenseEntry;
 import hemal.t.shah.expensetracker.fragment.TabContainerFragment;
 import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
 import hemal.t.shah.expensetracker.pojo.ExpenseParcelable;
+import hemal.t.shah.expensetracker.pojo.FirebaseUserDetails;
 import hemal.t.shah.expensetracker.utils.PreferenceManager;
 import hemal.t.shah.expensetracker.utils.SharedConstants;
 
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     private ChildEventListener loadKeysOfSharedClusters;
 
     private FragmentManager manager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
                             .commit();
                 } else {
                     //User not signed in.
+                    dataCleanUpOnSignOut();
                     startActivityForResult(AuthUI.getInstance()
                                     .createSignInIntentBuilder()
                                     .setTheme(R.style.FirebaseUITheme)
@@ -113,15 +116,19 @@ public class MainActivity extends AppCompatActivity {
          * user is a part of, for which, we would concern the node
          * "clusters_of_users"
          */
-        final ArrayList<String> clusterKeys = new ArrayList<>();
-
         loadKeysOfSharedClusters = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+
+                ArrayList<String> clusterKeys = new ArrayList<>();
+
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     clusterKeys.add(snapshot.getValue().toString());
-                    Log.i(TAG, "onChildAdded: cluster key added! " + clusterKeys);
                 }
+
+                loadSharedClusterData(clusterKeys);
+                clusterKeys.clear();
             }
 
             @Override
@@ -151,6 +158,149 @@ public class MainActivity extends AppCompatActivity {
                 .addChildEventListener(loadKeysOfSharedClusters);
     }
 
+    /**
+     * Loads data from firebase based on the cluster key's provided.
+     * Only adds those data which is currently not present in offline database.
+     *
+     * @param clusterKeys ArrayList of cluster keys.
+     */
+    private void loadSharedClusterData(ArrayList<String> clusterKeys) {
+
+        for (final String clusterKey : clusterKeys) {
+
+            if (PreferenceManager.checkKeyAlreadyAdded(mContext, clusterKey)) {
+                Log.i(TAG, "loadSharedClusterData: key is already added!");
+                //check for next key.
+                continue;
+            }
+
+            //key was not present, but now add it
+            PreferenceManager.addClusterKeyToTinyDB(mContext, clusterKey);
+
+            reference.child(SharedConstants.FIREBASE_PATH_SHARED_CLUSTERS)
+                    .child(clusterKey)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                            ArrayList<ExpenseParcelable> expenses =
+                                    new ArrayList<>();
+
+                            String createdByUserEmail = dataSnapshot
+                                    .child(SharedConstants.FIREBASE_EMAIL).getValue().toString();
+                            String createdByUserName = dataSnapshot
+                                    .child(SharedConstants.FIREBASE_USER_NAME).getValue()
+                                    .toString();
+                            String createdByUserURL = dataSnapshot
+                                    .child(SharedConstants.FIREBASE_PROFILE_URL).getValue()
+                                    .toString();
+                            long timeStampCreated = Long.parseLong(dataSnapshot
+                                    .child(SharedConstants.FIREBASE_TIME_STAMP).getValue()
+                                    .toString());
+                            String clusterTitle = dataSnapshot
+                                    .child(SharedConstants.FIREBASE_TITLE).getValue().toString();
+
+                            ClusterParcelable clusterParcelable = new ClusterParcelable(
+                                    clusterTitle, createdByUserName, clusterKey, createdByUserEmail,
+                                    createdByUserURL, 1, timeStampCreated
+                            );
+
+                            for (DataSnapshot sharedExpenses : dataSnapshot.child(
+                                    SharedConstants.FIREBASE_EXPENSES).getChildren()) {
+                                String expenseKey = sharedExpenses.getKey();
+
+                                String about = sharedExpenses.child(
+                                        SharedConstants.FIREBASE_ABOUT).getValue().toString();
+                                double amount = Double.parseDouble(
+                                        sharedExpenses.child(
+                                                SharedConstants.FIREBASE_AMOUNT).getValue()
+                                                .toString());
+                                String description = sharedExpenses.child(
+                                        SharedConstants.FIREBASE_DESCRIPTION).getValue().toString();
+                                String expenseByUserName = sharedExpenses.child(
+                                        SharedConstants.FIREBASE_USER_NAME).getValue().toString();
+                                String expensesByUserEmail = sharedExpenses.child(
+                                        SharedConstants.FIREBASE_EMAIL).getValue().toString();
+                                String expenseByUserURL = sharedExpenses.child(
+                                        SharedConstants.FIREBASE_PROFILE_URL).getValue().toString();
+                                long timeStamp = Long.parseLong(
+                                        sharedExpenses.child(
+                                                SharedConstants.FIREBASE_TIME_STAMP).getValue()
+                                                .toString());
+
+                                FirebaseUserDetails details = new FirebaseUserDetails(
+                                        expenseByUserName, expensesByUserEmail, "", expenseByUserURL
+                                );
+                                expenses.add(new ExpenseParcelable(
+                                        about, clusterKey, "", details, amount, expenseKey,
+                                        description, timeStamp
+                                ));
+                            }
+
+                            addSharedClusterDetailsToDB(clusterParcelable, expenses);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+        }
+    }
+
+    /**
+     * Adds the items to the offline database...
+     */
+    private void addSharedClusterDetailsToDB(ClusterParcelable clusterParcelable,
+            ArrayList<ExpenseParcelable> expenses) {
+
+        /**
+         * First add the shared cluster...
+         */
+
+        ContentValues values = new ContentValues();
+        values.put(ClusterEntry.COLUMN_TITLE, clusterParcelable.getTitle());
+        values.put(ClusterEntry.COLUMN_IS_SHARED, 1);
+        values.put(ClusterEntry.COLUMN_FIREBASE_CLUSTER_KEY,
+                clusterParcelable.getFirebase_cluster_id());
+        values.put(ClusterEntry.COLUMN_TIMESTAMP, clusterParcelable.getTimeStamp());
+
+        DataInsertionTask task = new DataInsertionTask(getContentResolver(),
+                mContext);
+        task.startInsert(
+                SharedConstants.TOKEN_ADD_NEW_CLUSTER,
+                null,
+                ClusterEntry.CONTENT_URI,
+                values
+        );
+
+        for (ExpenseParcelable expense : expenses) {
+            ContentValues value = new ContentValues();
+            value.put(ExpenseEntry.FIREBASE_CLUSTER_KEY, expense.getFirebase_cluster_ref_key());
+            value.put(ExpenseEntry.COLUMN_FIREBASE_EXPENSE_KEY, expense.getFirebase_expense_key());
+            value.put(ExpenseEntry.COLUMN_ABOUT, expense.getAbout());
+            value.put(ExpenseEntry.COLUMN_DESCRIBE, expense.getDescription());
+            value.put(ExpenseEntry.COLUMN_AMOUNT, expense.getAmount());
+            value.put(ExpenseEntry.COLUMN_TIMESTAMP, expense.getTimeStamp());
+
+            value.put(ExpenseEntry.COLUMN_FIREBASE_USER_EMAIL,
+                    expense.getUserDetails().getUser_email());
+            value.put(ExpenseEntry.COLUMN_FIREBASE_USER_NAME,
+                    expense.getUserDetails().getUser_name());
+            value.put(ExpenseEntry.COLUMN_FIREBASE_USER_URL,
+                    expense.getUserDetails().getUser_photo_url());
+
+            // TODO: 13/1/17 Maybe later change to bulkInsert
+            task.startInsert(
+                    SharedConstants.TOKEN_ADD_NEW_EXPENSE,
+                    null,
+                    ExpenseEntry.CONTENT_URI,
+                    value
+            );
+        }
+
+    }
+
 
     @Override
     protected void onPause() {
@@ -159,10 +309,25 @@ public class MainActivity extends AppCompatActivity {
         //remove listeners
         mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
 
-        if (personalClusterEventListener != null && reference != null && user != null) {
-            reference.child(SharedConstants.FIREBASE_PATH_PERSONAL_CLUSTERS)
-                    .child(user.getUid())
-                    .removeEventListener(personalClusterEventListener);
+        if (reference != null && user != null) {
+            /**
+             * Remove the personal cluster listener..as no need to load data again
+             */
+            if (personalClusterEventListener != null) {
+                reference.child(SharedConstants.FIREBASE_PATH_PERSONAL_CLUSTERS)
+                        .child(user.getUid())
+                        .removeEventListener(personalClusterEventListener);
+                personalClusterEventListener = null;
+            }
+
+            /**
+             * Remove shared cluster listener once out, as it will load data again and again
+             */
+            if (loadKeysOfSharedClusters != null) {
+                reference.child(SharedConstants.FIREBASE_CLUSTERS_OF_USERS)
+                        .child(user.getUid())
+                        .removeEventListener(loadKeysOfSharedClusters);
+            }
         }
     }
 

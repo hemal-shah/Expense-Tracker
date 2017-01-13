@@ -13,7 +13,7 @@ import hemal.t.shah.expensetracker.data.ExpenseContract.ExpenseEntry;
 class ExpenseDBHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "ExpenseDBHelper";
-    private static final int DATABASE_VERSION = 13;
+    private static final int DATABASE_VERSION = 14;
     private static final String DATABASE_NAME = "ExpenseDB.db";
 
     ExpenseDBHelper(Context context) {
@@ -63,9 +63,9 @@ class ExpenseDBHelper extends SQLiteOpenHelper {
                 + ExpenseEntry.COLUMN_AMOUNT + " REAL NOT NULL, "
                 + ExpenseEntry.COLUMN_TIMESTAMP + " LONG, "
                 + ExpenseEntry.COLUMN_DESCRIBE + " TEXT, "
+                + ExpenseEntry.COLUMN_BY_FIREBASE_USER_UID + " TEXT,"
                 + ExpenseEntry.FIREBASE_CLUSTER_KEY + " TEXT NOT NULL,"
                 + ExpenseEntry.COLUMN_FIREBASE_EXPENSE_KEY + " TEXT NOT NULL,"
-                + ExpenseEntry.COLUMN_BY_FIREBASE_USER_UID + " TEXT ,"
                 + ExpenseEntry.COLUMN_FIREBASE_USER_NAME + " TEXT,"
                 + ExpenseEntry.COLUMN_FIREBASE_USER_EMAIL + " TEX,"
                 + ExpenseEntry.COLUMN_FIREBASE_USER_URL + " TEXT);";

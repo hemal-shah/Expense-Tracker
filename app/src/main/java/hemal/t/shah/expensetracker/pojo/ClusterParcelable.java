@@ -16,9 +16,10 @@ public class ClusterParcelable implements Parcelable {
             return new ClusterParcelable[size];
         }
     };
-    private String title, created_by_user, firebase_cluster_id;
+    private String title, created_by_user, firebase_cluster_id, email, url;
     private int is_shared;
     private long timeStamp;
+
 
     public ClusterParcelable(String title, String created_by_user, String firebase_cluster_id,
             int is_shared, long timeStamp) {
@@ -29,11 +30,23 @@ public class ClusterParcelable implements Parcelable {
         this.timeStamp = timeStamp;
     }
 
+    public ClusterParcelable(String title, String created_by_user, String firebase_cluster_id,
+            String email, String url, int is_shared, long timeStamp) {
+        this.title = title;
+        this.created_by_user = created_by_user;
+        this.firebase_cluster_id = firebase_cluster_id;
+        this.email = email;
+        this.url = url;
+        this.is_shared = is_shared;
+        this.timeStamp = timeStamp;
+    }
 
     protected ClusterParcelable(Parcel in) {
         title = in.readString();
         created_by_user = in.readString();
         firebase_cluster_id = in.readString();
+        email = in.readString();
+        url = in.readString();
         is_shared = in.readInt();
         timeStamp = in.readLong();
     }
@@ -43,6 +56,8 @@ public class ClusterParcelable implements Parcelable {
         dest.writeString(title);
         dest.writeString(created_by_user);
         dest.writeString(firebase_cluster_id);
+        dest.writeString(email);
+        dest.writeString(url);
         dest.writeInt(is_shared);
         dest.writeLong(timeStamp);
     }
@@ -74,6 +89,22 @@ public class ClusterParcelable implements Parcelable {
 
     public void setFirebase_cluster_id(String firebase_cluster_id) {
         this.firebase_cluster_id = firebase_cluster_id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public int getIs_shared() {

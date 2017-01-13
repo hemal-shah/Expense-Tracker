@@ -2,6 +2,7 @@ package hemal.t.shah.expensetracker.pojo;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 
 /**
  * Represents one column in the ExpenseEntry table.
@@ -20,9 +21,8 @@ public class ExpenseParcelable implements Parcelable {
             return new ExpenseParcelable[size];
         }
     };
-
-    private String about, firebase_cluster_ref_key, firebase_user_uid, firebase_expense_key,
-            description;
+    private String about, firebase_cluster_ref_key, firebase_expense_key,
+            description, user_uid;
     private FirebaseUserDetails userDetails; //No need to store this in offline table
     private double amount;
     private long timeStamp;
@@ -32,17 +32,19 @@ public class ExpenseParcelable implements Parcelable {
      */
     public ExpenseParcelable(String about,
             String firebase_cluster_ref_key,
-            String firebase_user_uid,
+            @Nullable String userUID,
             FirebaseUserDetails userDetails,
             double amount,
             String firebase_expense_key,
-            String description) {
+            String description,
+            long timeStamp) {
         this.about = about;
         this.firebase_cluster_ref_key = firebase_cluster_ref_key;
-        this.firebase_user_uid = firebase_user_uid;
         this.userDetails = userDetails;
         this.amount = amount;
         this.description = description;
+        this.timeStamp = timeStamp;
+        this.user_uid = userUID;
         this.firebase_expense_key = firebase_expense_key;
     }
 
@@ -51,13 +53,13 @@ public class ExpenseParcelable implements Parcelable {
      */
     public ExpenseParcelable(String about,
             String firebase_cluster_ref_key,
-            String firebase_user_uid,
+            @Nullable String userUID,
             double amount,
             String firebase_expense_key,
             String description) {
         this.about = about;
         this.firebase_cluster_ref_key = firebase_cluster_ref_key;
-        this.firebase_user_uid = firebase_user_uid;
+        this.user_uid = userUID;
         this.amount = amount;
         this.firebase_expense_key = firebase_expense_key;
         this.description = description;
@@ -65,53 +67,46 @@ public class ExpenseParcelable implements Parcelable {
 
     public ExpenseParcelable(String about,
             String firebase_cluster_ref_key,
-            String firebase_user_uid,
+            @Nullable String userUID,
             double amount,
             String firebase_expense_key,
             long timeStamp,
             String description) {
         this.about = about;
         this.firebase_cluster_ref_key = firebase_cluster_ref_key;
-        this.firebase_user_uid = firebase_user_uid;
         this.amount = amount;
         this.description = description;
         this.firebase_expense_key = firebase_expense_key;
         this.timeStamp = timeStamp;
+        this.user_uid = userUID;
     }
 
     protected ExpenseParcelable(Parcel in) {
         about = in.readString();
         firebase_cluster_ref_key = in.readString();
-        firebase_user_uid = in.readString();
+        firebase_expense_key = in.readString();
+        description = in.readString();
+        user_uid = in.readString();
         userDetails = in.readParcelable(FirebaseUserDetails.class.getClassLoader());
         amount = in.readDouble();
-        description = in.readString();
-    }
-
-    public String getFirebase_expense_key() {
-        return firebase_expense_key;
-    }
-
-    public void setFirebase_expense_key(String firebase_expense_key) {
-        this.firebase_expense_key = firebase_expense_key;
+        timeStamp = in.readLong();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(about);
         dest.writeString(firebase_cluster_ref_key);
-        dest.writeString(firebase_user_uid);
+        dest.writeString(firebase_expense_key);
+        dest.writeString(description);
+        dest.writeString(user_uid);
         dest.writeParcelable(userDetails, flags);
         dest.writeDouble(amount);
-        dest.writeString(description);
+        dest.writeLong(timeStamp);
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public String getAbout() {
@@ -130,12 +125,28 @@ public class ExpenseParcelable implements Parcelable {
         this.firebase_cluster_ref_key = firebase_cluster_ref_key;
     }
 
-    public String getFirebase_user_uid() {
-        return firebase_user_uid;
+    public String getFirebase_expense_key() {
+        return firebase_expense_key;
     }
 
-    public void setFirebase_user_uid(String firebase_user_uid) {
-        this.firebase_user_uid = firebase_user_uid;
+    public void setFirebase_expense_key(String firebase_expense_key) {
+        this.firebase_expense_key = firebase_expense_key;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getUser_uid() {
+        return user_uid;
+    }
+
+    public void setUser_uid(String user_uid) {
+        this.user_uid = user_uid;
     }
 
     public FirebaseUserDetails getUserDetails() {
@@ -160,10 +171,5 @@ public class ExpenseParcelable implements Parcelable {
 
     public void setTimeStamp(long timeStamp) {
         this.timeStamp = timeStamp;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
     }
 }

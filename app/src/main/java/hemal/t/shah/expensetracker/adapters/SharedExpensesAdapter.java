@@ -77,7 +77,7 @@ public class SharedExpensesAdapter
 
             final ExpenseParcelable expense =
                     new ExpenseParcelable(about, cluster_key, user_key, userDetails, amount,
-                            expense_key, description);
+                            expense_key, description, startTime);
 
 
             String text = about + "\n" + amount + "\n" + timeStamp + "\n" + user_key + "\n";
