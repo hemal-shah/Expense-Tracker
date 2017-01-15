@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private AuthStateListener mAuthStateListener;
     private FirebaseUser user;
 
-    private Context mContext;
+    private Context context;
 
     private ValueEventListener personalClusterEventListener;
     private DatabaseReference reference;
@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mContext = this;
+        context = this;
 
         //getting instance of user.
         mFirebaseAuth = FirebaseAuth.getInstance();
@@ -167,13 +167,13 @@ public class MainActivity extends AppCompatActivity {
 
         for (final String clusterKey : clusterKeys) {
 
-            if (PreferenceManager.checkKeyAlreadyAdded(mContext, clusterKey)) {
+            if (PreferenceManager.checkKeyAlreadyAdded(context, clusterKey)) {
                 //check for next key.
                 continue;
             }
 
             //key was not present, but now add it
-            PreferenceManager.addClusterKeyToTinyDB(mContext, clusterKey);
+            PreferenceManager.addClusterKeyToTinyDB(context, clusterKey);
 
             reference.child(SharedConstants.FIREBASE_PATH_SHARED_CLUSTERS)
                     .child(clusterKey)
@@ -235,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
                                 ));
                             }
 
-                            addSharedClusterDetailsToDB(clusterParcelable, expenses);
+                            addInitialDataToDatabase(clusterParcelable, expenses);
                         }
 
                         @Override
@@ -245,60 +245,6 @@ public class MainActivity extends AppCompatActivity {
                     });
         }
     }
-
-    /**
-     * Adds the items to the offline database...
-     */
-    private void addSharedClusterDetailsToDB(ClusterParcelable clusterParcelable,
-            ArrayList<ExpenseParcelable> expenses) {
-
-        /**
-         * First add the shared cluster...
-         */
-
-        ContentValues values = new ContentValues();
-        values.put(ClusterEntry.COLUMN_TITLE, clusterParcelable.getTitle());
-        values.put(ClusterEntry.COLUMN_IS_SHARED, 1);
-        values.put(ClusterEntry.COLUMN_FIREBASE_CLUSTER_KEY,
-                clusterParcelable.getFirebase_cluster_id());
-        values.put(ClusterEntry.COLUMN_TIMESTAMP, clusterParcelable.getTimeStamp());
-
-        DataInsertionTask task = new DataInsertionTask(getContentResolver(),
-                mContext);
-        task.startInsert(
-                SharedConstants.TOKEN_ADD_NEW_CLUSTER,
-                null,
-                ClusterEntry.CONTENT_URI,
-                values
-        );
-
-        for (ExpenseParcelable expense : expenses) {
-            ContentValues value = new ContentValues();
-            value.put(ExpenseEntry.FIREBASE_CLUSTER_KEY, expense.getFirebase_cluster_ref_key());
-            value.put(ExpenseEntry.COLUMN_FIREBASE_EXPENSE_KEY, expense.getFirebase_expense_key());
-            value.put(ExpenseEntry.COLUMN_ABOUT, expense.getAbout());
-            value.put(ExpenseEntry.COLUMN_DESCRIBE, expense.getDescription());
-            value.put(ExpenseEntry.COLUMN_AMOUNT, expense.getAmount());
-            value.put(ExpenseEntry.COLUMN_TIMESTAMP, expense.getTimeStamp());
-
-            value.put(ExpenseEntry.COLUMN_FIREBASE_USER_EMAIL,
-                    expense.getUserDetails().getUser_email());
-            value.put(ExpenseEntry.COLUMN_FIREBASE_USER_NAME,
-                    expense.getUserDetails().getUser_name());
-            value.put(ExpenseEntry.COLUMN_FIREBASE_USER_URL,
-                    expense.getUserDetails().getUser_photo_url());
-
-            // TODO: 13/1/17 Maybe later change to bulkInsert
-            task.startInsert(
-                    SharedConstants.TOKEN_ADD_NEW_EXPENSE,
-                    null,
-                    ExpenseEntry.CONTENT_URI,
-                    value
-            );
-        }
-
-    }
-
 
     @Override
     protected void onPause() {
@@ -387,7 +333,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                if (PreferenceManager.checkInitialDataLoaded(mContext)) {
+                if (PreferenceManager.checkInitialDataLoaded(context)) {
                     //We don't want to load the initial data again and again.
                     //hence if once we have loaded it, we return from here.
                     return;
@@ -395,67 +341,52 @@ public class MainActivity extends AppCompatActivity {
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String cluster_key = snapshot.getKey();
-                    String title = "";
-                    long timeStamp = 0;
+
                     ArrayList<ExpenseParcelable> expensesList = new ArrayList<>();
 
-                    for (DataSnapshot personalCluster : snapshot.getChildren()) {
+                    String title = snapshot.child(
+                            SharedConstants.FIREBASE_TITLE).getValue().toString();
+                    long timeStamp = Long.valueOf(snapshot.child(
+                            SharedConstants.FIREBASE_TIME_STAMP).getValue().toString());
 
-                        //Key will be either timestamp, expenses, or title
-                        String keyTerm = personalCluster.getKey();
+                    for (DataSnapshot expenses : snapshot.child(
+                            SharedConstants.FIREBASE_EXPENSES).getChildren()) {
+                        //expense key of the expense in given cluster #{cluster_key}
+                        String expense_key = expenses.getKey();
 
-                        if (keyTerm.equalsIgnoreCase(
-                                SharedConstants.FIREBASE_TITLE)) {
+                        //What the expense is about.
+                        String about =
+                                expenses.child(SharedConstants.FIREBASE_ABOUT)
+                                        .getValue().toString();
 
-                            //title of the personal cluster!
-                            title = personalCluster.getValue().toString();
+                        //the amount in the expense
+                        double amount = Double.valueOf(
+                                expenses.child(SharedConstants.FIREBASE_AMOUNT)
+                                        .getValue().toString()
+                        );
 
-                        } else if (keyTerm.equalsIgnoreCase(SharedConstants.FIREBASE_TIME_STAMP)) {
+                        //When the expense happened
+                        long expenseTimeStamp = Long.valueOf(
+                                expenses.child(SharedConstants.FIREBASE_TIME_STAMP)
+                                        .getValue().toString()
+                        );
 
-                            //timestamp when personal cluster was created!
-                            timeStamp = Long.valueOf(personalCluster.getValue().toString());
+                        String description =
+                                expenses.child(SharedConstants.FIREBASE_DESCRIPTION)
+                                        .getValue().toString();
 
-                        } else if (keyTerm.equalsIgnoreCase(SharedConstants.FIREBASE_EXPENSES)) {
-                            for (DataSnapshot expenses : personalCluster.getChildren()) {
-
-                                //expense key of the expense in given cluster #{cluster_key}
-                                String expense_key = expenses.getKey();
-
-                                //What the expense is about.
-                                String about =
-                                        expenses.child(SharedConstants.FIREBASE_ABOUT)
-                                                .getValue().toString();
-
-                                //the amount in the expense
-                                double amount = Double.valueOf(
-                                        expenses.child(SharedConstants.FIREBASE_AMOUNT)
-                                                .getValue().toString()
-                                );
-
-                                //When the expense happened
-                                long expenseTimeStamp = Long.valueOf(
-                                        expenses.child(SharedConstants.FIREBASE_TIME_STAMP)
-                                                .getValue().toString()
-                                );
-
-                                String description =
-                                        expenses.child(SharedConstants.FIREBASE_DESCRIPTION)
-                                                .getValue().toString();
-
-                                //Adding those values to the expenses array list
-                                expensesList.add(new ExpenseParcelable(
-                                        about, cluster_key, user.getUid(), amount, expense_key,
-                                        expenseTimeStamp, description
-                                ));
-                            }
-                        }
+                        //Adding those values to the expenses array list
+                        expensesList.add(new ExpenseParcelable(
+                                about, cluster_key, user.getUid(), amount, expense_key,
+                                expenseTimeStamp, description
+                        ));
                     }
 
                     ClusterParcelable parcel = new ClusterParcelable(
                             title, user.getUid(), cluster_key, 0, timeStamp
                     );
 
-                    addInitialPersonalDataToDatabase(parcel, expensesList);
+                    addInitialDataToDatabase(parcel, expensesList);
                 }
             }
 
@@ -467,13 +398,11 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-
         //add value event listener for data related to personal clusters.
         reference.child(SharedConstants.FIREBASE_PATH_PERSONAL_CLUSTERS)
                 .child(user.getUid())
                 .addListenerForSingleValueEvent(personalClusterEventListener);
     }
-
 
     /**
      * Delete all the data from table, once the user has signed out of the application.
@@ -498,15 +427,22 @@ public class MainActivity extends AppCompatActivity {
                 null
         );
 
-        PreferenceManager.setInitialDataLoad(mContext, false);
+        /**
+         * Clearing the TinyDB contents.
+         */
+
+        PreferenceManager.removeAllKeys(context);
+
+        PreferenceManager.setInitialDataLoad(context, false);
     }
 
-
     /**
-     * Adds personal cluster and expenses in that cluster to offline database.
+     * Adds cluster and expenses in that cluster to offline database.
      */
-    public void addInitialPersonalDataToDatabase(ClusterParcelable cluster,
+    public void addInitialDataToDatabase(ClusterParcelable cluster,
             ArrayList<ExpenseParcelable> expenses) {
+
+        boolean isShared = (cluster.getIs_shared() == 1);
 
         //first add cluster in database.
         ContentValues values = new ContentValues();
@@ -515,7 +451,7 @@ public class MainActivity extends AppCompatActivity {
         values.put(ClusterEntry.COLUMN_TITLE, cluster.getTitle());
         values.put(ClusterEntry.COLUMN_FIREBASE_CLUSTER_KEY, cluster.getFirebase_cluster_id());
 
-        DataInsertionTask task = new DataInsertionTask(getContentResolver(), this);
+        DataInsertionTask task = new DataInsertionTask(getContentResolver(), context);
 
         task.startInsert(
                 SharedConstants.TOKEN_DELETE_CLUSTER,
@@ -537,6 +473,15 @@ public class MainActivity extends AppCompatActivity {
             value.put(ExpenseEntry.COLUMN_AMOUNT, expense.getAmount());
             value.put(ExpenseEntry.COLUMN_TIMESTAMP, expense.getTimeStamp());
 
+            if (isShared) {
+                value.put(ExpenseEntry.COLUMN_FIREBASE_USER_EMAIL,
+                        expense.getUserDetails().getUser_email());
+                value.put(ExpenseEntry.COLUMN_FIREBASE_USER_NAME,
+                        expense.getUserDetails().getUser_name());
+                value.put(ExpenseEntry.COLUMN_FIREBASE_USER_URL,
+                        expense.getUserDetails().getUser_photo_url());
+            }
+
             // TODO: 13/1/17 Maybe later change to bulkInsert
             task.startInsert(
                     SharedConstants.TOKEN_ADD_NEW_EXPENSE,
@@ -545,8 +490,6 @@ public class MainActivity extends AppCompatActivity {
                     value
             );
         }
-
-        PreferenceManager.setInitialDataLoad(mContext, true);
+        PreferenceManager.setInitialDataLoad(context, true);
     }
-
 }

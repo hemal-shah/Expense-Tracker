@@ -74,4 +74,12 @@ public class PreferenceManager {
         db.putListString(CLUSTER_KEYS, list);
         return true;
     }
+
+    /**
+     * Removes all content from TinyDB
+     */
+    public static void removeAllKeys(Context context) {
+        TinyDB db = new TinyDB(context);
+        db.clear();
+    }
 }
