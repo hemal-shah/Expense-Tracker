@@ -8,6 +8,7 @@
     <string name="enter_amount" translatable="true">Amount Spent</string>
     <string name="are_you_sure" translatable="true">Are you sure?</string>
     <string name="delete_confirm" translatable="true">Delete!</string>
+    <string name="not_connected_to_internet" translatable="true">You are not connected to the internet!</string>
     <string name="you_will_exit_group" translatable="true">Are you sure you want to leave this shared cluster?</string>
     <string name="exit_confirm" translatable="true">Exit!</string>
     <string name="cancel" translatable="true">Cancel</string>

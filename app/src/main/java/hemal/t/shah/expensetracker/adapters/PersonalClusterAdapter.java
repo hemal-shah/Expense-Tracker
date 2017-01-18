@@ -88,16 +88,6 @@ public class PersonalClusterAdapter
                     }
                 }
             });
-
-            //Action to perform when clicked on more_info
-            viewHolder.more_info.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (onCluster != null) {
-                        onCluster.onTouch(cluster);
-                    }
-                }
-            });
         }
     }
 
@@ -122,9 +112,6 @@ public class PersonalClusterAdapter
 
         @BindView(R.id.ib_delete_p_cluster)
         ImageButton delete;
-
-        @BindView(R.id.ib_more_info_p_cluster)
-        ImageButton more_info;
 
         ViewHolder(View itemView) {
             super(itemView);

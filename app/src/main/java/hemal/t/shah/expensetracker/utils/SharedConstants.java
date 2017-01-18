@@ -24,6 +24,8 @@ public class SharedConstants {
 
     //To load shared clusters for recyclerView
     public static final int CURSOR_SHARED = 103;
+    public static final int CURSOR_SHARED_A_Z = 117;
+    public static final int CURSOR_SHARED_Z_A = 118;
 
     //to delete existing clusters.
     public static final int TOKEN_DELETE_CLUSTER = 104;

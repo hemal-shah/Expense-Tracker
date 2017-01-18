@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -14,6 +15,7 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -101,10 +103,20 @@ public class PersonalClustersFragment extends Fragment implements
 
         recyclerView.setAdapter(personalClusterAdapter);
 
-        getActivity().getSupportLoaderManager().initLoader(
-                SharedConstants.CURSOR_PERSONAL, null, this
-        );
+        recyclerView.addOnScrollListener(new OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) {
+                    ((FloatingActionButton) getActivity().findViewById(
+                            R.id.fab_activity_tab_container)).hide();
+                } else if (dy < 0) {
+                    ((FloatingActionButton) getActivity().findViewById(
+                            R.id.fab_activity_tab_container)).show();
+                }
+            }
+        });
 
+        initializeLoader(SharedConstants.CURSOR_PERSONAL);
         return baseView;
     }
 
@@ -122,40 +134,28 @@ public class PersonalClustersFragment extends Fragment implements
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
         String selection = ClusterEntry.COLUMN_IS_SHARED + " = 0";
+        String sortOrder = null;
         switch (id) {
             case SharedConstants.CURSOR_PERSONAL:
-                return new CursorLoader(
-                        context,
-                        ClusterEntry.CONTENT_URI,
-                        null,
-                        selection,
-                        null,
-                        null
-                );
-
+                break;
             case SharedConstants.CURSOR_PERSONAL_A_Z:
-                return new CursorLoader(
-                        context,
-                        ClusterEntry.CONTENT_URI,
-                        null,
-                        selection,
-                        null,
-                        ClusterEntry.COLUMN_TITLE + " ASC"
-                );
-
+                sortOrder = ClusterEntry.COLUMN_TITLE + " ASC";
+                break;
             case SharedConstants.CURSOR_PERSONAL_Z_A:
-                return new CursorLoader(
-                        context,
-                        ClusterEntry.CONTENT_URI,
-                        null,
-                        selection,
-                        null,
-                        ClusterEntry.COLUMN_TITLE + " DESC"
-                );
-
+                sortOrder = ClusterEntry.COLUMN_TITLE + " DESC";
+                break;
             default:
                 return null;
         }
+
+        return new CursorLoader(
+                context,
+                ClusterEntry.CONTENT_URI,
+                null,
+                selection,
+                null,
+                sortOrder
+        );
 
     }
 
@@ -232,24 +232,28 @@ public class PersonalClustersFragment extends Fragment implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.sort_a_z:
-                getActivity().getSupportLoaderManager()
-                        .initLoader(
-                                SharedConstants.CURSOR_PERSONAL_A_Z,
-                                null,
-                                this
-                        );
-                return true;
-
+                initializeLoader(SharedConstants.CURSOR_PERSONAL_Z_A);
+                break;
             case R.id.sort_z_a:
-                getActivity().getSupportLoaderManager()
-                        .initLoader(
-                                SharedConstants.CURSOR_PERSONAL_Z_A,
-                                null,
-                                this
-                        );
-                return true;
+                initializeLoader(SharedConstants.CURSOR_PERSONAL_Z_A);
+                break;
+            default:
+                return false;
         }
 
-        return super.onOptionsItemSelected(item);
+        return true;
+    }
+
+
+    /**
+     * Common code to remove redundancy.
+     * Initializes the loader with provided token.
+     *
+     * @param token id in the initLoader() function.
+     */
+    private void initializeLoader(int token) {
+        getActivity().getSupportLoaderManager().initLoader(
+                token, null, this
+        );
     }
 }

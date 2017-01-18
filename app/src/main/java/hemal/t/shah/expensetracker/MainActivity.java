@@ -25,7 +25,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Vector;
 
+import butterknife.BindString;
 import hemal.t.shah.expensetracker.data.DataDispenser;
 import hemal.t.shah.expensetracker.data.DataInsertionTask;
 import hemal.t.shah.expensetracker.data.ExpenseContract.ClusterEntry;
@@ -44,17 +46,15 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private static final int RC_SIGN_IN = 123;
+    @BindString(R.string.not_connected_to_internet)
+    String NOT_CONNECTED;
     private FirebaseAuth mFirebaseAuth;
     private AuthStateListener mAuthStateListener;
     private FirebaseUser user;
-
     private Context context;
-
     private ValueEventListener personalClusterEventListener;
     private DatabaseReference reference;
-
     private ChildEventListener loadKeysOfSharedClusters;
-
     private FragmentManager manager;
 
     @Override
@@ -291,20 +291,16 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
-
                 //user Signed in, lets get them to main screen.
                 manager.beginTransaction()
                         .replace(R.id.fragment_activity_main, new TabContainerFragment())
                         .commit();
 
             } else if (resultCode == RESULT_CANCELED) {
-
-                Toast.makeText(MainActivity.this, "Error!", Toast.LENGTH_SHORT).show();
-
+                this.finish();
             } else if (resultCode == ResultCodes.RESULT_NO_NETWORK) {
-
-                Toast.makeText(MainActivity.this, "No network!", Toast.LENGTH_SHORT).show();
-
+                Toast.makeText(context, NOT_CONNECTED,
+                        Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -464,6 +460,10 @@ public class MainActivity extends AppCompatActivity {
                 values
         );
 
+        //creating a vector for bulkInsert
+        Vector<ContentValues> contentValuesVector = new Vector<>(expenses.size());
+
+
         /**
          * Now for personal expenses, we don't need much information except
          * about, amount, timestamp, description.
@@ -486,13 +486,13 @@ public class MainActivity extends AppCompatActivity {
                         expense.getUserDetails().getUser_photo_url());
             }
 
-            // TODO: 13/1/17 Maybe later change to bulkInsert
-            task.startInsert(
-                    SharedConstants.TOKEN_ADD_NEW_EXPENSE,
-                    null,
-                    ExpenseEntry.CONTENT_URI,
-                    value
-            );
+            contentValuesVector.add(value);
+        }
+
+        if (contentValuesVector.size() > 0) {
+            ContentValues[] contentValues = new ContentValues[contentValuesVector.size()];
+            contentValuesVector.toArray(contentValues);
+            getContentResolver().bulkInsert(ExpenseEntry.CONTENT_URI, contentValues);
         }
         PreferenceManager.setInitialDataLoad(context, true);
     }

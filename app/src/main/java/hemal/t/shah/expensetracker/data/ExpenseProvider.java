@@ -1,5 +1,6 @@
 package hemal.t.shah.expensetracker.data;
 
+import android.annotation.TargetApi;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
@@ -176,6 +177,36 @@ public class ExpenseProvider extends ContentProvider {
         return 0;
     }
 
+    @Override
+    public int bulkInsert(Uri uri, ContentValues[] values) {
+        final SQLiteDatabase db = dbHelper.getWritableDatabase();
+        int returnCount = 0;
+        switch (matcher.match(uri)) {
+            case EXPENSE:
+                db.beginTransaction();
+                try {
+                    for (ContentValues value : values) {
+                        long _id = db.insert(ExpenseEntry.TABLE_NAME,
+                                null,
+                                value);
+                        if (_id != -1) {
+                            returnCount++;
+                        }
+                    }
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+                break;
+            default:
+                throw new IllegalArgumentException(
+                        "Only expenses are allowed for bulk insert at this moment");
+        }
+
+        return returnCount;
+    }
+
+    @TargetApi(11)
     @Override
     public void shutdown() {
         dbHelper.close();

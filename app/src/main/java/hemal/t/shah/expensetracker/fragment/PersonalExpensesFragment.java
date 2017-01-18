@@ -108,13 +108,22 @@ public class PersonalExpensesFragment extends Fragment implements
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
 
-        getActivity().getSupportLoaderManager().initLoader(
-                SharedConstants.CURSOR_EXPENSES_PERSONAL,
-                null,
-                this
-        );
+
+        initializeLoader(SharedConstants.CURSOR_EXPENSES_PERSONAL);
 
         return rootView;
+    }
+
+    /**
+     * Common code to remove redundancy.
+     * Initializes the loader with provided token.
+     *
+     * @param token id in the initLoader() function.
+     */
+    private void initializeLoader(int token) {
+        getActivity().getSupportLoaderManager().initLoader(
+                token, null, this
+        );
     }
 
     @Override
@@ -122,65 +131,34 @@ public class PersonalExpensesFragment extends Fragment implements
 
         // TODO: 13/1/17 only load required fields from data, instead of null
 
+        String sortOrder = null;
         switch (id) {
             case SharedConstants.CURSOR_EXPENSES_PERSONAL:
-
-                return new CursorLoader(
-                        this.mContext,
-                        ExpenseEntry.CONTENT_URI,
-                        null,
-                        selection,
-                        selectionArgs,
-                        null
-                );
-
+                break;
             case SharedConstants.CURSOR_EXPENSES_PERSONAL_A_Z:
-
-                return new CursorLoader(
-                        this.mContext,
-                        ExpenseEntry.CONTENT_URI,
-                        null,
-                        selection,
-                        selectionArgs,
-                        ExpenseEntry.COLUMN_ABOUT + " COLLATE NOCASE ASC"
-                );
-
+                sortOrder = ExpenseEntry.COLUMN_ABOUT + " COLLATE NOCASE ASC";
+                break;
             case SharedConstants.CURSOR_EXPENSES_PERSONAL_Z_A:
-
-                return new CursorLoader(
-                        this.mContext,
-                        ExpenseEntry.CONTENT_URI,
-                        null,
-                        selection,
-                        selectionArgs,
-                        ExpenseEntry.COLUMN_ABOUT + " COLLATE NOCASE DESC"
-                );
-
+                sortOrder = ExpenseEntry.COLUMN_ABOUT + " COLLATE NOCASE DESC";
+                break;
             case SharedConstants.CURSOR_EXPENSES_PERSONAL_H_L:
-
-                return new CursorLoader(
-                        this.mContext,
-                        ExpenseEntry.CONTENT_URI,
-                        null,
-                        selection,
-                        selectionArgs,
-                        ExpenseEntry.COLUMN_AMOUNT + " DESC"
-                );
-
+                sortOrder = ExpenseEntry.COLUMN_AMOUNT + " DESC";
+                break;
             case SharedConstants.CURSOR_EXPENSES_PERSONAL_L_H:
-
-                return new CursorLoader(
-                        this.mContext,
-                        ExpenseEntry.CONTENT_URI,
-                        null,
-                        selection,
-                        selectionArgs,
-                        ExpenseEntry.COLUMN_AMOUNT + " ASC"
-                );
-
+                sortOrder = ExpenseEntry.COLUMN_AMOUNT + " ASC";
+                break;
             default:
                 return null;
         }
+
+        return new CursorLoader(
+                this.mContext,
+                ExpenseEntry.CONTENT_URI,
+                null,
+                selection,
+                selectionArgs,
+                sortOrder
+        );
     }
 
     @Override
@@ -274,7 +252,7 @@ public class PersonalExpensesFragment extends Fragment implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int TOKEN = -1;
+        int TOKEN ;
         switch (item.getItemId()) {
             case R.id.menu_p_expense_a_z:
                 TOKEN = SharedConstants.CURSOR_EXPENSES_PERSONAL_A_Z;
@@ -291,11 +269,7 @@ public class PersonalExpensesFragment extends Fragment implements
             default:
                 return false;
         }
-        getActivity().getSupportLoaderManager().initLoader(
-                TOKEN,
-                null,
-                this
-        );
+        initializeLoader(TOKEN);
         return true;
     }
 }

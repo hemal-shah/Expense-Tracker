@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -14,6 +15,7 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,7 +23,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -103,9 +104,21 @@ public class SharedClustersFragment extends Fragment implements
         recyclerView.hasFixedSize();
         recyclerView.setAdapter(adapter);
 
-        getActivity().getSupportLoaderManager().initLoader(
-                SharedConstants.CURSOR_SHARED, null, this
-        );
+
+        recyclerView.addOnScrollListener(new OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) {
+                    ((FloatingActionButton) getActivity().findViewById(
+                            R.id.fab_activity_tab_container)).hide();
+                } else if (dy < 0) {
+                    ((FloatingActionButton) getActivity().findViewById(
+                            R.id.fab_activity_tab_container)).show();
+                }
+            }
+        });
+
+        initializeLoader(SharedConstants.CURSOR_SHARED);
 
         return baseView;
     }
@@ -113,23 +126,30 @@ public class SharedClustersFragment extends Fragment implements
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
+        String selection = ExpenseContract.ClusterEntry.COLUMN_IS_SHARED + " = 1";
+        String sortOrder = null;
         switch (id) {
             case SharedConstants.CURSOR_SHARED:
-
-                String selection = ExpenseContract.ClusterEntry.COLUMN_IS_SHARED + " = 1";
-                return new CursorLoader(
-                        context,
-                        ExpenseContract.ClusterEntry.CONTENT_URI,
-                        null,
-                        selection,
-                        null,
-                        null
-                );
-
+                //do no change to the sortOrder.
+                break;
+            case SharedConstants.CURSOR_SHARED_A_Z:
+                sortOrder = ClusterEntry.COLUMN_TITLE + " ASC";
+                break;
+            case SharedConstants.CURSOR_SHARED_Z_A:
+                sortOrder = ClusterEntry.COLUMN_TITLE + " DESC";
+                break;
             default:
                 return null;
         }
 
+        return new CursorLoader(
+                context,
+                ClusterEntry.CONTENT_URI,
+                null,
+                selection,
+                null,
+                sortOrder
+        );
     }
 
     @Override
@@ -153,20 +173,28 @@ public class SharedClustersFragment extends Fragment implements
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.sort_1_s:
-                Toast.makeText(context, "sort 1 shared", Toast.LENGTH_SHORT).show();
-                return true;
-
-            case R.id.sort_2_s:
-                Toast.makeText(context, "sort 2 shared", Toast.LENGTH_SHORT).show();
-                return true;
-
-            case R.id.sort_3_s:
-                Toast.makeText(context, "sort 3 shared", Toast.LENGTH_SHORT).show();
-                return true;
+            case R.id.sort_a_z_shared:
+                initializeLoader(SharedConstants.CURSOR_SHARED_A_Z);
+                break;
+            case R.id.sort_z_a_shared:
+                initializeLoader(SharedConstants.CURSOR_SHARED_Z_A);
+                break;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    /**
+     * Common code to remove redundancy.
+     * Initializes the loader with provided token.
+     *
+     * @param token id in the initLoader() function.
+     */
+    private void initializeLoader(int token) {
+        getActivity().getSupportLoaderManager().initLoader(
+                token, null, this
+        );
     }
 
     @Override
