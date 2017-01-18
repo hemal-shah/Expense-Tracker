@@ -8,7 +8,6 @@ import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
  */
 public interface OnCluster {
 
-    // TODO: 21/12/16 Later add firebase cluster id for more unique identification.
     void onDelete(ClusterParcelable cluster);
 
     void onTouch(ClusterParcelable cluster);

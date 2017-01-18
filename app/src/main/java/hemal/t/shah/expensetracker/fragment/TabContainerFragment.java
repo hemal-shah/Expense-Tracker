@@ -303,10 +303,6 @@ public class TabContainerFragment extends Fragment {
                         .updateChildren(addKeyForJoin);
             }
 
-        } else {
-            // TODO: 6/1/17 Add intent to redirect to sign in
-            Toast.makeText(context, "You are not signed in. Sign in to continue",
-                    Toast.LENGTH_SHORT).show();
         }
     }
 

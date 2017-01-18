@@ -29,13 +29,7 @@ public class ExpenseProvider extends ContentProvider {
 
         //setting normal query to invoke the clusters table.
         clustersQueryBuilder.setTables(ExpenseContract.ClusterEntry.TABLE_NAME);
-
-        //need outer join here..FULL OUTER JOIN is not supported by sqlite
-        /**
-         *
-         */
         expensesFromClusterQueryBuilder.setTables(ExpenseContract.ExpenseEntry.TABLE_NAME);
-// TODO: 30/12/16 delete expenses when cluster is deleted
 
     }
 

@@ -20,13 +20,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.DatabaseReference.CompletionListener;
 import com.google.firebase.database.FirebaseDatabase;
 
 import butterknife.BindString;
@@ -201,17 +198,7 @@ public class PersonalClustersFragment extends Fragment implements
                             reference.child(SharedConstants.FIREBASE_PATH_PERSONAL_CLUSTERS)
                                     .child(user.getUid())
                                     .child(cluster.getFirebase_cluster_id())
-                                    .removeValue(new CompletionListener() {
-                                        // TODO: 7/1/17 maybe remove completion listener
-                                        @Override
-                                        public void onComplete(DatabaseError databaseError,
-                                                DatabaseReference databaseReference) {
-                                            if (databaseError == null) {
-                                                Toast.makeText(context, "Removed Successfully!",
-                                                        Toast.LENGTH_SHORT).show();
-                                            }
-                                        }
-                                    });
+                                    .removeValue();
 
                         }
                     }

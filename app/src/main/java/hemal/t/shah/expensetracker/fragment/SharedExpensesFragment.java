@@ -16,11 +16,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.DatabaseReference.CompletionListener;
 import com.google.firebase.database.FirebaseDatabase;
 
 import butterknife.BindString;
@@ -165,13 +162,7 @@ public class SharedExpensesFragment extends Fragment implements
                                 .child(expenseParcelable.getFirebase_cluster_ref_key())
                                 .child(SharedConstants.FIREBASE_EXPENSES)
                                 .child(expenseParcelable.getFirebase_expense_key())
-                                .removeValue(new CompletionListener() {
-                                    // TODO: 7/1/17 delete this.
-                                    @Override
-                                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                        Toast.makeText(mContext, "Deleted from firebase!", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
+                                .removeValue();
 
                     }
                 });

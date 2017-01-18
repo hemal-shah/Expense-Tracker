@@ -18,9 +18,7 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.DatabaseReference.CompletionListener;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.HashMap;
@@ -224,15 +222,7 @@ public class ExpensesActivity extends AppCompatActivity {
                     .child(cluster_key)
                     .child(SharedConstants.FIREBASE_EXPENSES)
                     .child(expense_key)
-                    .updateChildren(expense, new CompletionListener() {
-                        // TODO: 7/1/17 remove
-                        @Override
-                        public void onComplete(DatabaseError databaseError,
-                                DatabaseReference databaseReference) {
-                            Toast.makeText(ExpensesActivity.this, "Added!",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    .updateChildren(expense);
         } else if (is_shared == 1) {
             expense.put(SharedConstants.FIREBASE_USER_NAME, user.getDisplayName());
             expense.put(SharedConstants.FIREBASE_EMAIL, user.getEmail());
@@ -245,15 +235,7 @@ public class ExpensesActivity extends AppCompatActivity {
                     .child(cluster_key)
                     .child(SharedConstants.FIREBASE_EXPENSES)
                     .child(expense_key)
-                    .updateChildren(expense, new CompletionListener() {
-                        // TODO: 7/1/17 remove
-                        @Override
-                        public void onComplete(DatabaseError databaseError,
-                                DatabaseReference databaseReference) {
-                            Toast.makeText(ExpensesActivity.this, "Added!",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    .updateChildren(expense);
         }
     }
 
