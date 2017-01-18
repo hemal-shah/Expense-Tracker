@@ -26,7 +26,8 @@
             android:id="@+id/bt_delete_shared_clusters"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="delete" />
+            android:text="Exit this group"
+            />
 
         <Button
             android:id="@+id/bt_open_shared_clusters"

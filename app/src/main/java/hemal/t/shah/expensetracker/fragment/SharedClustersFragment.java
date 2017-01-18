@@ -14,6 +14,7 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,10 +25,12 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.DatabaseReference.CompletionListener;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -41,6 +44,7 @@ import hemal.t.shah.expensetracker.data.ExpenseContract.ClusterEntry;
 import hemal.t.shah.expensetracker.data.ExpenseContract.ExpenseEntry;
 import hemal.t.shah.expensetracker.interfaces.OnCluster;
 import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
+import hemal.t.shah.expensetracker.utils.PreferenceManager;
 import hemal.t.shah.expensetracker.utils.SharedConstants;
 
 /**
@@ -53,12 +57,14 @@ public class SharedClustersFragment extends Fragment implements
     private static final String TAG = "SharedClustersFragment";
     @BindView(R.id.rv_activity_shared_clusters)
     RecyclerView recyclerView;
-    @BindString(R.string.are_you_sure)
-    String ARE_YOU_SURE;
+    @BindString(R.string.you_will_exit_group)
+    String YOU_WILL_EXIT_GROUP;
+
+
     @BindString(R.string.cancel)
     String CANCEL;
-    @BindString(R.string.delete_confirm)
-    String DELETE_CONFIRM;
+    @BindString(R.string.exit_confirm)
+    String EXIT_CONFIRM;
     SharedClusterAdapter adapter = null;
 
     FirebaseUser user;
@@ -166,13 +172,17 @@ public class SharedClustersFragment extends Fragment implements
     @Override
     public void onDelete(final ClusterParcelable cluster) {
 
+        /**
+         * We would actually perform the action of leaving the group, instead of
+         * deleting the group, as other users would be part of this group.
+         */
 
+        //Creating a dialog to confirm deletion of cluster!
         AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
 
-
-        builder.setTitle(ARE_YOU_SURE)
+        builder.setTitle(YOU_WILL_EXIT_GROUP)
                 .setCancelable(true)
-                .setPositiveButton(DELETE_CONFIRM, new OnClickListener() {
+                .setPositiveButton(EXIT_CONFIRM, new OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
@@ -197,20 +207,64 @@ public class SharedClustersFragment extends Fragment implements
                                 new String[]{String.valueOf(cluster.getFirebase_cluster_id())}
                         );
 
-                        //Now, let's remove data from firebase.
-                        if (cluster.getIs_shared() == 1) {
-                            //Delete from Shared clusters branch
-                            reference.child(SharedConstants.FIREBASE_PATH_SHARED_CLUSTERS)
-                                    .child(cluster.getFirebase_cluster_id())
-                                    .removeValue(new CompletionListener() {
-                                        @Override
-                                        public void onComplete(DatabaseError databaseError,
-                                                DatabaseReference databaseReference) {
-                                            Toast.makeText(context, "Removed Shared Cluster",
-                                                    Toast.LENGTH_SHORT).show();
+                        //Now, let's remove user from the online database...we don't want to
+                        // delete the shared cluster
+                        //1. deleting entries from "clusters_of_users"
+                        Query queryToRemoveClusterId = reference.child(
+                                SharedConstants.FIREBASE_CLUSTERS_OF_USERS)
+                                .child(user.getUid())
+                                .orderByChild(SharedConstants.FIREBASE_PATH_SHARED_CLUSTERS)
+                                .equalTo(cluster.getFirebase_cluster_id());
+
+                        queryToRemoveClusterId.addListenerForSingleValueEvent(
+                                new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        Log.i(TAG,
+                                                "onDataChange: the loop starts now, content "
+                                                        + "should be there");
+                                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                            snapshot.getRef().removeValue();
+                                            Log.i(TAG, "onDataChange: check online value!");
                                         }
-                                    });
-                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+                                        Log.i(TAG, "onCancelled: error occured!"
+                                                + databaseError.getDetails());
+                                    }
+                                });
+
+                        //2. remove reference from "users_in_clusters"
+                        Query queryToRemoveUserId = reference.child(
+                                SharedConstants.FIREBASE_USERS_IN_CLUSTERS)
+                                .child(cluster.getFirebase_cluster_id())
+                                .orderByChild(SharedConstants.FIREBASE_USER_UID)
+                                .equalTo(user.getUid());
+
+                        queryToRemoveUserId.addListenerForSingleValueEvent(
+                                new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                            snapshot.getRef().removeValue();
+                                            Log.i(TAG, "onDataChange: check the firebase table!");
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+                                        Log.i(TAG, "onCancelled: error occured!"
+                                                + databaseError.getDetails());
+                                    }
+                                });
+
+                        Log.i(TAG, "onClick: the key to be removed is : "
+                                + cluster.getFirebase_cluster_id());
+                        //3. Remove the clusterkey from tinydb
+                        PreferenceManager.removeKeyFromAdded(context,
+                                cluster.getFirebase_cluster_id());
                     }
                 })
                 .setNegativeButton(CANCEL, new OnClickListener() {

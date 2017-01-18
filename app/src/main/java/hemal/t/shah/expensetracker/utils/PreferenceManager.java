@@ -2,6 +2,7 @@ package hemal.t.shah.expensetracker.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -12,13 +13,15 @@ import java.util.ArrayList;
 
 public class PreferenceManager {
 
+    private static final String TAG = "PreferenceManager";
+
     private static final String PREFERENCE_FIREBASE = "fire_base_preferences";
     private static final String INITIAL_DATA_LOAD = "initial_data_load";
 
     private static final String CLUSTER_KEYS = "cluster_keys";
 
     public static boolean checkInitialDataLoaded(Context context) {
-        boolean isLoaded = false;
+        boolean isLoaded;
         SharedPreferences preferences = context.getSharedPreferences(PREFERENCE_FIREBASE,
                 Context.MODE_PRIVATE);
 
@@ -63,8 +66,7 @@ public class PreferenceManager {
     }
 
     /**
-     * Removes key if removed, deleted by user.
-     * todo call this function whenever user removes items.
+     * Removes key if removed, exited by user.
      */
     public static boolean removeKeyFromAdded(Context context, String key) {
         TinyDB db = new TinyDB(context);
@@ -72,6 +74,7 @@ public class PreferenceManager {
         if (list == null) return false;
         list.remove(key);
         db.putListString(CLUSTER_KEYS, list);
+        Log.i(TAG, "removeKeyFromAdded: the key is removed successfully! " + key);
         return true;
     }
 

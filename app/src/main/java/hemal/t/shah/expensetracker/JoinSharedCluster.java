@@ -82,7 +82,6 @@ public class JoinSharedCluster extends AppCompatActivity {
                             }
                         }
                         addUserToCluster();
-
                     }
 
                     @Override
@@ -97,7 +96,6 @@ public class JoinSharedCluster extends AppCompatActivity {
          * If the cluster_key is empty, then we need to warn user
          * that the key is not correct.
          */
-
         if (cluster_key.length() == 0 || cluster_key.equalsIgnoreCase("")) {
             Toast.makeText(this, "The code you entered is not valid.", Toast.LENGTH_SHORT).show();
             //empty the edit text.

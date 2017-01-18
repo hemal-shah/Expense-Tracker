@@ -137,8 +137,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                // TODO: 13/1/17 seek to below query
-                //delete all clusters details from database...
+                //never going to happen
             }
 
             @Override
@@ -341,6 +340,11 @@ public class MainActivity extends AppCompatActivity {
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String cluster_key = snapshot.getKey();
+
+                    //First check if it is already added or not!
+                    if (PreferenceManager.checkKeyAlreadyAdded(context, cluster_key)) {
+                        continue;
+                    }
 
                     ArrayList<ExpenseParcelable> expensesList = new ArrayList<>();
 

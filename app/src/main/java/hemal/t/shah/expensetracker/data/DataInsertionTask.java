@@ -8,6 +8,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.widget.Toast;
 
+import hemal.t.shah.expensetracker.data.ExpenseContract.ClusterEntry;
+import hemal.t.shah.expensetracker.utils.PreferenceManager;
 import hemal.t.shah.expensetracker.utils.SharedConstants;
 
 /**
@@ -48,6 +50,7 @@ public class DataInsertionTask extends AsyncQueryHandler {
                 // TODO: 6/1/17 try to make a snackbar
                 Toast.makeText(this.context, "Title is present!", Toast.LENGTH_SHORT).show();
             } else {
+
                 /**
                  * It's safe to create new cluster with the provided title.
                  */
@@ -57,6 +60,10 @@ public class DataInsertionTask extends AsyncQueryHandler {
                         ExpenseContract.ClusterEntry.CONTENT_URI,
                         contentValues
                 );
+
+                //Also add that key to tinyDB
+                PreferenceManager.addClusterKeyToTinyDB(context,
+                        contentValues.getAsString(ClusterEntry.COLUMN_FIREBASE_CLUSTER_KEY));
             }
         }
     }

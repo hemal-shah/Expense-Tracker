@@ -39,6 +39,7 @@ import hemal.t.shah.expensetracker.adapters.ViewPagerTabAdapter;
 import hemal.t.shah.expensetracker.data.DataInsertionTask;
 import hemal.t.shah.expensetracker.data.ExpenseContract;
 import hemal.t.shah.expensetracker.data.ExpenseContract.ClusterEntry;
+import hemal.t.shah.expensetracker.utils.PreferenceManager;
 import hemal.t.shah.expensetracker.utils.SharedConstants;
 
 /**
@@ -254,6 +255,10 @@ public class TabContainerFragment extends Fragment {
                     cluster.put(SharedConstants.FIREBASE_PROFILE_URL, "");
                 }
 
+
+                //Also add that key to tinyDB
+                PreferenceManager.addClusterKeyToTinyDB(context,
+                        contentValues.getAsString(ClusterEntry.COLUMN_FIREBASE_CLUSTER_KEY));
 
                 reference.child(SharedConstants.FIREBASE_PATH_SHARED_CLUSTERS)
                         .child(cluster_key)
