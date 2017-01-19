@@ -50,6 +50,9 @@ dependencies {
     //Picasso
     compile 'com.squareup.picasso:picasso:2.5.2'
 
+    //Firebase advertisements
+    compile 'com.google.firebase:firebase-ads:10.0.1'
+
     //Firebase Realtime Database
     compile 'com.google.firebase:firebase-database:10.0.1'
 }

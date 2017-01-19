@@ -13,6 +13,9 @@ import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ui.ResultCodes;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener;
 import com.google.firebase.auth.FirebaseUser;
@@ -25,9 +28,11 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 import java.util.Vector;
 
 import butterknife.BindString;
+import butterknife.ButterKnife;
 import hemal.t.shah.expensetracker.data.DataDispenser;
 import hemal.t.shah.expensetracker.data.DataInsertionTask;
 import hemal.t.shah.expensetracker.data.ExpenseContract.ClusterEntry;
@@ -46,8 +51,13 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private static final int RC_SIGN_IN = 123;
+
     @BindString(R.string.not_connected_to_internet)
     String NOT_CONNECTED;
+
+    @BindString(R.string.ad_unit_id)
+    String ad_unit_id;
+
     private FirebaseAuth mFirebaseAuth;
     private AuthStateListener mAuthStateListener;
     private FirebaseUser user;
@@ -57,10 +67,15 @@ public class MainActivity extends AppCompatActivity {
     private ChildEventListener loadKeysOfSharedClusters;
     private FragmentManager manager;
 
+    private InterstitialAd mInterstitialAd;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ButterKnife.bind(this);
+
         context = this;
 
         //getting instance of user.
@@ -104,6 +119,36 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
+
+        //Admob initialization here
+        mInterstitialAd = new InterstitialAd(context);
+        mInterstitialAd.setAdUnitId(ad_unit_id);
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                /**
+                 * Generate a random number and if it's divisible by 10 then and then
+                 * only show the add...
+                 */
+
+                Random random = new Random();
+                int number = random.nextInt(999) + 1;
+                if (number % 10 == 0) {
+                    mInterstitialAd.show();
+                }
+            }
+        });
+        requestNewInterstitial();
+
+
+    }
+
+    private void requestNewInterstitial() {
+        AdRequest request = new AdRequest.Builder()
+                .addTestDevice("1B9E645F6AEB9B725AACE600DC298402")
+                .build();
+
+        mInterstitialAd.loadAd(request);
     }
 
     /**
@@ -278,6 +323,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+
     }
 
     @Override
