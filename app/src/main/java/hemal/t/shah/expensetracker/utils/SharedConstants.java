@@ -1,5 +1,7 @@
 package hemal.t.shah.expensetracker.utils;
 
+import hemal.t.shah.expensetracker.data.ExpenseContract.ClusterEntry;
+
 /**
  * Simple utility class that stores all necessary constants.
  * Created by hemal on 17/12/16.
@@ -81,4 +83,12 @@ public class SharedConstants {
     public static final String FIREBASE_PATH_CLUSTER_ID = "shared_clusters_join_id";
     public static final String FIREBASE_USERS_IN_CLUSTERS = "users_in_clusters";
     public static final String FIREBASE_CLUSTERS_OF_USERS = "clusters_of_users";
+
+    //projection strings...
+    public static final String[] PROJECTION_CLUSTER = {
+            ClusterEntry._ID,
+            ClusterEntry.COLUMN_TITLE,
+            ClusterEntry.COLUMN_TIMESTAMP,
+            ClusterEntry.COLUMN_FIREBASE_CLUSTER_KEY
+    };
 }

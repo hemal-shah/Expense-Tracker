@@ -6,12 +6,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hemal.shah.TimeTravel;
 import com.hemal.shah.TimeTravelException;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hemal.t.shah.expensetracker.R;
@@ -43,31 +45,31 @@ public class SharedClusterAdapter
         int index_title = cursor.getColumnIndex(ClusterEntry.COLUMN_TITLE);
         int index_timestamp = cursor.getColumnIndex(ClusterEntry.COLUMN_TIMESTAMP);
         int index_firebase_key = cursor.getColumnIndex(ClusterEntry.COLUMN_FIREBASE_CLUSTER_KEY);
-        int index_id = cursor.getColumnIndex(ClusterEntry._ID);
 
         if (cursor.moveToPosition(position)) {
             String title = cursor.getString(index_title);
-            String timeStamp = "";
+
             long startTime = cursor.getLong(index_timestamp);
 
+            String timeStamp;
             try {
                 timeStamp = TimeTravel.getTimeElapsed(startTime, System.currentTimeMillis());
             } catch (TimeTravelException e) {
-                e.printStackTrace();
+                timeStamp = viewHolder.WRONG_TIME;
             }
 
-            int cluster_id = cursor.getInt(index_id);
             String firebase_cluster_key = cursor.getString(index_firebase_key);
 
             final ClusterParcelable cluster = new ClusterParcelable(
                     title, null, firebase_cluster_key, 1, startTime
             );
 
-            String s = "Title = " + cluster.getTitle() +
-                    "\nTimeStamp = " + timeStamp;
 
-            viewHolder.tv.setText(s);
-            viewHolder.delete.setOnClickListener(new View.OnClickListener() {
+            viewHolder.title.setText(title.toUpperCase());
+
+            viewHolder.timeStamp.setText(timeStamp);
+
+            viewHolder.exit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (onCluster != null) {
@@ -97,14 +99,20 @@ public class SharedClusterAdapter
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.tv_single_shared_clusters_row)
-        TextView tv;
+        @BindView(R.id.tv_s_cluster_timestamp)
+        TextView timeStamp;
 
-        @BindView(R.id.bt_delete_shared_clusters)
-        Button delete;
+        @BindView(R.id.tv_s_cluster_title)
+        TextView title;
 
-        @BindView(R.id.bt_open_shared_clusters)
-        Button open;
+        @BindView(R.id.ib_exit_s_cluster)
+        ImageButton exit;
+
+        @BindString(R.string.inappropriate_time)
+        String WRONG_TIME;
+
+        @BindView(R.id.ll_s_cluster)
+        LinearLayout open;
 
         ViewHolder(View itemView) {
             super(itemView);

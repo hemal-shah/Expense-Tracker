@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.hemal.shah.TimeTravel;
 import com.hemal.shah.TimeTravelException;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hemal.t.shah.expensetracker.R;
@@ -44,21 +45,19 @@ public class PersonalClusterAdapter
         int index_title = cursor.getColumnIndex(ClusterEntry.COLUMN_TITLE);
         int index_timestamp = cursor.getColumnIndex(ClusterEntry.COLUMN_TIMESTAMP);
         int index_firebase_key = cursor.getColumnIndex(ClusterEntry.COLUMN_FIREBASE_CLUSTER_KEY);
-        int index_id = cursor.getColumnIndex(ClusterEntry._ID);
 
         if (cursor.moveToPosition(position)) {
             String title =
                     cursor.getString(index_title);
 
             long startTime = cursor.getLong(index_timestamp);
-            String timeStamp = "";
+            String timeStamp;
             try {
                 timeStamp = TimeTravel.getTimeElapsed(startTime, System.currentTimeMillis());
             } catch (TimeTravelException e) {
-                e.printStackTrace();
+                timeStamp = viewHolder.WRONG_TIME;
             }
 
-            int id = cursor.getInt(index_id);
             String cluster_key = cursor.getString(index_firebase_key);
             final ClusterParcelable cluster = new ClusterParcelable(
                     title, null, cluster_key, 0, startTime
@@ -112,6 +111,9 @@ public class PersonalClusterAdapter
 
         @BindView(R.id.ib_delete_p_cluster)
         ImageButton delete;
+
+        @BindString(R.string.inappropriate_time)
+        String WRONG_TIME;
 
         ViewHolder(View itemView) {
             super(itemView);

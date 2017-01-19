@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.hemal.shah.TimeTravel;
 import com.hemal.shah.TimeTravelException;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hemal.t.shah.expensetracker.R;
@@ -62,7 +63,7 @@ public class PersonalExpensesAdapter
             try {
                 timeStamp = TimeTravel.getTimeElapsed(startTime, System.currentTimeMillis());
             } catch (TimeTravelException e) {
-                timeStamp = "Inappropriate Time";
+                timeStamp = viewHolder.WRONG_TIME;
             }
 
 
@@ -112,6 +113,9 @@ public class PersonalExpensesAdapter
 
         @BindView(R.id.tv_description_p_expenses)
         TextView description;
+
+        @BindString(R.string.inappropriate_time)
+        String WRONG_TIME;
 
         ViewHolder(View itemView) {
             super(itemView);

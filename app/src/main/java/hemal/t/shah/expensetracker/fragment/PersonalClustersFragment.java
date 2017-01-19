@@ -154,7 +154,7 @@ public class PersonalClustersFragment extends Fragment implements
         return new CursorLoader(
                 context,
                 ClusterEntry.CONTENT_URI,
-                null,
+                SharedConstants.PROJECTION_CLUSTER,
                 selection,
                 null,
                 sortOrder
