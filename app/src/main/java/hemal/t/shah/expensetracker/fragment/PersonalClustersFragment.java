@@ -48,7 +48,7 @@ import hemal.t.shah.expensetracker.utils.SharedConstants;
 public class PersonalClustersFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor>, OnCluster {
 
-    private static final String TAG = "PersonalExpenseFragment";
+    private static final String TAG = "PersonalExpenseFrag";
 
 
     @BindString(R.string.are_you_sure)
@@ -90,12 +90,15 @@ public class PersonalClustersFragment extends Fragment implements
         reference = FirebaseDatabase.getInstance().getReference();
         user = FirebaseAuth.getInstance().getCurrentUser();
 
+        LinearLayoutManager manager = new LinearLayoutManager(context,
+                LinearLayoutManager.VERTICAL, false) {
+            @Override
+            public boolean supportsPredictiveItemAnimations() {
+                return true;
+            }
+        };
 
-        recyclerView.setLayoutManager(
-                new LinearLayoutManager(
-                        context, LinearLayoutManager.VERTICAL, false
-                )
-        );
+        recyclerView.setLayoutManager(manager);
 
         recyclerView.hasFixedSize();
 
@@ -232,7 +235,7 @@ public class PersonalClustersFragment extends Fragment implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.sort_a_z:
-                initializeLoader(SharedConstants.CURSOR_PERSONAL_Z_A);
+                initializeLoader(SharedConstants.CURSOR_PERSONAL_A_Z);
                 break;
             case R.id.sort_z_a:
                 initializeLoader(SharedConstants.CURSOR_PERSONAL_Z_A);

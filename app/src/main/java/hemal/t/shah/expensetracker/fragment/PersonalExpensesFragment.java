@@ -129,7 +129,15 @@ public class PersonalExpensesFragment extends Fragment implements
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-        // TODO: 13/1/17 only load required fields from data, instead of null
+        String[] projection = {
+                ExpenseEntry._ID, //Always include _ID column for CursorRecyclerViewAdapter
+                ExpenseEntry.COLUMN_ABOUT,
+                ExpenseEntry.COLUMN_AMOUNT,
+                ExpenseEntry.COLUMN_DESCRIBE,
+                ExpenseEntry.COLUMN_TIMESTAMP,
+                ExpenseEntry.FIREBASE_CLUSTER_KEY,
+                ExpenseEntry.COLUMN_FIREBASE_EXPENSE_KEY
+        };
 
         String sortOrder = null;
         switch (id) {
@@ -154,7 +162,7 @@ public class PersonalExpensesFragment extends Fragment implements
         return new CursorLoader(
                 this.mContext,
                 ExpenseEntry.CONTENT_URI,
-                null,
+                projection,
                 selection,
                 selectionArgs,
                 sortOrder
