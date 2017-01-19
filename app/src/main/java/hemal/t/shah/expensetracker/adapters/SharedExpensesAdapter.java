@@ -6,12 +6,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hemal.shah.TimeTravel;
 import com.hemal.shah.TimeTravelException;
+import com.squareup.picasso.Picasso;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hemal.t.shah.expensetracker.R;
@@ -56,7 +58,7 @@ public class SharedExpensesAdapter
         if (cursor.moveToPosition(position)) {
             String about = cursor.getString(index_about);
             double amount = cursor.getDouble(index_amount);
-            String timeStamp = "";
+
             long startTime = cursor.getLong(index_timestamp);
             String cluster_key = cursor.getString(index_cluster_key);
             String user_key = cursor.getString(index_user_key);
@@ -65,10 +67,12 @@ public class SharedExpensesAdapter
             String expense_key = cursor.getString(index_expense_key);
             String url = cursor.getString(index_user_url);
             String description = cursor.getString(index_description);
+
+            String timeStamp;
             try {
                 timeStamp = TimeTravel.getTimeElapsed(startTime, System.currentTimeMillis());
             } catch (TimeTravelException e) {
-                e.printStackTrace();
+                timeStamp = viewHolder.WRONG_TIME;
             }
 
             FirebaseUserDetails userDetails = new FirebaseUserDetails(
@@ -80,9 +84,16 @@ public class SharedExpensesAdapter
                             expense_key, description, startTime);
 
 
-            String text = about + "\n" + amount + "\n" + timeStamp + "\n" + user_key + "\n";
-            text += name + "\n" + email + "\n" + url + "\n";
-            viewHolder.tv.setText(text);
+            viewHolder.about.setText(about);
+            viewHolder.amount.setText(String.valueOf(amount));
+            viewHolder.description.setText(description);
+            viewHolder.timeStamp.setText(timeStamp);
+            viewHolder.user_name.setText(name);
+            Picasso.with(mContext)
+                    .load(url)
+                    .placeholder(R.mipmap.ic_launcher)
+                    .error(R.mipmap.ic_launcher)
+                    .into(viewHolder.user_photo);
 
             viewHolder.delete.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -106,11 +117,29 @@ public class SharedExpensesAdapter
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.sample_2)
-        TextView tv;
+        @BindView(R.id.tv_user_name)
+        TextView user_name;
 
-        @BindView(R.id.bt_delete_s_expense)
-        Button delete;
+        @BindView(R.id.iv_user_profile)
+        ImageView user_photo;
+
+        @BindView(R.id.tv_about_s_expenses)
+        TextView about;
+
+        @BindView(R.id.tv_description_s_expenses)
+        TextView description;
+
+        @BindView(R.id.tv_amount_s_expenses)
+        TextView amount;
+
+        @BindView(R.id.tv_time_s_expenses)
+        TextView timeStamp;
+
+        @BindView(R.id.ib_delete_s_expenses)
+        ImageView delete;
+
+        @BindString(R.string.inappropriate_time)
+        String WRONG_TIME;
 
         ViewHolder(View itemView) {
             super(itemView);
