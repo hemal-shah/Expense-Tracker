@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -76,7 +77,9 @@ public class JoinSharedCluster extends AppCompatActivity {
                             for (DataSnapshot dataShot : snapshot.getChildren()) {
                                 String key = dataShot.getKey();
                                 if (key.equalsIgnoreCase(code)) {
+
                                     cluster_key = dataShot.getValue().toString();
+                                    Log.i(TAG, "onDataChange: we fount the key " + cluster_key);
                                     break;
                                 }
                             }
@@ -109,16 +112,20 @@ public class JoinSharedCluster extends AppCompatActivity {
          * If user already is, simply return from here.
          */
         if (user != null) {
+
             reference.child(SharedConstants.FIREBASE_CLUSTERS_OF_USERS)
                     .child(user.getUid())
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
 
+                            Log.i(TAG, "onDataChange: here 1");
                             for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                 String key = snapshot
                                         .child(SharedConstants.FIREBASE_PATH_SHARED_CLUSTERS)
                                         .getValue().toString();
+
+                                Log.i(TAG, "onDataChange: here 11");
 
                                 if (key.equals(cluster_key)) {
                                     Toast.makeText(JoinSharedCluster.this,
@@ -151,6 +158,8 @@ public class JoinSharedCluster extends AppCompatActivity {
                                             .push()
                                             .updateChildren(map);
 
+                                    Log.i(TAG, "onDataChange: here 2");
+
 
                                     //now updating the "users_in_clusters" node
                                     Map<String, Object> map1 = new HashMap<>();
@@ -160,6 +169,7 @@ public class JoinSharedCluster extends AppCompatActivity {
                                             .push()
                                             .updateChildren(map1);
 
+                                    Log.i(TAG, "onDataChange: here 3");
                                     Toast.makeText(JoinSharedCluster.this,
                                             "You are successfully added to the said cluster",
                                             Toast.LENGTH_SHORT).show();
@@ -174,9 +184,6 @@ public class JoinSharedCluster extends AppCompatActivity {
 
                         }
                     });
-
         }
-
-
     }
 }

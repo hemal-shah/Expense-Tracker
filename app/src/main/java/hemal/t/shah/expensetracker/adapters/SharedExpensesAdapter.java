@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.hemal.shah.TimeTravel;
 import com.hemal.shah.TimeTravelException;
 import com.squareup.picasso.Picasso;
@@ -31,10 +33,13 @@ public class SharedExpensesAdapter
     private Context mContext;
     private OnExpense mExpense;
 
+    private FirebaseUser mFirebaseUser;
+
     public SharedExpensesAdapter(Context context, Cursor cursor, OnExpense mExpense) {
         super(context, cursor);
         this.mContext = context;
         this.mExpense = mExpense;
+        mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
     }
 
     @Override
@@ -95,14 +100,24 @@ public class SharedExpensesAdapter
                     .error(R.mipmap.ic_launcher)
                     .into(viewHolder.user_photo);
 
-            viewHolder.delete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mExpense != null) {
-                        mExpense.delete(expense);
+            /**
+             * We want to enable the delete button only when the expense
+             * is created by the signed in user only.
+             * I.E. No one should be able to delete other users' expenses.
+             */
+            if (mFirebaseUser != null && mFirebaseUser.getEmail().equals(email)) {
+                viewHolder.delete.setVisibility(View.VISIBLE);
+                viewHolder.delete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mExpense != null) {
+                            mExpense.delete(expense);
+                        }
                     }
-                }
-            });
+                });
+            }
+
+
         }
     }
 
