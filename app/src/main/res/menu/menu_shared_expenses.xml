@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/item_container_s_expenses"
+        android:icon="@drawable/ic_sort_white_24dp"
+        android:title="@string/filter"
+        app:showAsAction="always">
+
+        <menu>
+            <item
+                android:id="@+id/menu_s_expense_a_z"
+                android:icon="@drawable/ic_keyboard_arrow_right_black_24dp"
+                android:title="@string/sort_a_z" />
+            <item
+                android:id="@+id/menu_s_expense_z_a"
+                android:icon="@drawable/ic_keyboard_arrow_left_black_24dp"
+                android:title="@string/sort_z_a" />
+            <item
+                android:id="@+id/menu_s_expense_h_l"
+                android:icon="@drawable/ic_trending_down_black_24dp"
+                android:title="@string/sort_h_l" />
+            <item
+                android:id="@+id/menu_s_expense_l_h"
+                android:icon="@drawable/ic_trending_up_black_24dp"
+                android:title="@string/sort_l_h" />
+            <item
+                android:id="@+id/menu_s_expense_name"
+                android:icon="@drawable/ic_person_outline_black_24dp"
+                android:title="@string/user_name" />
+        </menu>
+
+    </item>
+</menu>

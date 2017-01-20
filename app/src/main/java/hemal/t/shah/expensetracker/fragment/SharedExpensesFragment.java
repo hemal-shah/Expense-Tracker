@@ -14,6 +14,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -56,14 +59,20 @@ public class SharedExpensesFragment extends Fragment implements
 
     ClusterParcelable sharedCluster = null;
 
-    Context mContext = null;
+    Context context = null;
 
-    DatabaseReference reference;
+    DatabaseReference reference = null;
 
-    SharedExpensesAdapter adapter;
+    SharedExpensesAdapter adapter = null;
 
     String selection = ExpenseEntry.FIREBASE_CLUSTER_KEY + " = ?";
     String[] selectionArgs;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Nullable
     @Override
@@ -76,7 +85,7 @@ public class SharedExpensesFragment extends Fragment implements
         }
 
         this.selectionArgs = new String[]{String.valueOf(sharedCluster.getFirebase_cluster_id())};
-        this.mContext = getContext();
+        this.context = getContext();
 
         reference = FirebaseDatabase.getInstance().getReference();
 
@@ -85,40 +94,63 @@ public class SharedExpensesFragment extends Fragment implements
 
 
         this.mRecyclerView.setLayoutManager(new LinearLayoutManager(
-                this.mContext,
+                this.context,
                 LinearLayoutManager.VERTICAL,
                 false
         ));
 
-        this.adapter = new SharedExpensesAdapter(this.mContext, null, this);
+        this.adapter = new SharedExpensesAdapter(this.context, null, this);
 
         this.mRecyclerView.setAdapter(adapter);
 
         this.mRecyclerView.setHasFixedSize(true);
 
-        getActivity().getSupportLoaderManager().initLoader(
-                SharedConstants.CURSOR_EXPENSES_SHARED,
-                null, this
-        );
-
+        initializeLoader(SharedConstants.CURSOR_EXPENSES_SHARED);
         return rootView;
 
     }
 
+
+    private void initializeLoader(int token) {
+        getActivity().getSupportLoaderManager().initLoader(
+                token, null, this
+        );
+    }
+
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        String sortOrder = null;
         switch (id) {
             case SharedConstants.CURSOR_EXPENSES_SHARED:
-                return new CursorLoader(
-                        this.mContext,
-                        ExpenseContract.ExpenseEntry.CONTENT_URI,
-                        null,
-                        selection,
-                        selectionArgs,
-                        null
-                );
+                //change nothing..
+                break;
+            case SharedConstants.CURSOR_S_EXPENSES_A_Z:
+                sortOrder = ExpenseEntry.COLUMN_ABOUT + " COLLATE NOCASE ASC";
+                break;
+            case SharedConstants.CURSOR_S_EXPENSES_Z_A:
+                sortOrder = ExpenseEntry.COLUMN_ABOUT + " COLLATE NOCASE DESC";
+                break;
+            case SharedConstants.CURSOR_S_EXPENSES_NAME:
+                sortOrder = ExpenseEntry.COLUMN_FIREBASE_USER_NAME + " COLLATE NOCASE ASC";
+                break;
+            case SharedConstants.CURSOR_S_EXPENSES_H_L:
+                sortOrder = ExpenseEntry.COLUMN_AMOUNT + " DESC";
+                break;
+            case SharedConstants.CURSOR_S_EXPENSES_L_H:
+                sortOrder = ExpenseEntry.COLUMN_AMOUNT + " ASC";
+                break;
+            default:
+                return null;
+
         }
-        return null;
+        return new CursorLoader(
+                this.context,
+                ExpenseContract.ExpenseEntry.CONTENT_URI,
+                null,
+                selection,
+                selectionArgs,
+                sortOrder
+        );
     }
 
     @Override
@@ -135,7 +167,7 @@ public class SharedExpensesFragment extends Fragment implements
     public void delete(final ExpenseParcelable expenseParcelable) {
 
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this.mContext);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
         builder.setTitle(ARE_YOU_SURE)
                 .setCancelable(true)
                 .setNegativeButton(CANCEL, new OnClickListener() {
@@ -147,8 +179,8 @@ public class SharedExpensesFragment extends Fragment implements
                 .setPositiveButton(DELETE_CONFIRM, new OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        DataDispenser dispenser = new DataDispenser(mContext.getContentResolver(),
-                                mContext);
+                        DataDispenser dispenser = new DataDispenser(context.getContentResolver(),
+                                context);
                         dispenser.startDelete(
                                 SharedConstants.TOKEN_DELETE_EXPENSES,
                                 null,
@@ -168,8 +200,37 @@ public class SharedExpensesFragment extends Fragment implements
                 });
 
         builder.create().show();
+    }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_shared_expenses, menu);
+    }
 
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int TOKEN;
+        switch (item.getItemId()) {
+            case R.id.menu_s_expense_a_z:
+                TOKEN = SharedConstants.CURSOR_S_EXPENSES_A_Z;
+                break;
+            case R.id.menu_s_expense_z_a:
+                TOKEN = SharedConstants.CURSOR_S_EXPENSES_Z_A;
+                break;
+            case R.id.menu_s_expense_name:
+                TOKEN = SharedConstants.CURSOR_S_EXPENSES_NAME;
+                break;
+            case R.id.menu_s_expense_h_l:
+                TOKEN = SharedConstants.CURSOR_S_EXPENSES_H_L;
+                break;
+            case R.id.menu_s_expense_l_h:
+                TOKEN = SharedConstants.CURSOR_S_EXPENSES_L_H;
+                break;
+            default:
+                return false;
+        }
+        initializeLoader(TOKEN);
+        return true;
     }
 }

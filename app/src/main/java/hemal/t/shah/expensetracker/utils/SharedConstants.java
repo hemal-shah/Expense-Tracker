@@ -48,6 +48,21 @@ public class SharedConstants {
     public static final int CURSOR_EXPENSES_PERSONAL_L_H = 116;
 
 
+    //sort s expenses a to z
+    public static final int CURSOR_S_EXPENSES_A_Z = 117;
+
+    //sort s expenses z to a
+    public static final int CURSOR_S_EXPENSES_Z_A = 118;
+
+    //sort s expenses high to low
+    public static final int CURSOR_S_EXPENSES_H_L = 119;
+
+    //sort s expenses low to high
+    public static final int CURSOR_S_EXPENSES_L_H = 120;
+
+    //sort s expenses based on user name
+    public static final int CURSOR_S_EXPENSES_NAME = 121;
+
     //to load expenses from shared clusters.
     public static final int CURSOR_EXPENSES_SHARED = 106;
 
