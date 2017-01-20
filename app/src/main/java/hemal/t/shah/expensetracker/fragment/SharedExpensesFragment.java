@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -296,7 +297,7 @@ public class SharedExpensesFragment extends Fragment implements
                 });
     }
 
-    private void showCodeToUser(String code) {
+    private void showCodeToUser(final String code) {
         AlertDialog.Builder builder = new Builder(context);
         builder.setTitle("Here is your code!")
                 .setCancelable(true)
@@ -304,7 +305,12 @@ public class SharedExpensesFragment extends Fragment implements
                 .setPositiveButton("Share", new OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // TODO: 20/1/17 share unit here.
+                        Intent shareIntent = new Intent();
+                        shareIntent.setAction(Intent.ACTION_SEND);
+                        shareIntent.putExtra(Intent.EXTRA_TEXT,
+                                "Join my shared cluster on expense tracker using code " + code);
+                        shareIntent.setType("text/plain");
+                        startActivity(Intent.createChooser(shareIntent, "Share code."));
                     }
                 }).create().show();
     }

@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -86,6 +87,15 @@ public class SharedClusterAdapter
                     }
                 }
             });
+
+            viewHolder.share.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (onCluster != null) {
+                        onCluster.onShare(cluster);
+                    }
+                }
+            });
         }
     }
 
@@ -107,6 +117,9 @@ public class SharedClusterAdapter
 
         @BindView(R.id.ib_exit_s_cluster)
         ImageButton exit;
+
+        @BindView(R.id.share_cluster)
+        ImageButton share;
 
         @BindString(R.string.inappropriate_time)
         String WRONG_TIME;

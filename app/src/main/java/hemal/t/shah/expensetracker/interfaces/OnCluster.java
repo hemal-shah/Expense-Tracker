@@ -10,5 +10,6 @@ public interface OnCluster {
 
     void onDelete(ClusterParcelable cluster);
 
+    void onShare(ClusterParcelable clusterParcelable);
     void onTouch(ClusterParcelable cluster);
 }

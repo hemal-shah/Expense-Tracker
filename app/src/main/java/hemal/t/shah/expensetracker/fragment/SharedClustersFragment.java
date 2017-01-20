@@ -1,5 +1,6 @@
 package hemal.t.shah.expensetracker.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -13,6 +14,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AlertDialog.Builder;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.OnScrollListener;
@@ -305,6 +307,62 @@ public class SharedClustersFragment extends Fragment implements
         AlertDialog dialog = builder.create();
         dialog.show();
 
+    }
+
+    @Override
+    public void onShare(final ClusterParcelable cluster) {
+        //Will be called.
+        final ProgressDialog dialog = new ProgressDialog(context);
+        dialog.setIndeterminate(true);
+        dialog.setMessage("Hold on a minute");
+        dialog.show();
+
+        reference.child(SharedConstants.FIREBASE_PATH_CLUSTER_ID)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        String code = "";
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            for (DataSnapshot container : snapshot.getChildren()) {
+                                String cluster_key = container.getValue().toString();
+
+                                if (cluster_key.equals(cluster.getFirebase_cluster_id())) {
+                                    code = container.getKey();
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (code.length() != 0) {
+                            showCodeToUser(code);
+                        }
+                        dialog.dismiss();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+
+    private void showCodeToUser(final String code) {
+        AlertDialog.Builder builder = new Builder(context);
+        builder.setTitle("Here is your code!")
+                .setCancelable(true)
+                .setMessage(code)
+                .setPositiveButton("Share", new OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent shareIntent = new Intent();
+                        shareIntent.setAction(Intent.ACTION_SEND);
+                        shareIntent.putExtra(Intent.EXTRA_TEXT,
+                                "Join my shared cluster on expense tracker using code " + code);
+                        shareIntent.setType("text/plain");
+                        startActivity(Intent.createChooser(shareIntent, "Share code."));
+                    }
+                }).create().show();
     }
 
     @Override

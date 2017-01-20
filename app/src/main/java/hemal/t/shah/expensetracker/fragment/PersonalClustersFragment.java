@@ -218,6 +218,11 @@ public class PersonalClustersFragment extends Fragment implements
     }
 
     @Override
+    public void onShare(ClusterParcelable clusterParcelable) {
+        //Will never be called!...
+    }
+
+    @Override
     public void onTouch(ClusterParcelable cluster) {
         Intent intent = new Intent(this.context, ExpensesActivity.class);
         intent.putExtra(SharedConstants.SHARE_CLUSTER_PARCEL, cluster);
