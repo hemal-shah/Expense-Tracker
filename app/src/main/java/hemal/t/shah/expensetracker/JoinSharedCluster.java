@@ -2,11 +2,12 @@ package hemal.t.shah.expensetracker;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,7 +39,10 @@ public class JoinSharedCluster extends AppCompatActivity {
     Toolbar toolbar;
 
     @BindView(R.id.tiet_activity_join_cluster)
-    EditText mEditText;
+    TextInputEditText mEditText;
+
+    @BindView(R.id.til_activity_join_cluster)
+    TextInputLayout mTextInputLayout;
 
     // TODO: 12/1/17 cancel button on top
     ActionBar mActionBar;
@@ -100,8 +104,7 @@ public class JoinSharedCluster extends AppCompatActivity {
          * that the key is not correct.
          */
         if (cluster_key.length() == 0 || cluster_key.equalsIgnoreCase("")) {
-            Toast.makeText(this, "The code you entered is not valid.", Toast.LENGTH_SHORT).show();
-            //empty the edit text.
+            mEditText.setError("Enter proper code");
             mEditText.setText("");
             return;
         }

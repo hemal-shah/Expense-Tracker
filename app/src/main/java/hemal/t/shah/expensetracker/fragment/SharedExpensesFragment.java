@@ -1,5 +1,6 @@
 package hemal.t.shah.expensetracker.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -12,6 +13,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AlertDialog.Builder;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.OnScrollListener;
@@ -22,8 +24,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -242,10 +247,65 @@ public class SharedExpensesFragment extends Fragment implements
             case R.id.menu_s_expense_l_h:
                 TOKEN = SharedConstants.CURSOR_S_EXPENSES_L_H;
                 break;
+            case R.id.menu_s_expense_share:
+                shareClusterCode();
+                return true;
             default:
                 return false;
         }
         initializeLoader(TOKEN);
         return true;
+    }
+
+    /**
+     * Retrieve the code for this cluster,
+     * and share it to others.
+     */
+    private void shareClusterCode() {
+        final ProgressDialog dialog = new ProgressDialog(context);
+        dialog.setIndeterminate(true);
+        dialog.setMessage("Hold on a minute");
+        dialog.show();
+
+        reference.child(SharedConstants.FIREBASE_PATH_CLUSTER_ID)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        String code = "";
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            for (DataSnapshot container : snapshot.getChildren()) {
+                                String cluster_key = container.getValue().toString();
+
+                                if (cluster_key.equals(sharedCluster.getFirebase_cluster_id())) {
+                                    code = container.getKey();
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (code.length() != 0) {
+                            showCodeToUser(code);
+                        }
+                        dialog.dismiss();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    private void showCodeToUser(String code) {
+        AlertDialog.Builder builder = new Builder(context);
+        builder.setTitle("Here is your code!")
+                .setCancelable(true)
+                .setMessage(code)
+                .setPositiveButton("Share", new OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // TODO: 20/1/17 share unit here.
+                    }
+                }).create().show();
     }
 }

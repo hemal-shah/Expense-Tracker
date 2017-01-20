@@ -3,6 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/menu_s_expense_share"
+        android:icon="@drawable/ic_share_white_24dp"
+        android:title="@string/share"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/item_container_s_expenses"
         android:icon="@drawable/ic_sort_white_24dp"
         android:title="@string/filter"
