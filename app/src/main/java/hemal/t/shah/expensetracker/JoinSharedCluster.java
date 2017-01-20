@@ -37,7 +37,7 @@ public class JoinSharedCluster extends AppCompatActivity {
     @BindView(R.id.toolbar_activity_join_cluster)
     Toolbar toolbar;
 
-    @BindView(R.id.et_join_cluster)
+    @BindView(R.id.tiet_activity_join_cluster)
     EditText mEditText;
 
     // TODO: 12/1/17 cancel button on top
@@ -60,7 +60,7 @@ public class JoinSharedCluster extends AppCompatActivity {
     }
 
 
-    @OnClick(R.id.bt_join_cluster)
+    @OnClick(R.id.fab_join_cluster)
     public void joinCluster() {
         final String code = mEditText.getText().toString();
         if (code.length() != 6) {

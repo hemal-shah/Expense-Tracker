@@ -18,25 +18,33 @@ import hemal.t.shah.expensetracker.data.ExpenseContract.ExpenseEntry;
 public class ExpenseProvider extends ContentProvider {
 
     //declaring constants for matchUri function.
-    static final int CLUSTER = 102, EXPENSE = 103;
+    static final int CLUSTER = 101, EXPENSE = 102;
+
     private static final String TAG = "ExpenseProvider";
+
     //queryBuilder object to query clusters
     private static SQLiteQueryBuilder clustersQueryBuilder = new SQLiteQueryBuilder();
+
     //queryBuilder to know expenses in a cluster
     private static SQLiteQueryBuilder expensesFromClusterQueryBuilder = new SQLiteQueryBuilder();
+
     private static UriMatcher matcher = buildUriMatcher();
 
     static {
-
         //setting normal query to invoke the clusters table.
         clustersQueryBuilder.setTables(ExpenseContract.ClusterEntry.TABLE_NAME);
         expensesFromClusterQueryBuilder.setTables(ExpenseContract.ExpenseEntry.TABLE_NAME);
-
     }
 
     private ExpenseDBHelper dbHelper;
 
+    /**
+     * Builds the UriMatcher for two of our tables.
+     *
+     * @return UriMatcher containing match for CLUSTER, EXPENSES, and NO_MATCH
+     */
     private static UriMatcher buildUriMatcher() {
+
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         matcher.addURI(ExpenseContract.CONTENT_AUTHORITY, ExpenseContract.PATH_EXPENSE, EXPENSE);
         matcher.addURI(ExpenseContract.CONTENT_AUTHORITY, ExpenseContract.PATH_CLUSTER, CLUSTER);
@@ -46,6 +54,7 @@ public class ExpenseProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
+        //simply create object of ExpenseDBHelper class.
         dbHelper = new ExpenseDBHelper(getContext());
         return true;
     }
@@ -59,7 +68,6 @@ public class ExpenseProvider extends ContentProvider {
         Cursor cursor;
         switch (matcher.match(uri)) {
             case EXPENSE:
-
                 cursor = expensesFromClusterQueryBuilder.query(dbHelper.getReadableDatabase(),
                         projection,
                         selection,
@@ -178,7 +186,12 @@ public class ExpenseProvider extends ContentProvider {
     }
 
     @Override
-    public int bulkInsert(Uri uri, ContentValues[] values) {
+    public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
+
+        /**
+         * Only implemented methods for inclusion multiple expenses at once.
+         */
+
         final SQLiteDatabase db = dbHelper.getWritableDatabase();
         int returnCount = 0;
         switch (matcher.match(uri)) {

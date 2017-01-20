@@ -45,20 +45,16 @@ public class SharedExpensesAdapter
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, Cursor cursor, int position) {
 
-        int index_about, index_amount, index_timestamp, index_cluster_key,
-                index_user_key, index_user_name, index_user_email, index_user_url,
-                index_expense_key, index_description;
-
-        index_about = cursor.getColumnIndex(ExpenseEntry.COLUMN_ABOUT);
-        index_amount = cursor.getColumnIndex(ExpenseEntry.COLUMN_AMOUNT);
-        index_timestamp = cursor.getColumnIndex(ExpenseEntry.COLUMN_TIMESTAMP);
-        index_user_key = cursor.getColumnIndex(ExpenseEntry.COLUMN_BY_FIREBASE_USER_UID);
-        index_cluster_key = cursor.getColumnIndex(ExpenseEntry.FIREBASE_CLUSTER_KEY);
-        index_user_name = cursor.getColumnIndex(ExpenseEntry.COLUMN_FIREBASE_USER_NAME);
-        index_user_url = cursor.getColumnIndex(ExpenseEntry.COLUMN_FIREBASE_USER_URL);
-        index_user_email = cursor.getColumnIndex(ExpenseEntry.COLUMN_FIREBASE_USER_EMAIL);
-        index_expense_key = cursor.getColumnIndex(ExpenseEntry.COLUMN_FIREBASE_EXPENSE_KEY);
-        index_description = cursor.getColumnIndex(ExpenseEntry.COLUMN_DESCRIBE);
+        int index_about = cursor.getColumnIndex(ExpenseEntry.COLUMN_ABOUT);
+        int index_amount = cursor.getColumnIndex(ExpenseEntry.COLUMN_AMOUNT);
+        int index_timestamp = cursor.getColumnIndex(ExpenseEntry.COLUMN_TIMESTAMP);
+        int index_user_key = cursor.getColumnIndex(ExpenseEntry.COLUMN_BY_FIREBASE_USER_UID);
+        int index_cluster_key = cursor.getColumnIndex(ExpenseEntry.FIREBASE_CLUSTER_KEY);
+        int index_user_name = cursor.getColumnIndex(ExpenseEntry.COLUMN_FIREBASE_USER_NAME);
+        int index_user_url = cursor.getColumnIndex(ExpenseEntry.COLUMN_FIREBASE_USER_URL);
+        int index_user_email = cursor.getColumnIndex(ExpenseEntry.COLUMN_FIREBASE_USER_EMAIL);
+        int index_expense_key = cursor.getColumnIndex(ExpenseEntry.COLUMN_FIREBASE_EXPENSE_KEY);
+        int index_description = cursor.getColumnIndex(ExpenseEntry.COLUMN_DESCRIBE);
 
         if (cursor.moveToPosition(position)) {
             String about = cursor.getString(index_about);

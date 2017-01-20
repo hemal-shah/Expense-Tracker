@@ -13,7 +13,7 @@ import hemal.t.shah.expensetracker.data.ExpenseContract.ExpenseEntry;
 class ExpenseDBHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "ExpenseDBHelper";
-    private static final int DATABASE_VERSION = 14;
+    private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "ExpenseDB.db";
 
     ExpenseDBHelper(Context context) {

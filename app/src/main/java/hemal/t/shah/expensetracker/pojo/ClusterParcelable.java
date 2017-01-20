@@ -75,20 +75,8 @@ public class ClusterParcelable implements Parcelable {
         this.title = title;
     }
 
-    public String getCreated_by_user() {
-        return created_by_user;
-    }
-
-    public void setCreated_by_user(String created_by_user) {
-        this.created_by_user = created_by_user;
-    }
-
     public String getFirebase_cluster_id() {
         return firebase_cluster_id;
-    }
-
-    public void setFirebase_cluster_id(String firebase_cluster_id) {
-        this.firebase_cluster_id = firebase_cluster_id;
     }
 
     public String getEmail() {
@@ -99,20 +87,8 @@ public class ClusterParcelable implements Parcelable {
         this.email = email;
     }
 
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
     public int getIs_shared() {
         return is_shared;
-    }
-
-    public void setIs_shared(int is_shared) {
-        this.is_shared = is_shared;
     }
 
     public long getTimeStamp() {

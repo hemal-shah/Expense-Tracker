@@ -5,6 +5,7 @@ import android.app.Application;
 import com.facebook.stetho.Stetho;
 
 /**
+ * Check stetho only if in debugging mode.
  * Created by hemal on 29/12/16.
  */
 public class AppClass extends Application {

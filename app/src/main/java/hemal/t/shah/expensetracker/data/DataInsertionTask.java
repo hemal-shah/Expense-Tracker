@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.widget.Toast;
 
+import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.data.ExpenseContract.ClusterEntry;
 import hemal.t.shah.expensetracker.utils.PreferenceManager;
 import hemal.t.shah.expensetracker.utils.SharedConstants;
@@ -24,12 +25,16 @@ public class DataInsertionTask extends AsyncQueryHandler {
 
     private static final String TAG = "DataInsertionTask";
     private Context context;
+    private String alreadyPresent, successCluster, successExpense;
     private ContentValues contentValues;
 
     public DataInsertionTask(ContentResolver cr, Context context, ContentValues contentValues) {
         super(cr);
         this.context = context;
         this.contentValues = contentValues;
+        this.alreadyPresent = context.getString(R.string.title_already_present);
+        this.successCluster = context.getString(R.string.success_cluster);
+        this.successExpense = context.getString(R.string.success_expense);
     }
 
     public DataInsertionTask(ContentResolver cr, Context context) {
@@ -48,7 +53,7 @@ public class DataInsertionTask extends AsyncQueryHandler {
                  * title is already in use, abort insertion of data.
                  */
                 // TODO: 6/1/17 try to make a snackbar
-                Toast.makeText(this.context, "Title is present!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this.context, alreadyPresent, Toast.LENGTH_LONG).show();
             } else {
 
                 /**
@@ -75,12 +80,12 @@ public class DataInsertionTask extends AsyncQueryHandler {
         // TODO: 30/12/16 Add snackbar here...
         switch (token) {
             case SharedConstants.TOKEN_ADD_NEW_CLUSTER:
-                Toast.makeText(context, "Successfully added new cluster",
+                Toast.makeText(context, successCluster,
                         Toast.LENGTH_SHORT).show();
                 break;
             case SharedConstants.TOKEN_ADD_NEW_EXPENSE:
-                Toast.makeText(context, "Successfully added new expense!",
-                        Toast.LENGTH_LONG).show();
+                Toast.makeText(context, successExpense,
+                        Toast.LENGTH_SHORT).show();
                 break;
         }
 

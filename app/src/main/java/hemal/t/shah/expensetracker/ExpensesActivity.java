@@ -125,9 +125,6 @@ public class ExpensesActivity extends AppCompatActivity {
             fragment.setArguments(bundle);
             transaction.replace(R.id.fl_activity_expenses_loader, fragment);
 
-        } else {
-            //Error
-            this.finish();
         }
         transaction.commit();
     }

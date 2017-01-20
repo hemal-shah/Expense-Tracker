@@ -11,6 +11,7 @@ import android.provider.BaseColumns;
 public class ExpenseContract {
 
     //The authority for ContentProvider, generally the package name.
+    //No need to add these to strings.xml
     static final String CONTENT_AUTHORITY = "hemal.t.shah.expensetracker";
     static final String PATH_EXPENSE = "expenses";//for table of expense
     static final String PATH_CLUSTER = "clusters";//for table of clusters.
@@ -25,34 +26,26 @@ public class ExpenseContract {
         public static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/"
                         + PATH_EXPENSE;
-        //table name
-        public static final String TABLE_NAME = "expense_table";
-
         //regarding what aspect expense was made.
         public static final String COLUMN_ABOUT = "about"; //varchar
-
         //the amount paid
         public static final String COLUMN_AMOUNT = "amount"; //int
-
         //timestamp when event occurred.
         public static final String COLUMN_TIMESTAMP = "timestamp";
-
         //A short description of the expense
         public static final String COLUMN_DESCRIBE = "description";
         //firebase user UID
         public static final String COLUMN_BY_FIREBASE_USER_UID = "by_user";
-
         //firebase expense key
         public static final String COLUMN_FIREBASE_EXPENSE_KEY = "expense_key_firebase";
-
         //firebase username, email, profile url as below:
         public static final String COLUMN_FIREBASE_USER_NAME = "firebaes_uname";
         public static final String COLUMN_FIREBASE_USER_EMAIL = "firebase_u_email";
         public static final String COLUMN_FIREBASE_USER_URL = "firebase_profile_photo_url";
-
         //store key generated from firebase for the cluster it is contained in.
         public static final String FIREBASE_CLUSTER_KEY = "firebase_cluster_key";
-
+        //table name
+        static final String TABLE_NAME = "expense_table";
         static final String CONTENT_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_EXPENSE;
 

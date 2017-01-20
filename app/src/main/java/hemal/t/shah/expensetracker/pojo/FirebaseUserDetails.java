@@ -23,7 +23,8 @@ public class FirebaseUserDetails implements Parcelable {
     };
     private String user_name, user_email, user_uid, user_photo_url;
 
-    public FirebaseUserDetails(String user_name, String user_email, String user_uid, String user_photo_url) {
+    public FirebaseUserDetails(String user_name, String user_email, String user_uid,
+            String user_photo_url) {
         this.user_name = user_name;
         this.user_email = user_email;
         this.user_uid = user_uid;
@@ -41,32 +42,12 @@ public class FirebaseUserDetails implements Parcelable {
         return user_name;
     }
 
-    public void setUser_name(String user_name) {
-        this.user_name = user_name;
-    }
-
     public String getUser_email() {
         return user_email;
     }
 
-    public void setUser_email(String user_email) {
-        this.user_email = user_email;
-    }
-
-    public String getUser_uid() {
-        return user_uid;
-    }
-
-    public void setUser_uid(String user_uid) {
-        this.user_uid = user_uid;
-    }
-
     public String getUser_photo_url() {
         return user_photo_url;
-    }
-
-    public void setUser_photo_url(String user_photo_url) {
-        this.user_photo_url = user_photo_url;
     }
 
     @Override

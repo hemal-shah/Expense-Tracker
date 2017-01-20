@@ -102,12 +102,9 @@ public class TabContainerFragment extends Fragment {
         activity.setSupportActionBar(toolbar);
         mActionBar = activity.getSupportActionBar();
 
-        //set the name of user in title and email in subtitle
-        if (user != null) {
-            if (mActionBar != null) {
-                mActionBar.setTitle(user.getDisplayName());
-//                mActionBar.setSubtitle(user.getEmail());
-            }
+        //set the name of user in title
+        if (user != null && mActionBar != null) {
+            mActionBar.setTitle(user.getDisplayName());
         }
 
         viewPager.setAdapter(new ViewPagerTabAdapter(getChildFragmentManager()));

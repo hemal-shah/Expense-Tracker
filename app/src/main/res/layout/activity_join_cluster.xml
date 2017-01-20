@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     >
 
     <android.support.v7.widget.Toolbar
@@ -11,20 +11,54 @@
         android:layout_height="?attr/actionBarSize"
         />
 
-    <EditText
-        android:id="@+id/et_join_cluster"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter 6 digit code here"
-        android:inputType="number"
-        />
+        android:layout_marginTop="?attr/actionBarSize"
+        android:orientation="vertical"
+        >
 
-    <Button
-        android:id="@+id/bt_join_cluster"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="JOIN"
-        android:textSize="20sp"
-        />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/join_instructions"
+            android:textSize="30sp"
+            />
 
-</LinearLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/til_activity_join_cluster"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginEnd="@dimen/margin_end_start_et_dialog"
+            android:layout_marginStart="@dimen/margin_end_start_et_dialog"
+            android:layout_marginTop="@dimen/margin_top_et_dialog"
+            app:counterEnabled="true"
+            app:counterMaxLength="6"
+            >
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/tiet_activity_join_cluster"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/enter_code"
+                android:inputType="number"
+                android:maxLength="6"
+                />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_join_cluster"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_done_white_24dp"
+            app:elevation="4dp"
+            app:fabSize="normal"
+            />
+    </LinearLayout>
+
+
+</android.support.design.widget.CoordinatorLayout>

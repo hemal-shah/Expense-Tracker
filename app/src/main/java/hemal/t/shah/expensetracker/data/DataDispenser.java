@@ -3,7 +3,7 @@ package hemal.t.shah.expensetracker.data;
 import android.content.AsyncQueryHandler;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.widget.Toast;
+import android.util.Log;
 
 import hemal.t.shah.expensetracker.utils.SharedConstants;
 
@@ -13,7 +13,9 @@ import hemal.t.shah.expensetracker.utils.SharedConstants;
  */
 public class DataDispenser extends AsyncQueryHandler {
 
-    Context context = null;
+    private static final String TAG = "DataDispenser";
+
+    private Context context = null;
 
     public DataDispenser(ContentResolver cr, Context context) {
         super(cr);
@@ -25,18 +27,17 @@ public class DataDispenser extends AsyncQueryHandler {
         super.onDeleteComplete(token, cookie, result);
         switch (token) {
             case SharedConstants.TOKEN_DELETE_CLUSTER:
-                Toast.makeText(this.context, "Deleted the cluster!", Toast.LENGTH_SHORT).show();
+                // TODO: 20/1/17 try to change to snackbar
+                Log.i(TAG, "onDeleteComplete: ");
                 break;
             case SharedConstants.TOKEN_DELETE_EXPENSES:
-                Toast.makeText(this.context, "Deleted expenses", Toast.LENGTH_SHORT).show();
+                Log.i(TAG, "onDeleteComplete: complete");
                 break;
             case SharedConstants.TOKEN_CLEAR_TABLE_CLUSTER:
-                Toast.makeText(context, "cleared cluster table for clean up",
-                        Toast.LENGTH_SHORT).show();
+                //do nothing
                 break;
             case SharedConstants.TOKEN_CLEAR_TABLE_EXPENSE:
-                Toast.makeText(context, "cleared expense table for clean up",
-                        Toast.LENGTH_SHORT).show();
+                // do nothing...
                 break;
         }
     }

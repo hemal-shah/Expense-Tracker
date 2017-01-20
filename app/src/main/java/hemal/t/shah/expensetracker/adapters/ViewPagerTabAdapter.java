@@ -13,8 +13,9 @@ import hemal.t.shah.expensetracker.fragment.SharedClustersFragment;
  */
 public class ViewPagerTabAdapter extends FragmentPagerAdapter {
 
+
     //Titles of tabs.
-    private static String[] tabTitles = {"Personal", "Shared"};
+    private String[] tabTitles = {"Personal", "Shared"};
 
     public ViewPagerTabAdapter(FragmentManager fm) {
         super(fm);
@@ -22,12 +23,12 @@ public class ViewPagerTabAdapter extends FragmentPagerAdapter {
 
     /**
      * Returns apt fragment object based on tab position.
+     *
      * @param position equals to $tabs_count - 1
-     * @return
      */
     @Override
     public Fragment getItem(int position) {
-        switch (position){
+        switch (position) {
             case 0:
                 return new PersonalClustersFragment();
             case 1:
@@ -43,6 +44,7 @@ public class ViewPagerTabAdapter extends FragmentPagerAdapter {
 
     /**
      * Indicates title inside tabs.
+     *
      * @param position Tab Position
      * @return Title
      */

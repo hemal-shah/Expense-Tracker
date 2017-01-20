@@ -25,7 +25,13 @@
     <string name="no_description_provided">No description provided.</string>
     <string name="sort_h_l">High - Low</string>
     <string name="describe">Additional Details (Optional)</string>
+
     <string name="inappropriate_time">Inappropriate Time</string>
     <string name="ad_unit_id">ca-app-pub-1222860377755078/9425545344</string>
     <string name="user_name">User Name</string>
+    <string name="title_already_present">A cluster with same title already exist.</string>
+    <string name="success_cluster">Successfully created new cluster.</string>
+    <string name="success_expense">Successfully added new expenses.</string>
+    <string name="join_instructions">Some instructions on what to do</string>
+    <string name="enter_code">Enter 6 digit code</string>
 </resources>

@@ -6,6 +6,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -15,6 +16,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -107,6 +109,20 @@ public class PersonalExpensesFragment extends Fragment implements
                 new LinearLayoutManager(this.mContext, LinearLayoutManager.VERTICAL, false));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
+
+
+        recyclerView.addOnScrollListener(new OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) {
+                    ((FloatingActionButton) getActivity().findViewById(
+                            R.id.fab_activity_expenses_loader)).hide();
+                } else if (dy < 0) {
+                    ((FloatingActionButton) getActivity().findViewById(
+                            R.id.fab_activity_expenses_loader)).show();
+                }
+            }
+        });
 
 
         initializeLoader(SharedConstants.CURSOR_EXPENSES_PERSONAL);

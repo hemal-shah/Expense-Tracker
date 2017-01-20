@@ -113,24 +113,12 @@ public class ExpenseParcelable implements Parcelable {
         return about;
     }
 
-    public void setAbout(String about) {
-        this.about = about;
-    }
-
     public String getFirebase_cluster_ref_key() {
         return firebase_cluster_ref_key;
     }
 
-    public void setFirebase_cluster_ref_key(String firebase_cluster_ref_key) {
-        this.firebase_cluster_ref_key = firebase_cluster_ref_key;
-    }
-
     public String getFirebase_expense_key() {
         return firebase_expense_key;
-    }
-
-    public void setFirebase_expense_key(String firebase_expense_key) {
-        this.firebase_expense_key = firebase_expense_key;
     }
 
     public String getDescription() {
@@ -141,20 +129,8 @@ public class ExpenseParcelable implements Parcelable {
         this.description = description;
     }
 
-    public String getUser_uid() {
-        return user_uid;
-    }
-
-    public void setUser_uid(String user_uid) {
-        this.user_uid = user_uid;
-    }
-
     public FirebaseUserDetails getUserDetails() {
         return userDetails;
-    }
-
-    public void setUserDetails(FirebaseUserDetails userDetails) {
-        this.userDetails = userDetails;
     }
 
     public double getAmount() {
