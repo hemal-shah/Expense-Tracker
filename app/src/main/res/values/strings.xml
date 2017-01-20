@@ -35,4 +35,5 @@
     <string name="join_instructions">Some instructions on what to do</string>
     <string name="enter_code">Enter 6 digit code</string>
     <string name="share">Share</string>
+    <string name="add_participant">Add Participant</string>
 </resources>

@@ -92,7 +92,7 @@ public class SharedClusterAdapter
                 @Override
                 public void onClick(View v) {
                     if (onCluster != null) {
-                        onCluster.onShare(cluster);
+                        onCluster.onAddParticipant(cluster);
                     }
                 }
             });

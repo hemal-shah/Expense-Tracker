@@ -310,7 +310,7 @@ public class SharedClustersFragment extends Fragment implements
     }
 
     @Override
-    public void onShare(final ClusterParcelable cluster) {
+    public void onAddParticipant(final ClusterParcelable cluster) {
         //Will be called.
         final ProgressDialog dialog = new ProgressDialog(context);
         dialog.setIndeterminate(true);
@@ -350,8 +350,8 @@ public class SharedClustersFragment extends Fragment implements
     private void showCodeToUser(final String code) {
         AlertDialog.Builder builder = new Builder(context);
         builder.setTitle("Here is your code!")
+                .setMessage("Ask other people to enter this code to join this cluster : " + code)
                 .setCancelable(true)
-                .setMessage(code)
                 .setPositiveButton("Share", new OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

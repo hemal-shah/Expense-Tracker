@@ -248,7 +248,7 @@ public class SharedExpensesFragment extends Fragment implements
             case R.id.menu_s_expense_l_h:
                 TOKEN = SharedConstants.CURSOR_S_EXPENSES_L_H;
                 break;
-            case R.id.menu_s_expense_share:
+            case R.id.menu_s_expense_add_participant:
                 shareClusterCode();
                 return true;
             default:
@@ -300,8 +300,8 @@ public class SharedExpensesFragment extends Fragment implements
     private void showCodeToUser(final String code) {
         AlertDialog.Builder builder = new Builder(context);
         builder.setTitle("Here is your code!")
+                .setMessage("Ask other people to enter this code to join this cluster : " + code)
                 .setCancelable(true)
-                .setMessage(code)
                 .setPositiveButton("Share", new OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

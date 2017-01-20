@@ -218,7 +218,7 @@ public class PersonalClustersFragment extends Fragment implements
     }
 
     @Override
-    public void onShare(ClusterParcelable clusterParcelable) {
+    public void onAddParticipant(ClusterParcelable clusterParcelable) {
         //Will never be called!...
     }
 
