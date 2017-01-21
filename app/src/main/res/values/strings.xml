@@ -39,4 +39,6 @@
     <string name="other_people" translatable="true">Ask other people to enter this code to join this cluster : </string>
     <string name="join_my_share_cluster" translatable="true">Join my shared cluster on expense tracker using code </string>
     <string name="hold_minute" translatable="true">Hold on a minute.</string>
+    <string name="restoring_data">Restoring data...</string>
+    <string name="hang_on_tight">Loading up your personal data associated with the account, hang on tight...</string>
 </resources>

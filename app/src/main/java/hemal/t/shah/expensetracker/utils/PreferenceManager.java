@@ -102,4 +102,26 @@ public class PreferenceManager {
         TinyDB db = new TinyDB(context);
         db.putBoolean(IS_FIRST_TIME, value);
     }
+
+    /**
+     * Set to true if the app should be shown in two pane mode...
+     *
+     * @param context Context
+     * @param isTwoPane pass true if two pane mode, else false.
+     */
+    public static void setTwoPaneMode(Context context, boolean isTwoPane) {
+        TinyDB db = new TinyDB(context);
+        db.putBoolean(SharedConstants.TOKEN_TWO_PANE, isTwoPane);
+    }
+
+    /**
+     * Know if two pane mode is enabled..
+     *
+     * @param context Context
+     * @return true if two pane mode enabled.
+     */
+    public static boolean getTwoPaneMode(Context context) {
+        TinyDB db = new TinyDB(context);
+        return db.getBoolean(SharedConstants.TOKEN_TWO_PANE);
+    }
 }

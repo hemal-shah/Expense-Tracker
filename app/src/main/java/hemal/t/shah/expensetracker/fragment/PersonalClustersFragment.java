@@ -39,6 +39,7 @@ import hemal.t.shah.expensetracker.data.ExpenseContract.ClusterEntry;
 import hemal.t.shah.expensetracker.data.ExpenseContract.ExpenseEntry;
 import hemal.t.shah.expensetracker.interfaces.OnCluster;
 import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
+import hemal.t.shah.expensetracker.utils.PreferenceManager;
 import hemal.t.shah.expensetracker.utils.SharedConstants;
 
 /**
@@ -49,27 +50,19 @@ public class PersonalClustersFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor>, OnCluster {
 
     private static final String TAG = "PersonalExpenseFrag";
-
-
+    private static boolean mTwoPane;
     @BindString(R.string.are_you_sure)
     String ARE_YOU_SURE;
-
     @BindString(R.string.cancel)
     String CANCEL;
-
     @BindString(R.string.delete_confirm)
     String DELETE_CONFIRM;
-
     @BindView(R.id.rv_activity_personal_clusters)
     RecyclerView recyclerView;
-
-    Context context;
-
-    FirebaseUser user;
-    DatabaseReference reference;
-
-    PersonalClusterAdapter personalClusterAdapter;
-
+    private Context context;
+    private FirebaseUser user;
+    private DatabaseReference reference;
+    private PersonalClusterAdapter personalClusterAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -85,6 +78,8 @@ public class PersonalClustersFragment extends Fragment implements
         ButterKnife.bind(this, baseView);
 
         context = getContext();
+
+        mTwoPane = PreferenceManager.getTwoPaneMode(context);
 
         //Getting firebase ready
         reference = FirebaseDatabase.getInstance().getReference();

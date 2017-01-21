@@ -77,6 +77,7 @@ public class SharedConstants {
     //clear entire expense table on sign out
     public static final int TOKEN_CLEAR_TABLE_EXPENSE = 110;
 
+    public static final String TOKEN_TWO_PANE = "two_pane_mode";
 
     public static final String SHARE_CLUSTER_PARCEL = "parcel";
 

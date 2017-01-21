@@ -2,8 +2,24 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:divider="?android:attr/dividerHorizontal"
     android:orientation="horizontal"
+    android:weightSum="5"
     >
 
+    <fragment
+        android:id="@+id/fragment_activity_main"
+        android:name="hemal.t.shah.expensetracker.fragment.TabContainerFragment"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        />
+
+    <FrameLayout
+        android:id="@+id/fl_activity_expenses_loader"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        />
 
 </LinearLayout>

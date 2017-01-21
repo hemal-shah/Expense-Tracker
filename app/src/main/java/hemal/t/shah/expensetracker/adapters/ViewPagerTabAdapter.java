@@ -13,7 +13,6 @@ import hemal.t.shah.expensetracker.fragment.SharedClustersFragment;
  */
 public class ViewPagerTabAdapter extends FragmentPagerAdapter {
 
-
     //Titles of tabs.
     private String[] tabTitles = {"Personal", "Shared"};
 
@@ -33,8 +32,9 @@ public class ViewPagerTabAdapter extends FragmentPagerAdapter {
                 return new PersonalClustersFragment();
             case 1:
                 return new SharedClustersFragment();
+            default:
+                return null;
         }
-        return null;
     }
 
     @Override

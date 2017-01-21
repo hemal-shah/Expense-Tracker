@@ -58,42 +58,29 @@ public class SharedClustersFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor>, OnCluster {
 
     private static final String TAG = "SharedClustersFrag";
-
+    private static boolean mTwoPane;
     @BindView(R.id.rv_activity_shared_clusters)
     RecyclerView recyclerView;
-
     @BindString(R.string.you_will_exit_group)
     String YOU_WILL_EXIT_GROUP;
-
-
     @BindString(R.string.share)
     String SHARE;
-
     @BindString(R.string.other_people)
     String OTHER_PEOPLE;
-
     @BindString(R.string.here_is_your_code)
     String HERE_IS_YOUR_CODE;
-
     @BindString(R.string.hold_minute)
     String HOLD_MINUTE;
-
     @BindString(R.string.join_my_share_cluster)
     String JOIN;
-
-
     @BindString(R.string.cancel)
     String CANCEL;
-
     @BindString(R.string.exit_confirm)
     String EXIT_CONFIRM;
-
-    SharedClusterAdapter adapter = null;
-
-    FirebaseUser user;
-    DatabaseReference reference;
-
-    Context context = null;
+    private SharedClusterAdapter adapter = null;
+    private FirebaseUser user;
+    private DatabaseReference reference;
+    private Context context = null;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -110,6 +97,9 @@ public class SharedClustersFragment extends Fragment implements
         ButterKnife.bind(this, baseView);
 
         this.context = getContext();
+
+
+        mTwoPane = PreferenceManager.getTwoPaneMode(context);
 
         this.reference = FirebaseDatabase.getInstance().getReference();
         this.user = FirebaseAuth.getInstance().getCurrentUser();

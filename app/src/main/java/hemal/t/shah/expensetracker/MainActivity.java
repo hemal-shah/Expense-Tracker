@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -56,6 +55,10 @@ public class MainActivity extends AppCompatActivity {
     String NOT_CONNECTED;
     @BindString(R.string.ad_unit_id)
     String ad_unit_id;
+    @BindString(R.string.restoring_data)
+    String RESTORING_DATA;
+    @BindString(R.string.hang_on_tight)
+    String HANG_ON_TIGHT;
     private FirebaseAuth mFirebaseAuth;
     private AuthStateListener mAuthStateListener;
     private FirebaseUser user;
@@ -65,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
     private ChildEventListener loadKeysOfSharedClusters;
     private ProgressDialog mProgressDialog;
     private InterstitialAd mInterstitialAd;
+
+    private boolean mTwoPaneMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,24 +83,31 @@ public class MainActivity extends AppCompatActivity {
         //getting instance of user.
         mFirebaseAuth = FirebaseAuth.getInstance();
 
-        //generating auth state listener
+        /**
+         * Checking if two pane mode is enabled or not...
+         */
+        mTwoPaneMode = findViewById(R.id.fl_activity_expenses_loader) != null;
+
+        PreferenceManager.setTwoPaneMode(context, mTwoPaneMode);
+
+        //generating auth state listener for signing in...
         mAuthStateListener = new AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 user = firebaseAuth.getCurrentUser();
 
                 if (user != null) {
-                    //User signed in...
-
+                    //User is signed in...
                     reference = FirebaseDatabase.getInstance().getReference();
 
+                    /**
+                     * Load initial backup only once, it's not required everytime...
+                     */
                     if (!PreferenceManager.isFirstTimeAppOpened(context)) {
 
                         mProgressDialog = new ProgressDialog(context);
-                        mProgressDialog.setTitle("Restoring data....");
-                        mProgressDialog.setMessage(
-                                "Loading up your personal data associated with the account, hang "
-                                        + "on tight...");
+                        mProgressDialog.setTitle(RESTORING_DATA);
+                        mProgressDialog.setMessage(HANG_ON_TIGHT);
                         mProgressDialog.setIndeterminate(true);
                         mProgressDialog.show();
 
@@ -105,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                 } else {
+
                     //User not signed in.
                     dataCleanUpOnSignOut();
                     startActivityForResult(AuthUI.getInstance()
@@ -124,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
+
         //Admob initialization here
         mInterstitialAd = new InterstitialAd(context);
         mInterstitialAd.setAdUnitId(ad_unit_id);
@@ -140,6 +154,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Loads an interstitial ad based on some conditions.
+     */
     private void requestNewInterstitial() {
 
         /**
@@ -298,7 +315,7 @@ public class MainActivity extends AppCompatActivity {
                     });
         }
 
-        incrementLoadCountAndDimiss();
+        incrementLoadCountAndDismiss();
     }
 
     @Override
@@ -328,13 +345,16 @@ public class MainActivity extends AppCompatActivity {
                         .removeEventListener(loadKeysOfSharedClusters);
             }
         }
+
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
-
     }
 
     @Override
@@ -437,7 +457,7 @@ public class MainActivity extends AppCompatActivity {
                     addInitialDataToDatabase(parcel, expensesList);
                 }
 
-                incrementLoadCountAndDimiss();
+                incrementLoadCountAndDismiss();
             }
 
             @Override
@@ -549,12 +569,11 @@ public class MainActivity extends AppCompatActivity {
      * Increments the load count, and if both
      * shared and personal data are loaded, dismiss the progress dialog...
      */
-    private void incrementLoadCountAndDimiss() {
+    private void incrementLoadCountAndDismiss() {
         loadCount++;
         if (loadCount == 2) {
             if (mProgressDialog != null) {
                 mProgressDialog.dismiss();
-                Log.i(TAG, "incrementLoadCountAndDimiss: data is loaded both shared and personal");
             }
         }
     }
