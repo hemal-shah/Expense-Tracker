@@ -36,4 +36,8 @@
     <string name="enter_code">Enter 6 digit code</string>
     <string name="share">Share</string>
     <string name="add_participant">Add Participant</string>
+    <string name="here_is_your_code">Here is your code!</string>
+    <string name="other_people">Ask other people to enter this code to join this cluster : </string>
+    <string name="join_my_share_cluster">Join my shared cluster on expense tracker using code </string>
+    <string name="hold_minute">Hold on a minute.</string>
 </resources>

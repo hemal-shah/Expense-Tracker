@@ -57,17 +57,37 @@ import hemal.t.shah.expensetracker.utils.SharedConstants;
 public class SharedClustersFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor>, OnCluster {
 
-    private static final String TAG = "SharedClustersFragment";
+    private static final String TAG = "SharedClustersFrag";
+
     @BindView(R.id.rv_activity_shared_clusters)
     RecyclerView recyclerView;
+
     @BindString(R.string.you_will_exit_group)
     String YOU_WILL_EXIT_GROUP;
 
 
+    @BindString(R.string.share)
+    String SHARE;
+
+    @BindString(R.string.other_people)
+    String OTHER_PEOPLE;
+
+    @BindString(R.string.here_is_your_code)
+    String HERE_IS_YOUR_CODE;
+
+    @BindString(R.string.hold_minute)
+    String HOLD_MINUTE;
+
+    @BindString(R.string.join_my_share_cluster)
+    String JOIN;
+
+
     @BindString(R.string.cancel)
     String CANCEL;
+
     @BindString(R.string.exit_confirm)
     String EXIT_CONFIRM;
+
     SharedClusterAdapter adapter = null;
 
     FirebaseUser user;
@@ -250,12 +270,8 @@ public class SharedClustersFragment extends Fragment implements
                                 new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
-                                        Log.i(TAG,
-                                                "onDataChange: the loop starts now, content "
-                                                        + "should be there");
                                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                             snapshot.getRef().removeValue();
-                                            Log.i(TAG, "onDataChange: check online value!");
                                         }
                                     }
 
@@ -279,7 +295,6 @@ public class SharedClustersFragment extends Fragment implements
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                             snapshot.getRef().removeValue();
-                                            Log.i(TAG, "onDataChange: check the firebase table!");
                                         }
                                     }
 
@@ -290,8 +305,6 @@ public class SharedClustersFragment extends Fragment implements
                                     }
                                 });
 
-                        Log.i(TAG, "onClick: the key to be removed is : "
-                                + cluster.getFirebase_cluster_id());
                         //3. Remove the clusterkey from tinydb
                         PreferenceManager.removeKeyFromAdded(context,
                                 cluster.getFirebase_cluster_id());
@@ -314,7 +327,7 @@ public class SharedClustersFragment extends Fragment implements
         //Will be called.
         final ProgressDialog dialog = new ProgressDialog(context);
         dialog.setIndeterminate(true);
-        dialog.setMessage("Hold on a minute");
+        dialog.setMessage(HOLD_MINUTE);
         dialog.show();
 
         reference.child(SharedConstants.FIREBASE_PATH_CLUSTER_ID)
@@ -349,18 +362,18 @@ public class SharedClustersFragment extends Fragment implements
 
     private void showCodeToUser(final String code) {
         AlertDialog.Builder builder = new Builder(context);
-        builder.setTitle("Here is your code!")
-                .setMessage("Ask other people to enter this code to join this cluster : " + code)
+        builder.setTitle(HERE_IS_YOUR_CODE)
+                .setMessage(OTHER_PEOPLE + code)
                 .setCancelable(true)
-                .setPositiveButton("Share", new OnClickListener() {
+                .setPositiveButton(SHARE, new OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Intent shareIntent = new Intent();
                         shareIntent.setAction(Intent.ACTION_SEND);
                         shareIntent.putExtra(Intent.EXTRA_TEXT,
-                                "Join my shared cluster on expense tracker using code " + code);
+                                JOIN + code);
                         shareIntent.setType("text/plain");
-                        startActivity(Intent.createChooser(shareIntent, "Share code."));
+                        startActivity(Intent.createChooser(shareIntent, SHARE));
                     }
                 }).create().show();
     }

@@ -65,6 +65,21 @@ public class SharedExpensesFragment extends Fragment implements
     @BindString(R.string.delete_confirm)
     String DELETE_CONFIRM;
 
+    @BindString(R.string.share)
+    String SHARE;
+
+    @BindString(R.string.other_people)
+    String OTHER_PEOPLE;
+
+    @BindString(R.string.here_is_your_code)
+    String HERE_IS_YOUR_CODE;
+
+    @BindString(R.string.hold_minute)
+    String HOLD_MINUTE;
+
+    @BindString(R.string.join_my_share_cluster)
+    String JOIN;
+
     ClusterParcelable sharedCluster = null;
 
     Context context = null;
@@ -265,7 +280,7 @@ public class SharedExpensesFragment extends Fragment implements
     private void shareClusterCode() {
         final ProgressDialog dialog = new ProgressDialog(context);
         dialog.setIndeterminate(true);
-        dialog.setMessage("Hold on a minute");
+        dialog.setMessage(HOLD_MINUTE);
         dialog.show();
 
         reference.child(SharedConstants.FIREBASE_PATH_CLUSTER_ID)
@@ -297,20 +312,25 @@ public class SharedExpensesFragment extends Fragment implements
                 });
     }
 
+    /**
+     * Shows a code to user using AlertDialog
+     *
+     * @param code code to display
+     */
     private void showCodeToUser(final String code) {
         AlertDialog.Builder builder = new Builder(context);
-        builder.setTitle("Here is your code!")
-                .setMessage("Ask other people to enter this code to join this cluster : " + code)
+        builder.setTitle(HERE_IS_YOUR_CODE)
+                .setMessage(OTHER_PEOPLE + code)
                 .setCancelable(true)
-                .setPositiveButton("Share", new OnClickListener() {
+                .setPositiveButton(SHARE, new OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Intent shareIntent = new Intent();
                         shareIntent.setAction(Intent.ACTION_SEND);
                         shareIntent.putExtra(Intent.EXTRA_TEXT,
-                                "Join my shared cluster on expense tracker using code " + code);
+                                JOIN + code);
                         shareIntent.setType("text/plain");
-                        startActivity(Intent.createChooser(shareIntent, "Share code."));
+                        startActivity(Intent.createChooser(shareIntent, SHARE));
                     }
                 }).create().show();
     }
