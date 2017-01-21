@@ -45,5 +45,4 @@
     <dimen name="photo_size">30dp</dimen>
     <dimen name="text_size_user_name">15sp</dimen>
     <dimen name="padding_gv_s_expense">10dp</dimen>
-    <dimen name="cluster_padding_bottom">40dp</dimen>
 </resources>

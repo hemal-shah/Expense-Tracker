@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="30dp"
-    android:layout_marginStart="30dp"
-    android:layout_marginTop="10dp"
-    app:cardElevation="4dp"
+    android:layout_marginEnd="@dimen/p_expense_margin_end_start"
+    android:layout_marginStart="@dimen/p_expense_margin_end_start"
+    android:layout_marginTop="@dimen/p_expense_margin_top"
+    app:cardElevation="@dimen/card_elevation"
     >
 
     <LinearLayout
@@ -20,7 +20,7 @@
         >
 
         <FrameLayout
-            android:layout_width="4dp"
+            android:layout_width="@dimen/fl_line_color_width"
             android:layout_height="match_parent"
             android:background="@color/accent"
             />
@@ -35,14 +35,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingEnd="10dp"
-                android:paddingStart="10dp"
-                android:paddingTop="10dp"
+                android:paddingEnd="@dimen/padding_top_start_end_s_expense_ll"
+                android:paddingStart="@dimen/padding_top_start_end_s_expense_ll"
+                android:paddingTop="@dimen/padding_top_start_end_s_expense_ll"
                 >
                 <ImageView
                     android:id="@+id/iv_user_profile"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="@dimen/photo_size"
+                    android:layout_height="@dimen/photo_size"
                     />
 
                 <TextView
@@ -51,7 +51,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:textColor="@color/primary_dark"
-                    android:textSize="15sp"
+                    android:textSize="@dimen/text_size_user_name"
                     tools:text="Hemal Shah"
                     />
 
@@ -62,7 +62,7 @@
                 android:id="@+id/ll_p_expenses"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="10dp"
+                android:padding="@dimen/padding_gv_s_expense"
                 app:columnCount="4"
                 app:orientation="horizontal"
                 >
@@ -71,7 +71,7 @@
                     android:id="@+id/tv_about_s_expenses"
                     android:gravity="center"
                     android:textColor="@color/primary"
-                    android:textSize="25sp"
+                    android:textSize="@dimen/text_size_about"
                     android:textStyle="bold|italic"
                     app:layout_columnSpan="2"
                     app:layout_columnWeight="2"
@@ -85,7 +85,7 @@
                     android:id="@+id/tv_amount_s_expenses"
                     android:gravity="center"
                     android:textColor="@color/primary"
-                    android:textSize="20sp"
+                    android:textSize="@dimen/text_size_amount"
                     app:layout_columnSpan="2"
                     app:layout_columnWeight="2"
                     app:layout_gravity="end"
@@ -97,7 +97,7 @@
                 <TextView
                     android:id="@+id/tv_description_s_expenses"
                     android:gravity="center"
-                    android:textSize="17sp"
+                    android:textSize="@dimen/text_size_description"
                     app:layout_columnSpan="4"
                     app:layout_columnWeight="4"
                     app:layout_gravity="start"
@@ -110,7 +110,7 @@
                     android:id="@+id/tv_time_s_expenses"
                     android:gravity="center_vertical"
                     android:textColor="@android:color/black"
-                    android:textSize="12sp"
+                    android:textSize="@dimen/text_size_timestamp_p_expenses"
                     app:layout_columnSpan="1"
                     app:layout_columnWeight="1"
                     app:layout_gravity="fill"

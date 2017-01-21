@@ -29,7 +29,7 @@
             android:background="@color/primary"
             app:tabBackground="?attr/selectableItemBackground"
             app:tabGravity="fill"
-            app:tabIndicatorHeight="4dp"
+            app:tabIndicatorHeight="@dimen/tab_indicator_height"
             app:tabMode="fixed"
             app:tabSelectedTextColor="@color/white"
             app:tabTextColor="@color/grey"

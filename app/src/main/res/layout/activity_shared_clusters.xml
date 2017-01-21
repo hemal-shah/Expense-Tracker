@@ -5,5 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipToPadding="false"
-    android:paddingTop="20dp"
+    android:paddingBottom="@dimen/cluster_padding_bottom"
+    android:paddingTop="@dimen/shared_cluster_rv_margin_top"
     />

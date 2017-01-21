@@ -8,9 +8,9 @@
 
     <RadioGroup
         android:id="@+id/rg_dialog_new_cluster"
-        android:layout_margin="@dimen/margin_rg_dialog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_rg_dialog"
         android:orientation="horizontal"
         android:weightSum="2">
 
@@ -19,14 +19,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:checked="true"
             android:text="@string/personal"
-            android:checked="true" />
+            />
 
         <RadioButton
             android:id="@+id/rb_shared_dialog_new_cluster"
-            android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="@string/shared" />
 
     </RadioGroup>
@@ -38,8 +39,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginEnd="@dimen/margin_end_start_et_dialog"
-        android:layout_marginTop="@dimen/margin_top_et_dialog"
         android:layout_marginStart="@dimen/margin_end_start_et_dialog"
+        android:layout_marginTop="@dimen/margin_top_et_dialog"
         app:counterEnabled="true"
         app:counterMaxLength="15">
 

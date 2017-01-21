@@ -32,7 +32,7 @@
     <string name="title_already_present">A cluster with same title already exist.</string>
     <string name="success_cluster">Successfully created new cluster.</string>
     <string name="success_expense">Successfully added new expenses.</string>
-    <string name="join_instructions">Some instructions on what to do</string>
+    <string name="join_instructions">Enter the code you received from your colleague in the following field, and you will be added to their Shared Cluster.</string>
     <string name="enter_code">Enter 6 digit code</string>
     <string name="share">Share</string>
     <string name="add_participant">Add Participant</string>

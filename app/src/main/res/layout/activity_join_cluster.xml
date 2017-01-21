@@ -21,8 +21,11 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/instruction_margin_start_end"
+            android:layout_marginStart="@dimen/instruction_margin_start_end"
+            android:layout_marginTop="@dimen/instruction_margin_top"
             android:text="@string/join_instructions"
-            android:textSize="30sp"
+            android:textSize="@dimen/text_size_instructions"
             />
 
 
@@ -31,9 +34,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginEnd="@dimen/margin_end_start_et_dialog"
-            android:layout_marginStart="@dimen/margin_end_start_et_dialog"
-            android:layout_marginTop="@dimen/margin_top_et_dialog"
+            android:layout_marginEnd="@dimen/join_cluster_til_margin_start_end"
+            android:layout_marginStart="@dimen/join_cluster_til_margin_start_end"
+            android:layout_marginTop="@dimen/join_cluster_til_margin_top"
             app:counterEnabled="true"
             app:counterMaxLength="6"
             >
@@ -55,7 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:src="@drawable/ic_done_white_24dp"
-            app:elevation="4dp"
+            app:elevation="@dimen/fab_elevation"
             app:fabSize="normal"
             />
     </LinearLayout>

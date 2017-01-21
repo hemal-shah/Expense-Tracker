@@ -7,10 +7,12 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -55,6 +57,9 @@ public class TabContainerFragment extends Fragment {
 
     @BindView(R.id.vp_activity_tab_container)
     ViewPager viewPager;
+
+    @BindView(R.id.fab_activity_tab_container)
+    FloatingActionButton fab;
 
     @BindView(R.id.toolbar_activity_tab_container)
     Toolbar toolbar;
@@ -110,6 +115,29 @@ public class TabContainerFragment extends Fragment {
         viewPager.setAdapter(new ViewPagerTabAdapter(getChildFragmentManager()));
 
         tabLayout.setupWithViewPager(viewPager);
+
+        viewPager.addOnPageChangeListener(new OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset,
+                    int positionOffsetPixels) {
+                //nothing
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+                /**
+                 * Show fab here as there are chances it might be hidden by one
+                 * of the expenses fragment, so we need to show it here.
+                 */
+                fab.show();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                //nothing
+            }
+        });
 
         return base_view;
     }
