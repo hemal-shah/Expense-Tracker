@@ -1,12 +1,13 @@
 package hemal.t.shah.expensetracker;
 
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -37,7 +38,6 @@ import hemal.t.shah.expensetracker.data.DataDispenser;
 import hemal.t.shah.expensetracker.data.DataInsertionTask;
 import hemal.t.shah.expensetracker.data.ExpenseContract.ClusterEntry;
 import hemal.t.shah.expensetracker.data.ExpenseContract.ExpenseEntry;
-import hemal.t.shah.expensetracker.fragment.TabContainerFragment;
 import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
 import hemal.t.shah.expensetracker.pojo.ExpenseParcelable;
 import hemal.t.shah.expensetracker.pojo.FirebaseUserDetails;
@@ -51,13 +51,11 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private static final int RC_SIGN_IN = 123;
-
+    private static int loadCount = 0;
     @BindString(R.string.not_connected_to_internet)
     String NOT_CONNECTED;
-
     @BindString(R.string.ad_unit_id)
     String ad_unit_id;
-
     private FirebaseAuth mFirebaseAuth;
     private AuthStateListener mAuthStateListener;
     private FirebaseUser user;
@@ -65,8 +63,7 @@ public class MainActivity extends AppCompatActivity {
     private ValueEventListener personalClusterEventListener;
     private DatabaseReference reference;
     private ChildEventListener loadKeysOfSharedClusters;
-    private FragmentManager manager;
-
+    private ProgressDialog mProgressDialog;
     private InterstitialAd mInterstitialAd;
 
     @Override
@@ -81,8 +78,6 @@ public class MainActivity extends AppCompatActivity {
         //getting instance of user.
         mFirebaseAuth = FirebaseAuth.getInstance();
 
-        manager = getSupportFragmentManager();
-
         //generating auth state listener
         mAuthStateListener = new AuthStateListener() {
             @Override
@@ -93,13 +88,22 @@ public class MainActivity extends AppCompatActivity {
                     //User signed in...
 
                     reference = FirebaseDatabase.getInstance().getReference();
-                    loadInitialPersonalDataOnSignIn(user);
 
-                    loadInitialSharedDataOnSignIn(user);
+                    if (!PreferenceManager.isFirstTimeAppOpened(context)) {
 
-                    manager.beginTransaction()
-                            .replace(R.id.fragment_activity_main, new TabContainerFragment())
-                            .commit();
+                        mProgressDialog = new ProgressDialog(context);
+                        mProgressDialog.setTitle("Restoring data....");
+                        mProgressDialog.setMessage(
+                                "Loading up your personal data associated with the account, hang "
+                                        + "on tight...");
+                        mProgressDialog.setIndeterminate(true);
+                        mProgressDialog.show();
+
+                        loadInitialPersonalDataOnSignIn(user);
+                        loadInitialSharedDataOnSignIn(user);
+                        PreferenceManager.setFirstTimeOpened(context, true);
+                    }
+
                 } else {
                     //User not signed in.
                     dataCleanUpOnSignOut();
@@ -126,29 +130,34 @@ public class MainActivity extends AppCompatActivity {
         mInterstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdLoaded() {
-                /**
-                 * Generate a random number and if it's divisible by 10 then and then
-                 * only show the add...
-                 */
-
-                Random random = new Random();
-                int number = random.nextInt(999) + 1;
-                if (number % 10 == 0) {
-                    mInterstitialAd.show();
-                }
+                super.onAdLoaded();
+                mInterstitialAd.show();
             }
         });
+
         requestNewInterstitial();
 
 
     }
 
     private void requestNewInterstitial() {
-        AdRequest request = new AdRequest.Builder()
-                .addTestDevice("1B9E645F6AEB9B725AACE600DC298402")
-                .build();
 
-        mInterstitialAd.loadAd(request);
+        /**
+         * Generate a random number and if it's divisible by 10 then and then
+         * only show the add...
+         */
+
+        Random random = new Random();
+        int number = random.nextInt(999) + 1;
+        // TODO: 21/1/17 remove the if condition for testing purposes
+        if (number % 10 == 0) {
+            // TODO: 21/1/17 generate your own test device id for testing of ad.
+            AdRequest request = new AdRequest.Builder()
+                    .addTestDevice("1B9E645F6AEB9B725AACE600DC298402") //Generated from log
+                    .build();
+
+            mInterstitialAd.loadAd(request);
+        }
     }
 
     /**
@@ -288,6 +297,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
         }
+
+        incrementLoadCountAndDimiss();
     }
 
     @Override
@@ -337,10 +348,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
-                //user Signed in, lets get them to main screen.
-                manager.beginTransaction()
-                        .replace(R.id.fragment_activity_main, new TabContainerFragment())
-                        .commit();
+                //user Signed in,
 
             } else if (resultCode == RESULT_CANCELED) {
                 this.finish();
@@ -373,12 +381,6 @@ public class MainActivity extends AppCompatActivity {
         personalClusterEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
-                if (PreferenceManager.checkInitialDataLoaded(context)) {
-                    //We don't want to load the initial data again and again.
-                    //hence if once we have loaded it, we return from here.
-                    return;
-                }
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String cluster_key = snapshot.getKey();
@@ -434,6 +436,8 @@ public class MainActivity extends AppCompatActivity {
 
                     addInitialDataToDatabase(parcel, expensesList);
                 }
+
+                incrementLoadCountAndDimiss();
             }
 
             @Override
@@ -475,8 +479,8 @@ public class MainActivity extends AppCompatActivity {
          */
 
         PreferenceManager.removeAllKeys(context);
-
-        PreferenceManager.setInitialDataLoad(context, false);
+        loadCount = 0;
+        PreferenceManager.setFirstTimeOpened(context, false);
     }
 
     /**
@@ -538,5 +542,20 @@ public class MainActivity extends AppCompatActivity {
             getContentResolver().bulkInsert(ExpenseEntry.CONTENT_URI, contentValues);
         }
         PreferenceManager.setInitialDataLoad(context, true);
+    }
+
+
+    /**
+     * Increments the load count, and if both
+     * shared and personal data are loaded, dismiss the progress dialog...
+     */
+    private void incrementLoadCountAndDimiss() {
+        loadCount++;
+        if (loadCount == 2) {
+            if (mProgressDialog != null) {
+                mProgressDialog.dismiss();
+                Log.i(TAG, "incrementLoadCountAndDimiss: data is loaded both shared and personal");
+            }
+        }
     }
 }

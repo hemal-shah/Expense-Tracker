@@ -17,6 +17,7 @@ public class PreferenceManager {
 
     private static final String PREFERENCE_FIREBASE = "fire_base_preferences";
     private static final String INITIAL_DATA_LOAD = "initial_data_load";
+    private static final String IS_FIRST_TIME = "is_first_time";
 
     private static final String CLUSTER_KEYS = "cluster_keys";
 
@@ -84,5 +85,21 @@ public class PreferenceManager {
     public static void removeAllKeys(Context context) {
         TinyDB db = new TinyDB(context);
         db.clear();
+    }
+
+    /**
+     * To check if the application is opening for the first time or not.
+     */
+    public static boolean isFirstTimeAppOpened(Context context) {
+        TinyDB db = new TinyDB(context);
+        return db.getBoolean(IS_FIRST_TIME);
+    }
+
+    /**
+     * Call this helper function if application is loaded for the first time.
+     */
+    public static void setFirstTimeOpened(Context context, boolean value) {
+        TinyDB db = new TinyDB(context);
+        db.putBoolean(IS_FIRST_TIME, value);
     }
 }
