@@ -307,7 +307,6 @@ public class SharedExpensesFragment extends Fragment implements
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-
                     }
                 });
     }

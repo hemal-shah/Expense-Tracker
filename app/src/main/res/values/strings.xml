@@ -16,28 +16,27 @@
     <string name="add" translatable="true">Add!</string>
     <string name="error_string_length" translatable="true">Length should be between 3 to 15 characters.</string>
     <string name="create_cluster" translatable="true">Create Cluster</string>
-    <string name="sort_a_z">A - Z</string>
-    <string name="sort_z_a">Z - A</string>
-    <string name="filter">Filter</string>
-    <string name="create">Create</string>
-    <string name="join_cluster">Join Cluster</string>
-    <string name="sort_l_h">Low - High</string>
-    <string name="no_description_provided">No description provided.</string>
-    <string name="sort_h_l">High - Low</string>
-    <string name="describe">Additional Details (Optional)</string>
-
-    <string name="inappropriate_time">Inappropriate Time</string>
-    <string name="ad_unit_id">ca-app-pub-1222860377755078/9425545344</string>
-    <string name="user_name">User Name</string>
-    <string name="title_already_present">A cluster with same title already exist.</string>
-    <string name="success_cluster">Successfully created new cluster.</string>
-    <string name="success_expense">Successfully added new expenses.</string>
-    <string name="join_instructions">Enter the code you received from your colleague in the following field, and you will be added to their Shared Cluster.</string>
-    <string name="enter_code">Enter 6 digit code</string>
-    <string name="share">Share</string>
-    <string name="add_participant">Add Participant</string>
-    <string name="here_is_your_code">Here is your code!</string>
-    <string name="other_people">Ask other people to enter this code to join this cluster : </string>
-    <string name="join_my_share_cluster">Join my shared cluster on expense tracker using code </string>
-    <string name="hold_minute">Hold on a minute.</string>
+    <string name="sort_a_z" translatable="true">A - Z</string>
+    <string name="sort_z_a" translatable="true">Z - A</string>
+    <string name="filter" translatable="true">Filter</string>
+    <string name="create" translatable="true">Create</string>
+    <string name="join_cluster" translatable="true">Join Cluster</string>
+    <string name="sort_l_h" translatable="true">Low - High</string>
+    <string name="no_description_provided" translatable="true">No description provided.</string>
+    <string name="sort_h_l" translatable="true">High - Low</string>
+    <string name="describe" translatable="true">Additional Details (Optional)</string>
+    <string name="inappropriate_time" translatable="true">Inappropriate Time</string>
+    <string name="ad_unit_id" translatable="false">ca-app-pub-1222860377755078/9425545344</string>
+    <string name="user_name" translatable="true">User Name</string>
+    <string name="title_already_present" translatable="true">A cluster with same title already exist.</string>
+    <string name="success_cluster" translatable="true">Successfully created new cluster.</string>
+    <string name="success_expense" translatable="true">Successfully added new expense.</string>
+    <string name="join_instructions" translatable="true">Enter the code you received from your colleague in the following field, and you will be added to their Shared Cluster.</string>
+    <string name="enter_code" translatable="true">Enter 6 digit code</string>
+    <string name="share" translatable="true">Share</string>
+    <string name="add_participant" translatable="true">Add Participant</string>
+    <string name="here_is_your_code" translatable="true">Here is your code!</string>
+    <string name="other_people" translatable="true">Ask other people to enter this code to join this cluster : </string>
+    <string name="join_my_share_cluster" translatable="true">Join my shared cluster on expense tracker using code </string>
+    <string name="hold_minute" translatable="true">Hold on a minute.</string>
 </resources>

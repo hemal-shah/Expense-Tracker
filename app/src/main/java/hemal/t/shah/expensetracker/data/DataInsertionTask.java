@@ -32,14 +32,15 @@ public class DataInsertionTask extends AsyncQueryHandler {
         super(cr);
         this.context = context;
         this.contentValues = contentValues;
-        this.alreadyPresent = context.getString(R.string.title_already_present);
-        this.successCluster = context.getString(R.string.success_cluster);
-        this.successExpense = context.getString(R.string.success_expense);
+        this.alreadyPresent = context.getResources().getString(R.string.title_already_present);
+        this.successCluster = context.getResources().getString(R.string.success_cluster);
+        this.successExpense = context.getResources().getString(R.string.success_expense);
     }
 
     public DataInsertionTask(ContentResolver cr, Context context) {
         super(cr);
         this.context = context;
+        this.successExpense = context.getResources().getString(R.string.success_expense);
     }
 
     @Override
@@ -52,7 +53,6 @@ public class DataInsertionTask extends AsyncQueryHandler {
                  * If code execution enters this block, it indicates that the
                  * title is already in use, abort insertion of data.
                  */
-                // TODO: 6/1/17 try to make a snackbar
                 Toast.makeText(this.context, alreadyPresent, Toast.LENGTH_LONG).show();
             } else {
 
@@ -77,7 +77,6 @@ public class DataInsertionTask extends AsyncQueryHandler {
     protected void onInsertComplete(int token, Object cookie, Uri uri) {
         super.onInsertComplete(token, cookie, uri);
 
-        // TODO: 30/12/16 Add snackbar here...
         switch (token) {
             case SharedConstants.TOKEN_ADD_NEW_CLUSTER:
                 Toast.makeText(context, successCluster,
