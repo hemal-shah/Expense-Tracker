@@ -124,4 +124,23 @@ public class PreferenceManager {
         TinyDB db = new TinyDB(context);
         return db.getBoolean(SharedConstants.TOKEN_TWO_PANE);
     }
+
+
+    /**
+     * Finds the user selected currency from the settings...
+     * @param context
+     * @return
+     */
+    public static String getCurrency(Context context){
+
+        SharedPreferences sharedPreferences =
+                android.preference.PreferenceManager.getDefaultSharedPreferences(context);
+        String currency = sharedPreferences.getString("currency_key", "ERROR");
+
+        if (currency.length() == 1) {
+            return currency;
+        }
+
+        return "";
+    }
 }

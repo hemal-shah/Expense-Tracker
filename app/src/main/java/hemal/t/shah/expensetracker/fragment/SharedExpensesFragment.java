@@ -13,8 +13,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AlertDialog.Builder;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.OnScrollListener;
@@ -42,6 +44,7 @@ import hemal.t.shah.expensetracker.data.ExpenseContract.ExpenseEntry;
 import hemal.t.shah.expensetracker.interfaces.OnExpense;
 import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
 import hemal.t.shah.expensetracker.pojo.ExpenseParcelable;
+import hemal.t.shah.expensetracker.utils.PreferenceManager;
 import hemal.t.shah.expensetracker.utils.SharedConstants;
 
 /**
@@ -81,16 +84,17 @@ public class SharedExpensesFragment extends Fragment implements
     @BindString(R.string.join_my_share_cluster)
     String JOIN;
 
-    ClusterParcelable sharedCluster = null;
+    private ClusterParcelable sharedCluster = null;
 
-    Context context = null;
+    private Context context = null;
+    private ActionBar actionBar;
 
-    DatabaseReference reference = null;
+    private DatabaseReference reference = null;
 
-    SharedExpensesAdapter adapter = null;
+    private SharedExpensesAdapter adapter = null;
 
-    String selection = ExpenseEntry.FIREBASE_CLUSTER_KEY + " = ?";
-    String[] selectionArgs;
+    private String selection = ExpenseEntry.FIREBASE_CLUSTER_KEY + " = ?";
+    private String[] selectionArgs;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -122,6 +126,8 @@ public class SharedExpensesFragment extends Fragment implements
                 LinearLayoutManager.VERTICAL,
                 false
         ));
+
+        this.actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
 
         this.adapter = new SharedExpensesAdapter(this.context, null, this);
 
@@ -193,6 +199,30 @@ public class SharedExpensesFragment extends Fragment implements
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         this.adapter.swapCursor(data);
+        /**
+         * No calculation needed if length of data is zero.
+         */
+        if (data.getCount() == 0) return;
+
+        /**
+         * Load & Calculate the sum and display it in the action bar
+         * subtitle.
+         */
+        int index_amount = data.getColumnIndex(
+                ExpenseEntry.COLUMN_AMOUNT
+        );
+        double total = 0;
+        for (int i = 0; i < data.getCount(); i++) {
+            data.moveToPosition(i);
+            double amount = data.getDouble(index_amount);
+            total += amount;
+        }
+
+        if (actionBar != null && total != 0) {
+
+            actionBar.setSubtitle(
+                    "Total : " + PreferenceManager.getCurrency(context) + " " + total);
+        }
     }
 
     @Override

@@ -23,6 +23,7 @@ import hemal.t.shah.expensetracker.data.ExpenseContract.ExpenseEntry;
 import hemal.t.shah.expensetracker.interfaces.OnExpense;
 import hemal.t.shah.expensetracker.pojo.ExpenseParcelable;
 import hemal.t.shah.expensetracker.pojo.FirebaseUserDetails;
+import hemal.t.shah.expensetracker.utils.PreferenceManager;
 
 /**
  * Created by hemal on 29/12/16.
@@ -33,6 +34,7 @@ public class SharedExpensesAdapter
     private Context mContext;
     private OnExpense mExpense;
 
+    private String currencySymbol;
     private FirebaseUser mFirebaseUser;
 
     public SharedExpensesAdapter(Context context, Cursor cursor, OnExpense mExpense) {
@@ -40,6 +42,7 @@ public class SharedExpensesAdapter
         this.mContext = context;
         this.mExpense = mExpense;
         mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        this.currencySymbol = PreferenceManager.getCurrency(context);
     }
 
     @Override
@@ -86,7 +89,7 @@ public class SharedExpensesAdapter
 
 
             viewHolder.about.setText(about);
-            viewHolder.amount.setText(String.valueOf(amount));
+            viewHolder.amount.setText(currencySymbol + " " + amount);
             viewHolder.description.setText(description);
             viewHolder.timeStamp.setText(timeStamp);
             viewHolder.user_name.setText(name);

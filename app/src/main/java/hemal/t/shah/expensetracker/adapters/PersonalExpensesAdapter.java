@@ -21,6 +21,7 @@ import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.data.ExpenseContract.ExpenseEntry;
 import hemal.t.shah.expensetracker.interfaces.OnExpense;
 import hemal.t.shah.expensetracker.pojo.ExpenseParcelable;
+import hemal.t.shah.expensetracker.utils.PreferenceManager;
 
 /**
  * Adapter for expenses in personal clusters.
@@ -29,14 +30,16 @@ import hemal.t.shah.expensetracker.pojo.ExpenseParcelable;
 public class PersonalExpensesAdapter
         extends CursorRecyclerViewAdapter<PersonalExpensesAdapter.ViewHolder> {
 
-    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private Context mContext;
     private OnExpense mExpense;
+
+    private String currencySymbol;
 
     public PersonalExpensesAdapter(Context context, Cursor cursor, OnExpense mExpense) {
         super(context, cursor);
         this.mContext = context;
         this.mExpense = mExpense;
+        this.currencySymbol = PreferenceManager.getCurrency(context);
     }
 
     @Override
@@ -72,7 +75,7 @@ public class PersonalExpensesAdapter
                             description);
 
             viewHolder.about.setText(about);
-            viewHolder.amount.setText(String.valueOf(amount));
+            viewHolder.amount.setText(currencySymbol + " " + amount);
             viewHolder.time.setText(timeStamp);
             viewHolder.description.setText(description);
             viewHolder.delete.setOnClickListener(new View.OnClickListener() {

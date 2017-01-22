@@ -41,6 +41,7 @@ import hemal.t.shah.expensetracker.data.ExpenseContract.ExpenseEntry;
 import hemal.t.shah.expensetracker.interfaces.OnExpense;
 import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
 import hemal.t.shah.expensetracker.pojo.ExpenseParcelable;
+import hemal.t.shah.expensetracker.utils.PreferenceManager;
 import hemal.t.shah.expensetracker.utils.SharedConstants;
 
 /**
@@ -66,11 +67,11 @@ public class PersonalExpensesFragment extends Fragment implements
     @BindString(R.string.delete_confirm)
     String DELETE_CONFIRM;
 
-    ActionBar mActionBar;
+    ActionBar actionBar;
 
     PersonalExpensesAdapter adapter = null;
 
-    Context mContext;
+    Context context;
     ClusterParcelable personalCluster;
 
     String selection = ExpenseEntry.FIREBASE_CLUSTER_KEY + " = ?";
@@ -94,19 +95,19 @@ public class PersonalExpensesFragment extends Fragment implements
         }
 
         this.selectionArgs = new String[]{String.valueOf(personalCluster.getFirebase_cluster_id())};
-        this.mContext = getContext();
+        this.context = getContext();
 
         //getting action bar reference from parent activity
-        mActionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
 
         reference = FirebaseDatabase.getInstance().getReference();
 
         View rootView = inflater.inflate(R.layout.personal_expenses_fragment, container, false);
         ButterKnife.bind(this, rootView);
 
-        adapter = new PersonalExpensesAdapter(this.mContext, null, this);
+        adapter = new PersonalExpensesAdapter(this.context, null, this);
         recyclerView.setLayoutManager(
-                new LinearLayoutManager(this.mContext, LinearLayoutManager.VERTICAL, false));
+                new LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
 
@@ -176,7 +177,7 @@ public class PersonalExpensesFragment extends Fragment implements
         }
 
         return new CursorLoader(
-                this.mContext,
+                this.context,
                 ExpenseEntry.CONTENT_URI,
                 projection,
                 selection,
@@ -208,9 +209,10 @@ public class PersonalExpensesFragment extends Fragment implements
             total += amount;
         }
 
-        if (mActionBar != null && total != 0) {
+        if (actionBar != null && total != 0) {
 
-            mActionBar.setSubtitle("Total : " + total);
+            actionBar.setSubtitle(
+                    "Total : " + PreferenceManager.getCurrency(context) + " " + total);
         }
 
     }
@@ -224,7 +226,7 @@ public class PersonalExpensesFragment extends Fragment implements
     public void delete(final ExpenseParcelable expenseParcelable) {
 
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(ARE_YOU_SURE)
                 .setCancelable(true)
                 .setNegativeButton(CANCEL, new OnClickListener() {
@@ -236,8 +238,8 @@ public class PersonalExpensesFragment extends Fragment implements
                 .setPositiveButton(DELETE_CONFIRM, new OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        DataDispenser dispenser = new DataDispenser(mContext.getContentResolver(),
-                                mContext);
+                        DataDispenser dispenser = new DataDispenser(context.getContentResolver(),
+                                context);
 
                         dispenser.startDelete(
                                 SharedConstants.TOKEN_DELETE_EXPENSES,
@@ -257,7 +259,7 @@ public class PersonalExpensesFragment extends Fragment implements
                                     @Override
                                     public void onComplete(DatabaseError databaseError,
                                             DatabaseReference databaseReference) {
-                                        Toast.makeText(mContext, "Deleted!",
+                                        Toast.makeText(context, "Deleted!",
                                                 Toast.LENGTH_SHORT).show();
                                     }
                                 });
@@ -276,7 +278,7 @@ public class PersonalExpensesFragment extends Fragment implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int TOKEN ;
+        int TOKEN;
         switch (item.getItemId()) {
             case R.id.menu_p_expense_a_z:
                 TOKEN = SharedConstants.CURSOR_EXPENSES_PERSONAL_A_Z;

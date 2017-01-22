@@ -4,11 +4,14 @@ import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.SharedPreferencesCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -97,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
          * Checking if two pane mode is enabled or not...
          */
         mTwoPaneMode = findViewById(R.id.fl_activity_expenses_loader) != null;
+
 
         PreferenceManager.setTwoPaneMode(context, mTwoPaneMode);
 
@@ -334,6 +338,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         incrementLoadCountAndDismiss();
+
     }
 
     @Override
@@ -404,7 +409,9 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_settings:
-                // TODO: 22/12/16 redirect to settings menu
+                Intent intent = new Intent(MainActivity.this,
+                        SettingsActivity.class);
+                startActivity(intent);
                 return true;
 
             case R.id.sign_out:
@@ -599,7 +606,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static void onClusterSelected(Bundle arguments){
+    public static void onClusterSelected(Bundle arguments) {
 
         if (mTwoPaneMode) {
             Fragment fragment = new ExpensesFragment();
