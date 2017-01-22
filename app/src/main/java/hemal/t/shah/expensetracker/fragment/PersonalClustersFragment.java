@@ -16,6 +16,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.OnScrollListener;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,6 +33,7 @@ import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hemal.t.shah.expensetracker.ExpensesActivity;
+import hemal.t.shah.expensetracker.MainActivity;
 import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.adapters.PersonalClusterAdapter;
 import hemal.t.shah.expensetracker.data.DataDispenser;
@@ -219,9 +221,16 @@ public class PersonalClustersFragment extends Fragment implements
 
     @Override
     public void onTouch(ClusterParcelable cluster) {
-        Intent intent = new Intent(this.context, ExpensesActivity.class);
-        intent.putExtra(SharedConstants.SHARE_CLUSTER_PARCEL, cluster);
-        startActivity(intent);
+
+        if (mTwoPane) {
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(SharedConstants.SHARE_CLUSTER_PARCEL, cluster);
+            MainActivity.onClusterSelected(bundle);
+        } else {
+            Intent intent = new Intent(this.context, ExpensesActivity.class);
+            intent.putExtra(SharedConstants.SHARE_CLUSTER_PARCEL, cluster);
+            startActivity(intent);
+        }
     }
 
 

@@ -8,7 +8,7 @@
         android:title="@string/add_participant"
         app:showAsAction="always" />
 
-    <itemS
+    <item
         android:id="@+id/item_container_s_expenses"
         android:icon="@drawable/ic_sort_white_24dp"
         android:title="@string/filter"
@@ -37,5 +37,5 @@
                 android:title="@string/user_name" />
         </menu>
 
-    </itemS>
+    </item>
 </menu>

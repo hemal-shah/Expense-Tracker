@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,6 +39,8 @@ import hemal.t.shah.expensetracker.data.DataDispenser;
 import hemal.t.shah.expensetracker.data.DataInsertionTask;
 import hemal.t.shah.expensetracker.data.ExpenseContract.ClusterEntry;
 import hemal.t.shah.expensetracker.data.ExpenseContract.ExpenseEntry;
+import hemal.t.shah.expensetracker.fragment.ExpensesFragment;
+import hemal.t.shah.expensetracker.fragment.TabContainerFragment;
 import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
 import hemal.t.shah.expensetracker.pojo.ExpenseParcelable;
 import hemal.t.shah.expensetracker.pojo.FirebaseUserDetails;
@@ -69,7 +73,10 @@ public class MainActivity extends AppCompatActivity {
     private ProgressDialog mProgressDialog;
     private InterstitialAd mInterstitialAd;
 
-    private boolean mTwoPaneMode;
+
+    private static FragmentManager manager;
+
+    private static boolean mTwoPaneMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +89,9 @@ public class MainActivity extends AppCompatActivity {
 
         //getting instance of user.
         mFirebaseAuth = FirebaseAuth.getInstance();
+
+        manager = getSupportFragmentManager();
+
 
         /**
          * Checking if two pane mode is enabled or not...
@@ -116,7 +126,15 @@ public class MainActivity extends AppCompatActivity {
                         PreferenceManager.setFirstTimeOpened(context, true);
                     }
 
+                    manager.beginTransaction()
+                            .replace(R.id.fragment_activity_main, new TabContainerFragment())
+                            .commit();
+
                 } else {
+
+                    if (mTwoPaneMode) {
+                        MainActivity.this.finish();
+                    }
 
                     //User not signed in.
                     dataCleanUpOnSignOut();
@@ -370,6 +388,9 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 //user Signed in,
 
+                manager.beginTransaction()
+                        .replace(R.id.fragment_activity_main, new TabContainerFragment())
+                        .commit();
             } else if (resultCode == RESULT_CANCELED) {
                 this.finish();
             } else if (resultCode == ResultCodes.RESULT_NO_NETWORK) {
@@ -575,6 +596,17 @@ public class MainActivity extends AppCompatActivity {
             if (mProgressDialog != null) {
                 mProgressDialog.dismiss();
             }
+        }
+    }
+
+    public static void onClusterSelected(Bundle arguments){
+
+        if (mTwoPaneMode) {
+            Fragment fragment = new ExpensesFragment();
+            fragment.setArguments(arguments);
+            manager.beginTransaction()
+                    .replace(R.id.fl_fragment_expenses_loader, fragment)
+                    .commit();
         }
     }
 }

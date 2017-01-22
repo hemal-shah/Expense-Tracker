@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
@@ -31,6 +32,7 @@ import butterknife.OnClick;
 import hemal.t.shah.expensetracker.data.DataInsertionTask;
 import hemal.t.shah.expensetracker.data.ExpenseContract;
 import hemal.t.shah.expensetracker.data.ExpenseContract.ExpenseEntry;
+import hemal.t.shah.expensetracker.fragment.ExpensesFragment;
 import hemal.t.shah.expensetracker.fragment.PersonalExpensesFragment;
 import hemal.t.shah.expensetracker.fragment.SharedExpensesFragment;
 import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
@@ -44,40 +46,8 @@ public class ExpensesActivity extends AppCompatActivity {
 
     private static final String TAG = "ExpensesActivity";
 
-    @BindView(R.id.toolbar_activity_expenses_loader)
-    Toolbar toolbar;
-
-    ActionBar mActionBar;
-
-    @BindString(R.string.add)
-    String ADD;
-
-    @BindString(R.string.no_description_provided)
-    String NO_DESCRIPTION_PROVIDED;
-
-    @BindString(R.string.error_string_length)
-    String ERROR_STRING;
-
-    @BindString(R.string.enter_amount)
-    String ENTER_AMOUNT;
-
-    @BindString(R.string.add_expense)
-    String ADD_EXPENSE;
-
-    @BindString(R.string.cancel)
-    String CANCEL;
-
-    DatabaseReference reference;
-    FirebaseUser user;
-
-    //stores the cluster_key from where it is derived!
-    String cluster_key = "";
-    int is_shared;
-
-    ClusterParcelable clusterParcelable;
-
-    FragmentManager manager;
-    FragmentTransaction transaction;
+    private ClusterParcelable mClusterParcelable;
+    private FragmentManager manager;
 
     @SuppressLint("CommitTransaction")
     @Override
@@ -85,160 +55,22 @@ public class ExpensesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_expenses_loader);
 
-        ButterKnife.bind(this);
-
-        setSupportActionBar(toolbar);
-
-        reference = FirebaseDatabase.getInstance().getReference();
-        user = FirebaseAuth.getInstance().getCurrentUser();
-
         Intent intent = getIntent();
-        clusterParcelable = intent.getExtras().getParcelable(SharedConstants.SHARE_CLUSTER_PARCEL);
+        mClusterParcelable = intent.getExtras().getParcelable(SharedConstants.SHARE_CLUSTER_PARCEL);
 
-        mActionBar = getSupportActionBar();
-        if (mActionBar != null) {
-            mActionBar.setHomeAsUpIndicator(R.drawable.ic_clear_white_24dp);
-            mActionBar.setDisplayHomeAsUpEnabled(true);
-            mActionBar.setTitle(clusterParcelable.getTitle().toUpperCase());
-        }
+        Bundle args = new Bundle();
+        args.putParcelable(SharedConstants.SHARE_CLUSTER_PARCEL, mClusterParcelable);
+
+        Fragment fragment = new ExpensesFragment();
+        fragment.setArguments(args);
 
         manager = getSupportFragmentManager();
-        transaction = manager.beginTransaction();
-
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(SharedConstants.SHARE_CLUSTER_PARCEL, clusterParcelable);
-
-        cluster_key = clusterParcelable.getFirebase_cluster_id();
-        is_shared = clusterParcelable.getIs_shared();
-
-        if (clusterParcelable != null && clusterParcelable.getIs_shared() == 0) {
-
-            //It's a personal fragment.
-            PersonalExpensesFragment fragment = new PersonalExpensesFragment();
-            fragment.setArguments(bundle);
-            transaction.replace(R.id.fl_activity_expenses_loader, fragment);
-
-        } else if (clusterParcelable != null && clusterParcelable.getIs_shared() == 1) {
-
-            //it's a shared fragment
-            SharedExpensesFragment fragment = new SharedExpensesFragment();
-            fragment.setArguments(bundle);
-            transaction.replace(R.id.fl_activity_expenses_loader, fragment);
-
-        }
-        transaction.commit();
-    }
-
-    @OnClick(R.id.fab_activity_expenses_loader)
-    public void addNewExpense() {
-
-
-        View dialogView = getLayoutInflater().inflate(R.layout.dialog_new_expense, null);
-        final TextInputEditText et_about =
-                (TextInputEditText) dialogView.findViewById(R.id.tiet_about_dialog);
-        final TextInputEditText et_amount =
-                (TextInputEditText) dialogView.findViewById(R.id.tiet_amount_dialog);
-        final TextInputEditText et_description =
-                (TextInputEditText) dialogView.findViewById(R.id.tiet_describe_dialog);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(ADD_EXPENSE)
-                .setCancelable(true)
-                .setPositiveButton(ADD, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String about = et_about.getText().toString();
-                        if (about.length() < 3 || about.length() > 15) {
-                            // TODO: 17/12/16 add snackbar here
-                            Toast.makeText(ExpensesActivity.this, ERROR_STRING,
-                                    Toast.LENGTH_SHORT).show();
-                            dialog.dismiss();
-                        }
-
-                        String amount_string = et_amount.getText().toString();
-                        if (amount_string.length() < 0) {
-                            // TODO: 17/12/16 add snackbar here
-                            Toast.makeText(ExpensesActivity.this, ENTER_AMOUNT,
-                                    Toast.LENGTH_SHORT).show();
-                            dialog.dismiss();
-                        }
-
-                        double amount = Double.parseDouble(amount_string);
-
-                        String description = et_description.getText().toString();
-                        if (description.length() == 0) {
-                            description = NO_DESCRIPTION_PROVIDED;
-                        }
-
-                        addExpense(about, amount, description);
-                    }
-                })
-                .setNegativeButton(CANCEL, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
-                .setView(dialogView)
-                .create().show();
-    }
-
-    private void addExpense(String about, double amount, String description) {
-
-        long timeStamp = System.currentTimeMillis();
-
-        String expense_key = reference.push().getKey();
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(ExpenseEntry.COLUMN_ABOUT, about);
-        contentValues.put(ExpenseEntry.COLUMN_AMOUNT, amount);
-        contentValues.put(ExpenseEntry.FIREBASE_CLUSTER_KEY, cluster_key);
-        contentValues.put(ExpenseEntry.COLUMN_FIREBASE_EXPENSE_KEY, expense_key);
-        contentValues.put(ExpenseEntry.COLUMN_DESCRIBE, description);
-        contentValues.put(ExpenseEntry.COLUMN_BY_FIREBASE_USER_UID, user.getUid());
-        contentValues.put(ExpenseEntry.COLUMN_FIREBASE_USER_EMAIL, user.getEmail());
-        contentValues.put(ExpenseEntry.COLUMN_FIREBASE_USER_NAME, user.getDisplayName());
-        contentValues.put(ExpenseEntry.COLUMN_FIREBASE_USER_URL,
-                String.valueOf(user.getPhotoUrl()));
-        contentValues.put(ExpenseContract.ExpenseEntry.COLUMN_TIMESTAMP, timeStamp);
-
-        DataInsertionTask task = new DataInsertionTask(getContentResolver(), ExpensesActivity.this);
-        task.startInsert(SharedConstants.TOKEN_ADD_NEW_EXPENSE, null,
-                ExpenseContract.ExpenseEntry.CONTENT_URI, contentValues);
-
-
-        Map<String, Object> expense = new HashMap<>();
-        expense.put(SharedConstants.FIREBASE_ABOUT, about);
-        expense.put(SharedConstants.FIREBASE_AMOUNT, amount);
-        expense.put(SharedConstants.FIREBASE_DESCRIPTION, description);
-        expense.put(SharedConstants.FIREBASE_TIME_STAMP, timeStamp);
-
-        if (is_shared == 0) {
-            reference.child(SharedConstants.FIREBASE_PATH_PERSONAL_CLUSTERS)
-                    .child(user.getUid())
-                    .child(cluster_key)
-                    .child(SharedConstants.FIREBASE_EXPENSES)
-                    .child(expense_key)
-                    .updateChildren(expense);
-        } else if (is_shared == 1) {
-            expense.put(SharedConstants.FIREBASE_USER_NAME, user.getDisplayName());
-            expense.put(SharedConstants.FIREBASE_EMAIL, user.getEmail());
-            if (user.getPhotoUrl() != null) {
-                expense.put(SharedConstants.FIREBASE_PROFILE_URL, user.getPhotoUrl().toString());
-            } else {
-                expense.put(SharedConstants.FIREBASE_PROFILE_URL, "");
-            }
-            reference.child(SharedConstants.FIREBASE_PATH_SHARED_CLUSTERS)
-                    .child(cluster_key)
-                    .child(SharedConstants.FIREBASE_EXPENSES)
-                    .child(expense_key)
-                    .updateChildren(expense);
-        }
+        manager.beginTransaction().replace(R.id.fl_activity_expenses_loader, fragment).commit();
     }
 
     @Override
     public boolean onSupportNavigateUp() {
-        finish(); // close this activity as oppose to navigating up
+        finish();
         return false;
     }
 }

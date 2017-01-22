@@ -30,31 +30,20 @@ dependencies {
     //my time library
     compile project(':timetravel')
 
-    testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:25.1.0'
     compile 'com.android.support:recyclerview-v7:25.1.0'
     compile 'com.android.support:design:25.1.0'
     compile 'com.android.support:gridlayout-v7:25.1.0'
     compile 'com.android.support:cardview-v7:25.1.0'
-
-    //ButterKnife by Jake Wharton
     compile 'com.jakewharton:butterknife:8.4.0'
-    apt 'com.jakewharton:butterknife-compiler:8.4.0'
-
-    //Stetho to check sqlite database.
-    debugCompile 'com.facebook.stetho:stetho:1.4.2'
-
-    //FirebaseUI
     compile 'com.firebaseui:firebase-ui-auth:1.0.1'
-
-    //Picasso
     compile 'com.squareup.picasso:picasso:2.5.2'
-
-    //Firebase advertisements
     compile 'com.google.firebase:firebase-ads:10.0.1'
-
-    //Firebase Realtime Database
     compile 'com.google.firebase:firebase-database:10.0.1'
+    compile 'com.android.support:support-v4:25.1.0'
+    testCompile 'junit:junit:4.12'
+    apt 'com.jakewharton:butterknife-compiler:8.4.0'
+    debugCompile 'com.facebook.stetho:stetho:1.4.2'
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -7,9 +7,8 @@
     android:weightSum="5"
     >
 
-    <fragment
+    <FrameLayout
         android:id="@+id/fragment_activity_main"
-        android:name="hemal.t.shah.expensetracker.fragment.TabContainerFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="2"

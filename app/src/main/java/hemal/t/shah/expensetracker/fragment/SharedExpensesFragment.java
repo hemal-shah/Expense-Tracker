@@ -45,6 +45,7 @@ import hemal.t.shah.expensetracker.pojo.ExpenseParcelable;
 import hemal.t.shah.expensetracker.utils.SharedConstants;
 
 /**
+ * Shared expenses are shown through this place...
  * Created by hemal on 26/12/16.
  */
 public class SharedExpensesFragment extends Fragment implements

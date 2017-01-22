@@ -39,6 +39,7 @@ import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hemal.t.shah.expensetracker.ExpensesActivity;
+import hemal.t.shah.expensetracker.MainActivity;
 import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.adapters.SharedClusterAdapter;
 import hemal.t.shah.expensetracker.data.DataDispenser;
@@ -370,8 +371,15 @@ public class SharedClustersFragment extends Fragment implements
 
     @Override
     public void onTouch(ClusterParcelable cluster) {
-        Intent intent = new Intent(context, ExpensesActivity.class);
-        intent.putExtra(SharedConstants.SHARE_CLUSTER_PARCEL, cluster);
-        startActivity(intent);
+
+        if (mTwoPane) {
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(SharedConstants.SHARE_CLUSTER_PARCEL, cluster);
+            MainActivity.onClusterSelected(bundle);
+        } else {
+            Intent intent = new Intent(context, ExpensesActivity.class);
+            intent.putExtra(SharedConstants.SHARE_CLUSTER_PARCEL, cluster);
+            startActivity(intent);
+        }
     }
 }
