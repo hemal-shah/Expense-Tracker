@@ -21,6 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.Map;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -44,8 +45,17 @@ public class JoinSharedCluster extends AppCompatActivity {
     @BindView(R.id.til_activity_join_cluster)
     TextInputLayout mTextInputLayout;
 
-    // TODO: 12/1/17 cancel button on top
-    ActionBar mActionBar;
+    @BindString(R.string.enter_code)
+    String ENTER_CODE;
+
+    @BindString(R.string.proper_code)
+    String PROPER_CODE;
+    @BindString(R.string.successfully_added)
+    String SUCCESS_ADDED;
+    @BindString(R.string.already_joined)
+    String ALREADY_JOINED;
+
+    ActionBar actionBar;
     FirebaseUser user;
     DatabaseReference reference;
     private String cluster_key = "";
@@ -57,6 +67,13 @@ public class JoinSharedCluster extends AppCompatActivity {
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
+        actionBar = getSupportActionBar();
+
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowHomeEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
+        }
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         reference = FirebaseDatabase.getInstance().getReference();
@@ -68,7 +85,7 @@ public class JoinSharedCluster extends AppCompatActivity {
     public void joinCluster() {
         final String code = mEditText.getText().toString();
         if (code.length() != 6) {
-            Toast.makeText(JoinSharedCluster.this, "Enter 6 digit code.",
+            Toast.makeText(JoinSharedCluster.this, ENTER_CODE,
                     Toast.LENGTH_SHORT).show();
             return;
         }
@@ -81,9 +98,7 @@ public class JoinSharedCluster extends AppCompatActivity {
                             for (DataSnapshot dataShot : snapshot.getChildren()) {
                                 String key = dataShot.getKey();
                                 if (key.equalsIgnoreCase(code)) {
-
                                     cluster_key = dataShot.getValue().toString();
-                                    Log.i(TAG, "onDataChange: we fount the key " + cluster_key);
                                     break;
                                 }
                             }
@@ -93,9 +108,14 @@ public class JoinSharedCluster extends AppCompatActivity {
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        Toast.makeText(JoinSharedCluster.this, "Error!", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return false;
     }
 
     private void addUserToCluster() {
@@ -104,7 +124,7 @@ public class JoinSharedCluster extends AppCompatActivity {
          * that the key is not correct.
          */
         if (cluster_key.length() == 0 || cluster_key.equalsIgnoreCase("")) {
-            mEditText.setError("Enter proper code");
+            mEditText.setError(PROPER_CODE);
             mEditText.setText("");
             return;
         }
@@ -122,17 +142,14 @@ public class JoinSharedCluster extends AppCompatActivity {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
 
-                            Log.i(TAG, "onDataChange: here 1");
                             for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                 String key = snapshot
                                         .child(SharedConstants.FIREBASE_PATH_SHARED_CLUSTERS)
                                         .getValue().toString();
 
-                                Log.i(TAG, "onDataChange: here 11");
-
                                 if (key.equals(cluster_key)) {
                                     Toast.makeText(JoinSharedCluster.this,
-                                            "You have already joined this cluster!",
+                                            ALREADY_JOINED,
                                             Toast.LENGTH_SHORT).show();
                                     JoinSharedCluster.this.finish();
                                 } else {
@@ -142,13 +159,6 @@ public class JoinSharedCluster extends AppCompatActivity {
                                      * For that we need to modify two nodes.
                                      * 1. clusters_of_users
                                      * 2. users_in_clusters
-                                     */
-
-
-                                    /**
-                                     * If user is not signed in, take to sign in screen
-                                     * Mostly this would be not possible, but as a safety
-                                     * precaution.
                                      */
 
                                     //starting with "clusters_of_users" node
@@ -161,9 +171,6 @@ public class JoinSharedCluster extends AppCompatActivity {
                                             .push()
                                             .updateChildren(map);
 
-                                    Log.i(TAG, "onDataChange: here 2");
-
-
                                     //now updating the "users_in_clusters" node
                                     Map<String, Object> map1 = new HashMap<>();
                                     map1.put(SharedConstants.FIREBASE_USER_UID, user.getUid());
@@ -172,9 +179,8 @@ public class JoinSharedCluster extends AppCompatActivity {
                                             .push()
                                             .updateChildren(map1);
 
-                                    Log.i(TAG, "onDataChange: here 3");
                                     Toast.makeText(JoinSharedCluster.this,
-                                            "You are successfully added to the said cluster",
+                                            SUCCESS_ADDED,
                                             Toast.LENGTH_SHORT).show();
                                     JoinSharedCluster.this.finish();
                                 }
