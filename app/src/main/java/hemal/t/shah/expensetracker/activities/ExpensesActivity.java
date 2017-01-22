@@ -1,4 +1,4 @@
-package hemal.t.shah.expensetracker;
+package hemal.t.shah.expensetracker.activities;
 
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
@@ -29,6 +29,7 @@ import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.data.DataInsertionTask;
 import hemal.t.shah.expensetracker.data.ExpenseContract;
 import hemal.t.shah.expensetracker.data.ExpenseContract.ExpenseEntry;

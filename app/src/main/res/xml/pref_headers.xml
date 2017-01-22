@@ -3,7 +3,7 @@
     <!-- These settings headers are only used on tablets. -->
 
     <header
-        android:fragment="hemal.t.shah.expensetracker.SettingsActivity$GeneralPreferenceFragment"
+        android:fragment="hemal.t.shah.expensetracker.settings.SettingsActivity$GeneralPreferenceFragment"
         android:icon="@drawable/ic_info_black_24dp"
         android:title="@string/pref_header_general" />
 </preference-headers>

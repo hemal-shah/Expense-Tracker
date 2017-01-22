@@ -35,7 +35,7 @@ import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import hemal.t.shah.expensetracker.JoinSharedCluster;
+import hemal.t.shah.expensetracker.activities.JoinSharedCluster;
 import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.adapters.ViewPagerTabAdapter;
 import hemal.t.shah.expensetracker.data.DataInsertionTask;

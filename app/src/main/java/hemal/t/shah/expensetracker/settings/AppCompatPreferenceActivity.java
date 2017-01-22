@@ -1,4 +1,4 @@
-package hemal.t.shah.expensetracker;
+package hemal.t.shah.expensetracker.settings;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

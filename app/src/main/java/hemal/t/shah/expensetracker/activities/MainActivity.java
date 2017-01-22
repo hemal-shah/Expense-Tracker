@@ -1,17 +1,14 @@
-package hemal.t.shah.expensetracker;
+package hemal.t.shah.expensetracker.activities;
 
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.SharedPreferencesCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -38,6 +35,8 @@ import java.util.Vector;
 
 import butterknife.BindString;
 import butterknife.ButterKnife;
+import hemal.t.shah.expensetracker.BuildConfig;
+import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.data.DataDispenser;
 import hemal.t.shah.expensetracker.data.DataInsertionTask;
 import hemal.t.shah.expensetracker.data.ExpenseContract.ClusterEntry;
@@ -47,6 +46,7 @@ import hemal.t.shah.expensetracker.fragment.TabContainerFragment;
 import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
 import hemal.t.shah.expensetracker.pojo.ExpenseParcelable;
 import hemal.t.shah.expensetracker.pojo.FirebaseUserDetails;
+import hemal.t.shah.expensetracker.settings.SettingsActivity;
 import hemal.t.shah.expensetracker.utils.PreferenceManager;
 import hemal.t.shah.expensetracker.utils.SharedConstants;
 
