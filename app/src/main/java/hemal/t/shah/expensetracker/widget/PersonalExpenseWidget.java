@@ -43,15 +43,14 @@ public class PersonalExpenseWidget extends AppWidgetProvider {
         views.setRemoteAdapter(R.id.lv_personal_expenses_widget, intent);
         views.setEmptyView(R.id.lv_personal_expenses_widget, R.id.tv_empty_expenses_widget_layout);
 
-        Intent openApp = new Intent(context, MainActivity.class);
+        Intent openApp = new Intent(context, PersonalExpenseWidget.class);
         openApp.setAction(INTENT_ACTION);
         openApp.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-
-        intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 context, 0, openApp, PendingIntent.FLAG_UPDATE_CURRENT
         );
+
         views.setPendingIntentTemplate(R.id.lv_personal_expenses_widget, pendingIntent);
 
         // Instruct the widget manager to update the widget
@@ -64,10 +63,8 @@ public class PersonalExpenseWidget extends AppWidgetProvider {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        Log.i(TAG, "onReceive: on REceive called");
 
         if (intent.getAction().equals(INTENT_ACTION)) {
-            Log.i(TAG, "onReceive: equal");
             int appWidgetId = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);
             String key = PersonalExpenseWidgetConfigureActivity.loadTitleKey(context, appWidgetId);
 
@@ -89,7 +86,8 @@ public class PersonalExpenseWidget extends AppWidgetProvider {
     private ClusterParcelable formParcel(Cursor cursor, String key) {
         if (cursor.moveToFirst()) {
             return new ClusterParcelable(
-                    cursor.getString(cursor.getColumnIndex(ExpenseContract.ClusterEntry.COLUMN_TITLE)),
+                    cursor.getString(
+                            cursor.getColumnIndex(ExpenseContract.ClusterEntry.COLUMN_TITLE)),
                     "",
                     key,
                     0, //only personal clusters are shown...
@@ -115,6 +113,8 @@ public class PersonalExpenseWidget extends AppWidgetProvider {
         for (int appWidgetId : appWidgetIds) {
             PersonalExpenseWidgetConfigureActivity.deleteTitleKey(context, appWidgetId);
         }
+
+        super.onDeleted(context, appWidgetIds);
     }
 }
 

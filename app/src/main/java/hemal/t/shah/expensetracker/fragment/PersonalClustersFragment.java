@@ -22,6 +22,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -40,6 +41,7 @@ import hemal.t.shah.expensetracker.data.ExpenseContract.ClusterEntry;
 import hemal.t.shah.expensetracker.data.ExpenseContract.ExpenseEntry;
 import hemal.t.shah.expensetracker.interfaces.OnCluster;
 import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
+import hemal.t.shah.expensetracker.utils.MyStatuses;
 import hemal.t.shah.expensetracker.utils.PreferenceManager;
 import hemal.t.shah.expensetracker.utils.SharedConstants;
 
@@ -56,10 +58,20 @@ public class PersonalClustersFragment extends Fragment implements
     String ARE_YOU_SURE;
     @BindString(R.string.cancel)
     String CANCEL;
+    @BindString(R.string.status_ok_pc)
+    String STATUS_OK;
+    @BindString(R.string.status_internet_error)
+    String STATUS_INTERNET_ERROR;
+    @BindString(R.string.data_not_available)
+    String DATA_NOT_AVAILABLE;
+    @BindString(R.string.status_unknown_error)
+    String UNKNOWN_ERROR;
     @BindString(R.string.delete_confirm)
     String DELETE_CONFIRM;
     @BindView(R.id.rv_activity_personal_clusters)
     RecyclerView recyclerView;
+    @BindView(R.id.tv_empty_personal_clusters)
+    TextView emptyTextView;
     private Context context;
     private FirebaseUser user;
     private DatabaseReference reference;
@@ -100,6 +112,8 @@ public class PersonalClustersFragment extends Fragment implements
 
         personalClusterAdapter = new PersonalClusterAdapter(context, null, this);
 
+        emptyViewBehavior();
+
         recyclerView.setAdapter(personalClusterAdapter);
 
         recyclerView.addOnScrollListener(new OnScrollListener() {
@@ -122,11 +136,49 @@ public class PersonalClustersFragment extends Fragment implements
     @Override
     public void onLoadFinished(Loader loader, Cursor data) {
         personalClusterAdapter.swapCursor(data);
+        MyStatuses.setPersonalClusterStatus(context, MyStatuses.STATUS_OK);
+        emptyViewBehavior();
+    }
+
+    private void emptyViewBehavior() {
+        if (personalClusterAdapter.getItemCount() <= 0) {
+
+            /**
+             * Data is not shown to the user, set some message here...
+             */
+
+            String message = DATA_NOT_AVAILABLE;
+
+            @MyStatuses.Statuses int status =
+                    MyStatuses.getStatus(context, MyStatuses.STATUS_ACCESS_PC);
+
+            switch (status) {
+                case MyStatuses.STATUS_OK:
+                    message += STATUS_OK;
+                    break;
+                case MyStatuses.STATUS_ERROR_NO_NETWORK:
+                    message += STATUS_INTERNET_ERROR;
+                    break;
+                case MyStatuses.STATUS_UNKNOWN:
+                    message += UNKNOWN_ERROR;
+                    break;
+            }
+
+            emptyTextView.setText(message);
+
+            recyclerView.setVisibility(View.INVISIBLE);
+            emptyTextView.setVisibility(View.VISIBLE);
+        } else {
+            recyclerView.setVisibility(View.VISIBLE);
+            emptyTextView.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
     public void onLoaderReset(Loader loader) {
         personalClusterAdapter.swapCursor(null);
+        MyStatuses.setPersonalClusterStatus(context, MyStatuses.STATUS_UNKNOWN);
+        emptyViewBehavior();
     }
 
     @Override

@@ -1,10 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rv_activity_personal_clusters"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:clipToPadding="false"
-    android:paddingBottom="@dimen/cluster_padding_bottom"
-    android:paddingTop="@dimen/personal_cluster_rv_margin_top"
-    />
+    android:layout_height="match_parent">
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_activity_personal_clusters"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/cluster_padding_bottom"
+        android:paddingTop="@dimen/personal_cluster_rv_margin_top" />
+
+
+    <TextView
+        android:id="@+id/tv_empty_personal_clusters"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:text="@string/data_not_available"
+        android:textSize="@dimen/text_size_empty"
+        android:visibility="invisible"
+        />
+
+
+</RelativeLayout>

@@ -26,6 +26,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -44,6 +45,7 @@ import hemal.t.shah.expensetracker.data.ExpenseContract.ExpenseEntry;
 import hemal.t.shah.expensetracker.interfaces.OnExpense;
 import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
 import hemal.t.shah.expensetracker.pojo.ExpenseParcelable;
+import hemal.t.shah.expensetracker.utils.MyStatuses;
 import hemal.t.shah.expensetracker.utils.PreferenceManager;
 import hemal.t.shah.expensetracker.utils.SharedConstants;
 
@@ -59,12 +61,24 @@ public class SharedExpensesFragment extends Fragment implements
     @BindView(R.id.rv_shared_expenses_fragment)
     RecyclerView mRecyclerView;
 
+    @BindView(R.id.tv_empty_shared_expenses)
+    TextView emptyTextView;
 
     @BindString(R.string.are_you_sure)
     String ARE_YOU_SURE;
 
     @BindString(R.string.cancel)
     String CANCEL;
+
+
+    @BindString(R.string.status_ok_se)
+    String STATUS_OK;
+    @BindString(R.string.status_internet_error)
+    String STATUS_INTERNET_ERROR;
+    @BindString(R.string.data_not_available)
+    String DATA_NOT_AVAILABLE;
+    @BindString(R.string.status_unknown_error)
+    String UNKNOWN_ERROR;
 
     @BindString(R.string.delete_confirm)
     String DELETE_CONFIRM;
@@ -148,9 +162,46 @@ public class SharedExpensesFragment extends Fragment implements
             }
         });
 
+        emptyViewBehavior();
         initializeLoader(SharedConstants.CURSOR_EXPENSES_SHARED);
         return rootView;
 
+    }
+
+
+
+    private void emptyViewBehavior() {
+        if (adapter.getItemCount() <= 0) {
+
+            /**
+             * Data is not shown to the user, set some message here...
+             */
+
+            String message = DATA_NOT_AVAILABLE;
+
+            @MyStatuses.Statuses int status =
+                    MyStatuses.getStatus(context, MyStatuses.STATUS_ACCESS_SE);
+
+            switch (status) {
+                case MyStatuses.STATUS_OK:
+                    message += STATUS_OK;
+                    break;
+                case MyStatuses.STATUS_ERROR_NO_NETWORK:
+                    message += STATUS_INTERNET_ERROR;
+                    break;
+                case MyStatuses.STATUS_UNKNOWN:
+                    message += UNKNOWN_ERROR;
+                    break;
+            }
+
+            emptyTextView.setText(message);
+
+            mRecyclerView.setVisibility(View.INVISIBLE);
+            emptyTextView.setVisibility(View.VISIBLE);
+        } else {
+            mRecyclerView.setVisibility(View.VISIBLE);
+            emptyTextView.setVisibility(View.INVISIBLE);
+        }
     }
 
 
@@ -199,6 +250,9 @@ public class SharedExpensesFragment extends Fragment implements
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         this.adapter.swapCursor(data);
+        MyStatuses.setSharedExpenseStatus(context, MyStatuses.STATUS_OK);
+        emptyViewBehavior();
+
         /**
          * No calculation needed if length of data is zero.
          */
@@ -228,6 +282,8 @@ public class SharedExpensesFragment extends Fragment implements
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         this.adapter.swapCursor(null);
+        MyStatuses.setSharedExpenseStatus(context, MyStatuses.STATUS_UNKNOWN);
+        emptyViewBehavior();
     }
 
     @Override

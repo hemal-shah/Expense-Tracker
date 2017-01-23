@@ -25,6 +25,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -48,6 +49,7 @@ import hemal.t.shah.expensetracker.data.ExpenseContract.ClusterEntry;
 import hemal.t.shah.expensetracker.data.ExpenseContract.ExpenseEntry;
 import hemal.t.shah.expensetracker.interfaces.OnCluster;
 import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
+import hemal.t.shah.expensetracker.utils.MyStatuses;
 import hemal.t.shah.expensetracker.utils.PreferenceManager;
 import hemal.t.shah.expensetracker.utils.SharedConstants;
 
@@ -66,6 +68,14 @@ public class SharedClustersFragment extends Fragment implements
     String YOU_WILL_EXIT_GROUP;
     @BindString(R.string.share)
     String SHARE;
+    @BindString(R.string.status_ok_sc)
+    String STATUS_OK;
+    @BindString(R.string.status_internet_error)
+    String STATUS_INTERNET_ERROR;
+    @BindString(R.string.data_not_available)
+    String DATA_NOT_AVAILABLE;
+    @BindString(R.string.status_unknown_error)
+    String UNKNOWN_ERROR;
     @BindString(R.string.other_people)
     String OTHER_PEOPLE;
     @BindString(R.string.here_is_your_code)
@@ -76,6 +86,8 @@ public class SharedClustersFragment extends Fragment implements
     String JOIN;
     @BindString(R.string.cancel)
     String CANCEL;
+    @BindView(R.id.tv_empty_shared_clusters)
+    TextView emptyTextView;
     @BindString(R.string.exit_confirm)
     String EXIT_CONFIRM;
     private SharedClusterAdapter adapter = null;
@@ -117,7 +129,7 @@ public class SharedClustersFragment extends Fragment implements
         recyclerView.hasFixedSize();
         recyclerView.setAdapter(adapter);
 
-
+        emptyViewBehavior();
         recyclerView.addOnScrollListener(new OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -135,6 +147,42 @@ public class SharedClustersFragment extends Fragment implements
 
         return baseView;
     }
+
+
+    private void emptyViewBehavior() {
+        if (adapter.getItemCount() <= 0) {
+
+            /**
+             * Data is not shown to the user, set some message here...
+             */
+
+            String message = DATA_NOT_AVAILABLE;
+
+            @MyStatuses.Statuses int status =
+                    MyStatuses.getStatus(context, MyStatuses.STATUS_ACCESS_SC);
+
+            switch (status) {
+                case MyStatuses.STATUS_OK:
+                    message += STATUS_OK;
+                    break;
+                case MyStatuses.STATUS_ERROR_NO_NETWORK:
+                    message += STATUS_INTERNET_ERROR;
+                    break;
+                case MyStatuses.STATUS_UNKNOWN:
+                    message += UNKNOWN_ERROR;
+                    break;
+            }
+
+            emptyTextView.setText(message);
+
+            recyclerView.setVisibility(View.INVISIBLE);
+            emptyTextView.setVisibility(View.VISIBLE);
+        } else {
+            recyclerView.setVisibility(View.VISIBLE);
+            emptyTextView.setVisibility(View.INVISIBLE);
+        }
+    }
+
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -168,11 +216,15 @@ public class SharedClustersFragment extends Fragment implements
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         adapter.swapCursor(data);
+        MyStatuses.setSharedClusterStatus(context, MyStatuses.STATUS_OK);
+        emptyViewBehavior();
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         adapter.swapCursor(null);
+        MyStatuses.setSharedClusterStatus(context, MyStatuses.STATUS_UNKNOWN);
+        emptyViewBehavior();
     }
 
 

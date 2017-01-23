@@ -23,6 +23,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,6 +42,7 @@ import hemal.t.shah.expensetracker.data.ExpenseContract.ExpenseEntry;
 import hemal.t.shah.expensetracker.interfaces.OnExpense;
 import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
 import hemal.t.shah.expensetracker.pojo.ExpenseParcelable;
+import hemal.t.shah.expensetracker.utils.MyStatuses;
 import hemal.t.shah.expensetracker.utils.PreferenceManager;
 import hemal.t.shah.expensetracker.utils.SharedConstants;
 
@@ -61,21 +63,34 @@ public class PersonalExpensesFragment extends Fragment implements
     @BindString(R.string.are_you_sure)
     String ARE_YOU_SURE;
 
+
+    @BindString(R.string.status_ok_pe)
+    String STATUS_OK;
+    @BindString(R.string.status_internet_error)
+    String STATUS_INTERNET_ERROR;
+    @BindString(R.string.data_not_available)
+    String DATA_NOT_AVAILABLE;
+    @BindString(R.string.status_unknown_error)
+    String UNKNOWN_ERROR;
+
     @BindString(R.string.cancel)
     String CANCEL;
 
     @BindString(R.string.delete_confirm)
     String DELETE_CONFIRM;
 
-    ActionBar actionBar;
+    @BindView(R.id.tv_empty_personal_expenses)
+    TextView emptyTextView;
 
-    PersonalExpensesAdapter adapter = null;
+    private ActionBar actionBar;
 
-    Context context;
-    ClusterParcelable personalCluster;
+    private PersonalExpensesAdapter adapter = null;
 
-    String selection = ExpenseEntry.FIREBASE_CLUSTER_KEY + " = ?";
-    String[] selectionArgs;
+    private Context context;
+    private ClusterParcelable personalCluster;
+
+    private String selection = ExpenseEntry.FIREBASE_CLUSTER_KEY + " = ?";
+    private String[] selectionArgs;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -111,6 +126,7 @@ public class PersonalExpensesFragment extends Fragment implements
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
 
+        emptyViewBehavior();
 
         recyclerView.addOnScrollListener(new OnScrollListener() {
             @Override
@@ -129,6 +145,41 @@ public class PersonalExpensesFragment extends Fragment implements
         initializeLoader(SharedConstants.CURSOR_EXPENSES_PERSONAL);
 
         return rootView;
+    }
+
+
+    private void emptyViewBehavior() {
+        if (adapter.getItemCount() <= 0) {
+
+            /**
+             * Data is not shown to the user, set some message here...
+             */
+
+            String message = DATA_NOT_AVAILABLE;
+
+            @MyStatuses.Statuses int status =
+                    MyStatuses.getStatus(context, MyStatuses.STATUS_ACCESS_PE);
+
+            switch (status) {
+                case MyStatuses.STATUS_OK:
+                    message += STATUS_OK;
+                    break;
+                case MyStatuses.STATUS_ERROR_NO_NETWORK:
+                    message += STATUS_INTERNET_ERROR;
+                    break;
+                case MyStatuses.STATUS_UNKNOWN:
+                    message += UNKNOWN_ERROR;
+                    break;
+            }
+
+            emptyTextView.setText(message);
+
+            recyclerView.setVisibility(View.INVISIBLE);
+            emptyTextView.setVisibility(View.VISIBLE);
+        } else {
+            recyclerView.setVisibility(View.VISIBLE);
+            emptyTextView.setVisibility(View.INVISIBLE);
+        }
     }
 
     /**
@@ -190,6 +241,9 @@ public class PersonalExpensesFragment extends Fragment implements
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         adapter.swapCursor(data);
 
+        MyStatuses.setPersonalExpenseStatus(context, MyStatuses.STATUS_OK);
+        emptyViewBehavior();
+
         /**
          * No calculation needed if length of data is zero.
          */
@@ -220,6 +274,8 @@ public class PersonalExpensesFragment extends Fragment implements
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         adapter.swapCursor(null);
+        MyStatuses.setPersonalExpenseStatus(context, MyStatuses.STATUS_UNKNOWN);
+        emptyViewBehavior();
     }
 
     @Override

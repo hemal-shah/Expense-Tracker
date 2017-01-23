@@ -47,6 +47,7 @@ import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
 import hemal.t.shah.expensetracker.pojo.ExpenseParcelable;
 import hemal.t.shah.expensetracker.pojo.FirebaseUserDetails;
 import hemal.t.shah.expensetracker.settings.SettingsActivity;
+import hemal.t.shah.expensetracker.utils.MyStatuses;
 import hemal.t.shah.expensetracker.utils.PreferenceManager;
 import hemal.t.shah.expensetracker.utils.SharedConstants;
 
@@ -119,15 +120,31 @@ public class MainActivity extends AppCompatActivity {
                      */
                     if (!PreferenceManager.isFirstTimeAppOpened(context)) {
 
-                        mProgressDialog = new ProgressDialog(context);
-                        mProgressDialog.setTitle(RESTORING_DATA);
-                        mProgressDialog.setMessage(HANG_ON_TIGHT);
-                        mProgressDialog.setIndeterminate(true);
-                        mProgressDialog.show();
+                        if (PreferenceManager.isNetworkConnected(context)) {
+                            mProgressDialog = new ProgressDialog(context);
+                            mProgressDialog.setTitle(RESTORING_DATA);
+                            mProgressDialog.setMessage(HANG_ON_TIGHT);
+                            mProgressDialog.setIndeterminate(true);
+                            mProgressDialog.show();
 
-                        loadInitialPersonalDataOnSignIn(user);
-                        loadInitialSharedDataOnSignIn(user);
-                        PreferenceManager.setFirstTimeOpened(context, true);
+                            loadInitialPersonalDataOnSignIn(user);
+                            loadInitialSharedDataOnSignIn(user);
+                            PreferenceManager.setFirstTimeOpened(context, true);
+                        } else {
+                            MyStatuses.setPersonalClusterStatus(context,
+                                    MyStatuses.STATUS_ERROR_NO_NETWORK);
+
+
+                            MyStatuses.setSharedClusterStatus(context,
+                                    MyStatuses.STATUS_ERROR_NO_NETWORK);
+
+
+                            MyStatuses.setPersonalExpenseStatus(context,
+                                    MyStatuses.STATUS_ERROR_NO_NETWORK);
+
+                            MyStatuses.setSharedExpenseStatus(context,
+                                    MyStatuses.STATUS_ERROR_NO_NETWORK);
+                        }
                     }
 
                     manager.beginTransaction()
@@ -372,6 +389,11 @@ public class MainActivity extends AppCompatActivity {
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
         }
+
+        if (mInterstitialAd != null) {
+            //Stop loading the app on onPause....
+            mInterstitialAd.setAdListener(null);
+        }
     }
 
     @Override
@@ -391,8 +413,6 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
-                //user Signed in,
-
                 manager.beginTransaction()
                         .replace(R.id.fragment_activity_main, new TabContainerFragment())
                         .commit();
@@ -420,7 +440,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
         }
 
-        return super.onOptionsItemSelected(item);
+        return false;
     }
 
 

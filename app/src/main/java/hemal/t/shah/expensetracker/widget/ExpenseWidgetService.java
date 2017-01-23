@@ -6,12 +6,12 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
-
 import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.data.ExpenseContract;
 import hemal.t.shah.expensetracker.utils.PreferenceManager;
 
 /**
+ *
  * Created by hemal on 23/1/17.
  */
 
@@ -96,7 +96,6 @@ public class ExpenseWidgetService extends RemoteViewsService {
                 Intent fillInIntent = new Intent();
                 remoteViews.setOnClickFillInIntent(R.id.ll_list_item_expense, fillInIntent);
             }
-
             return remoteViews;
         }
 

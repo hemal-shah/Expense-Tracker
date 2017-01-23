@@ -1,8 +1,11 @@
 package hemal.t.shah.expensetracker.data;
 
 import android.annotation.TargetApi;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -10,9 +13,13 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
+import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.data.ExpenseContract.ClusterEntry;
 import hemal.t.shah.expensetracker.data.ExpenseContract.ExpenseEntry;
+import hemal.t.shah.expensetracker.widget.ExpenseWidgetService;
+import hemal.t.shah.expensetracker.widget.PersonalExpenseWidget;
 
 @SuppressWarnings("ConstantConditions")
 public class ExpenseProvider extends ContentProvider {
@@ -136,9 +143,20 @@ public class ExpenseProvider extends ContentProvider {
                 throw new UnsupportedOperationException("No such Uri: " + uri);
         }
 
+        //update the widgets from here...
+        updateExpensesWidget(getContext());
         getContext().getContentResolver().notifyChange(updatedUri, null);
 
         return updatedUri;
+    }
+
+    private void updateExpensesWidget(Context context){
+        Log.i(TAG, "updateExpensesWidget: inside this method");
+        AppWidgetManager manager = AppWidgetManager.getInstance(context);
+        int[] ids = manager.getAppWidgetIds(new ComponentName(context, PersonalExpenseWidget.class));
+        if(ids.length > 0){
+            manager.notifyAppWidgetViewDataChanged(ids, R.id.lv_personal_expenses_widget);
+        }
     }
 
     @Override

@@ -2,6 +2,8 @@ package hemal.t.shah.expensetracker.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -20,15 +22,6 @@ public class PreferenceManager {
     private static final String IS_FIRST_TIME = "is_first_time";
 
     private static final String CLUSTER_KEYS = "cluster_keys";
-
-    public static boolean checkInitialDataLoaded(Context context) {
-        boolean isLoaded;
-        SharedPreferences preferences = context.getSharedPreferences(PREFERENCE_FIREBASE,
-                Context.MODE_PRIVATE);
-
-        isLoaded = preferences.getBoolean(INITIAL_DATA_LOAD, false);
-        return isLoaded;
-    }
 
     public static void setInitialDataLoad(Context context, boolean value) {
         SharedPreferences preferences = context.getSharedPreferences(PREFERENCE_FIREBASE,
@@ -106,7 +99,7 @@ public class PreferenceManager {
     /**
      * Set to true if the app should be shown in two pane mode...
      *
-     * @param context Context
+     * @param context   Context
      * @param isTwoPane pass true if two pane mode, else false.
      */
     public static void setTwoPaneMode(Context context, boolean isTwoPane) {
@@ -128,10 +121,8 @@ public class PreferenceManager {
 
     /**
      * Finds the user selected currency from the settings...
-     * @param context
-     * @return
      */
-    public static String getCurrency(Context context){
+    public static String getCurrency(Context context) {
 
         SharedPreferences sharedPreferences =
                 android.preference.PreferenceManager.getDefaultSharedPreferences(context);
@@ -142,5 +133,12 @@ public class PreferenceManager {
         }
 
         return "";
+    }
+
+    public static boolean isNetworkConnected(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(
+                Context.CONNECTIVITY_SERVICE);
+        NetworkInfo availableNetwork = cm.getActiveNetworkInfo();
+        return availableNetwork != null && availableNetwork.isConnectedOrConnecting();
     }
 }

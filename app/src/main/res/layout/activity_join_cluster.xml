@@ -2,6 +2,7 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:id="@+id/cl_activity_join_cluster"
     android:layout_height="match_parent"
     >
 
@@ -61,6 +62,15 @@
             app:elevation="@dimen/fab_elevation"
             app:fabSize="normal"
             />
+
+        <TextView
+            android:text="@string/ps_notice"
+            android:layout_marginEnd="@dimen/instruction_margin_start_end"
+            android:layout_marginStart="@dimen/instruction_margin_start_end"
+            android:layout_marginTop="@dimen/instruction_margin_top"
+            android:textSize="@dimen/instructions_join_text_size"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
 

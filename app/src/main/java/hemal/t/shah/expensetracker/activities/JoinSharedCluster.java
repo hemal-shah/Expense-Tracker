@@ -2,11 +2,14 @@ package hemal.t.shah.expensetracker.activities;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,6 +41,9 @@ public class JoinSharedCluster extends AppCompatActivity {
 
     @BindView(R.id.toolbar_activity_join_cluster)
     Toolbar toolbar;
+
+    @BindView(R.id.cl_activity_join_cluster)
+    CoordinatorLayout mCoordinatorLayout;
 
     @BindView(R.id.tiet_activity_join_cluster)
     TextInputEditText mEditText;
@@ -85,8 +91,7 @@ public class JoinSharedCluster extends AppCompatActivity {
     public void joinCluster() {
         final String code = mEditText.getText().toString();
         if (code.length() != 6) {
-            Toast.makeText(JoinSharedCluster.this, ENTER_CODE,
-                    Toast.LENGTH_SHORT).show();
+            showSnackBar(ENTER_CODE);
             return;
         }
 
@@ -148,9 +153,8 @@ public class JoinSharedCluster extends AppCompatActivity {
                                         .getValue().toString();
 
                                 if (key.equals(cluster_key)) {
-                                    Toast.makeText(JoinSharedCluster.this,
-                                            ALREADY_JOINED,
-                                            Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(JoinSharedCluster.this, ALREADY_JOINED,
+                                            Toast.LENGTH_LONG).show();
                                     JoinSharedCluster.this.finish();
                                 } else {
                                     /**
@@ -179,10 +183,19 @@ public class JoinSharedCluster extends AppCompatActivity {
                                             .push()
                                             .updateChildren(map1);
 
-                                    Toast.makeText(JoinSharedCluster.this,
-                                            SUCCESS_ADDED,
-                                            Toast.LENGTH_SHORT).show();
-                                    JoinSharedCluster.this.finish();
+                                    showSnackBar(SUCCESS_ADDED);
+                                    new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            try {
+                                                Thread.sleep(Snackbar.LENGTH_LONG);
+                                            } catch (InterruptedException e) {
+                                                //can't do anything...
+                                            }
+
+                                            JoinSharedCluster.this.finish();
+                                        }
+                                    }).start();
                                 }
                             }
 
@@ -194,5 +207,9 @@ public class JoinSharedCluster extends AppCompatActivity {
                         }
                     });
         }
+    }
+
+    public void showSnackBar(String msg) {
+        Snackbar.make(mCoordinatorLayout, msg, Snackbar.LENGTH_LONG).show();
     }
 }
