@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -632,7 +633,7 @@ public class MainActivity extends AppCompatActivity {
             Fragment fragment = new ExpensesFragment();
             fragment.setArguments(arguments);
             manager.beginTransaction()
-                    .replace(R.id.fl_fragment_expenses_loader, fragment)
+                    .replace(R.id.fl_activity_expenses_loader, fragment)
                     .commit();
         }
     }

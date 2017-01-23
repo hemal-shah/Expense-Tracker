@@ -16,6 +16,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.OnScrollListener;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -274,10 +275,12 @@ public class PersonalClustersFragment extends Fragment implements
     public void onTouch(ClusterParcelable cluster) {
 
         if (mTwoPane) {
+            Log.i(TAG, "onTouch: two pane mode enabled...going to mainactivity");
             Bundle bundle = new Bundle();
             bundle.putParcelable(SharedConstants.SHARE_CLUSTER_PARCEL, cluster);
             MainActivity.onClusterSelected(bundle);
         } else {
+            Log.i(TAG, "onTouch: two pane mode looks erroneous...");
             Intent intent = new Intent(this.context, ExpensesActivity.class);
             intent.putExtra(SharedConstants.SHARE_CLUSTER_PARCEL, cluster);
             startActivity(intent);
