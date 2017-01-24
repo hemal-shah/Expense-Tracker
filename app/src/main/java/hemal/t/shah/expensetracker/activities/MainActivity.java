@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -44,6 +45,7 @@ import hemal.t.shah.expensetracker.data.ExpenseContract.ClusterEntry;
 import hemal.t.shah.expensetracker.data.ExpenseContract.ExpenseEntry;
 import hemal.t.shah.expensetracker.fragment.ExpensesFragment;
 import hemal.t.shah.expensetracker.fragment.TabContainerFragment;
+import hemal.t.shah.expensetracker.interfaces.CallbackTwoPaneMode;
 import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
 import hemal.t.shah.expensetracker.pojo.ExpenseParcelable;
 import hemal.t.shah.expensetracker.pojo.FirebaseUserDetails;
@@ -55,7 +57,7 @@ import hemal.t.shah.expensetracker.utils.SharedConstants;
 /**
  * Entry point for the application for now.
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements CallbackTwoPaneMode {
 
     private static final String TAG = "MainActivity";
     private static final int RC_SIGN_IN = 123;
@@ -627,13 +629,23 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static void onClusterSelected(Bundle arguments) {
+    @Override
+    public void openCluster(Bundle args) {
 
+        String FRAGMENT_TAG = "fragment_tag_two_pane_mode";
+        if (manager == null) {
+            manager = getSupportFragmentManager();
+        }
         if (mTwoPaneMode) {
-            Fragment fragment = new ExpensesFragment();
-            fragment.setArguments(arguments);
+            Fragment oldFragment = manager.findFragmentByTag(FRAGMENT_TAG);
+            if (oldFragment != null) {
+                manager.beginTransaction().remove(oldFragment).commit();
+            }
+
+            Fragment newFragment = new ExpensesFragment();
+            newFragment.setArguments(args);
             manager.beginTransaction()
-                    .replace(R.id.fl_activity_expenses_loader, fragment)
+                    .replace(R.id.fl_activity_expenses_loader, newFragment, FRAGMENT_TAG)
                     .commit();
         }
     }

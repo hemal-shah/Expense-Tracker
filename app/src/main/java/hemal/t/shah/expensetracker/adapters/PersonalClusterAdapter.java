@@ -32,7 +32,6 @@ public class PersonalClusterAdapter
 
     private static final String TAG = "PersonalClusterAdapter";
     private Context context = null;
-    private String currencySymbol = "";
     private OnCluster onCluster = null;
 
     public PersonalClusterAdapter(Context context, Cursor cursor, OnCluster onCluster) {

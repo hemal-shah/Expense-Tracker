@@ -79,14 +79,14 @@ public class TabContainerFragment extends Fragment {
     @BindString(R.string.cancel)
     String CANCEL;
 
-    ActionBar mActionBar;
-    FirebaseUser user;
+    private ActionBar mActionBar;
+    private FirebaseUser user;
 
-    DatabaseReference reference;
+    private DatabaseReference reference;
 
-    AppCompatActivity activity;
+    private AppCompatActivity activity;
 
-    Context context;
+    private Context context;
 
     @Nullable
     @Override

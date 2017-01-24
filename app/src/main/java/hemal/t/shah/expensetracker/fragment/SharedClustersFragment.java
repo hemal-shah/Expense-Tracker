@@ -47,6 +47,7 @@ import hemal.t.shah.expensetracker.data.DataDispenser;
 import hemal.t.shah.expensetracker.data.ExpenseContract;
 import hemal.t.shah.expensetracker.data.ExpenseContract.ClusterEntry;
 import hemal.t.shah.expensetracker.data.ExpenseContract.ExpenseEntry;
+import hemal.t.shah.expensetracker.interfaces.CallbackTwoPaneMode;
 import hemal.t.shah.expensetracker.interfaces.OnCluster;
 import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
 import hemal.t.shah.expensetracker.utils.MyStatuses;
@@ -425,9 +426,11 @@ public class SharedClustersFragment extends Fragment implements
     public void onTouch(ClusterParcelable cluster) {
 
         if (mTwoPane) {
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(SharedConstants.SHARE_CLUSTER_PARCEL, cluster);
-            MainActivity.onClusterSelected(bundle);
+            if (getParentFragment().getActivity() instanceof MainActivity) {
+                Bundle args = new Bundle();
+                args.putParcelable(SharedConstants.SHARE_CLUSTER_PARCEL, cluster);
+                ((CallbackTwoPaneMode) getParentFragment().getActivity()).openCluster(args);
+            }
         } else {
             Intent intent = new Intent(context, ExpensesActivity.class);
             intent.putExtra(SharedConstants.SHARE_CLUSTER_PARCEL, cluster);

@@ -150,11 +150,14 @@ public class ExpenseProvider extends ContentProvider {
         return updatedUri;
     }
 
-    private void updateExpensesWidget(Context context){
-        Log.i(TAG, "updateExpensesWidget: inside this method");
+    /**
+     * Updates widgets in the home screen, if any!
+     */
+    private void updateExpensesWidget(Context context) {
         AppWidgetManager manager = AppWidgetManager.getInstance(context);
-        int[] ids = manager.getAppWidgetIds(new ComponentName(context, PersonalExpenseWidget.class));
-        if(ids.length > 0){
+        int[] ids = manager.getAppWidgetIds(
+                new ComponentName(context, PersonalExpenseWidget.class));
+        if (ids.length > 0) {
             manager.notifyAppWidgetViewDataChanged(ids, R.id.lv_personal_expenses_widget);
         }
     }
@@ -191,6 +194,7 @@ public class ExpenseProvider extends ContentProvider {
         }
 
         if (rows_deleted != 0) {
+            updateExpensesWidget(getContext());
             getContext().getContentResolver().notifyChange(uri, null);
         }
 

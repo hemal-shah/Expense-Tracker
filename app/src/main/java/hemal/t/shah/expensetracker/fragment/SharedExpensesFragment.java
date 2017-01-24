@@ -20,6 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.OnScrollListener;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -107,7 +108,7 @@ public class SharedExpensesFragment extends Fragment implements
 
     private SharedExpensesAdapter adapter = null;
 
-    private String selection = ExpenseEntry.FIREBASE_CLUSTER_KEY + " = ?";
+    private boolean mTwoPane;
     private String[] selectionArgs;
 
     @Override
@@ -128,6 +129,8 @@ public class SharedExpensesFragment extends Fragment implements
 
         this.selectionArgs = new String[]{String.valueOf(sharedCluster.getFirebase_cluster_id())};
         this.context = getContext();
+
+        mTwoPane = PreferenceManager.getTwoPaneMode(context);
 
         reference = FirebaseDatabase.getInstance().getReference();
 
@@ -168,8 +171,6 @@ public class SharedExpensesFragment extends Fragment implements
 
     }
 
-
-
     private void emptyViewBehavior() {
         if (adapter.getItemCount() <= 0) {
 
@@ -204,7 +205,6 @@ public class SharedExpensesFragment extends Fragment implements
         }
     }
 
-
     private void initializeLoader(int token) {
         getActivity().getSupportLoaderManager().initLoader(
                 token, null, this
@@ -237,6 +237,7 @@ public class SharedExpensesFragment extends Fragment implements
                 return null;
 
         }
+        String selection = ExpenseEntry.FIREBASE_CLUSTER_KEY + " = ?";
         return new CursorLoader(
                 this.context,
                 ExpenseContract.ExpenseEntry.CONTENT_URI,
@@ -327,6 +328,10 @@ public class SharedExpensesFragment extends Fragment implements
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+        if (mTwoPane) {
+            menu.clear();
+        }
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_shared_expenses, menu);
     }

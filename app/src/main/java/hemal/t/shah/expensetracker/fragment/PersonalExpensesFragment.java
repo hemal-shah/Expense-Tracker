@@ -17,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.OnScrollListener;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -38,6 +39,7 @@ import butterknife.ButterKnife;
 import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.adapters.PersonalExpensesAdapter;
 import hemal.t.shah.expensetracker.data.DataDispenser;
+import hemal.t.shah.expensetracker.data.ExpenseContract;
 import hemal.t.shah.expensetracker.data.ExpenseContract.ExpenseEntry;
 import hemal.t.shah.expensetracker.interfaces.OnExpense;
 import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
@@ -86,10 +88,11 @@ public class PersonalExpensesFragment extends Fragment implements
 
     private PersonalExpensesAdapter adapter = null;
 
+    private boolean mTwoPane;
+
     private Context context;
     private ClusterParcelable personalCluster;
 
-    private String selection = ExpenseEntry.FIREBASE_CLUSTER_KEY + " = ?";
     private String[] selectionArgs;
 
     @Override
@@ -109,9 +112,11 @@ public class PersonalExpensesFragment extends Fragment implements
             personalCluster = arguments.getParcelable(SharedConstants.SHARE_CLUSTER_PARCEL);
         }
 
-        this.selectionArgs = new String[]{String.valueOf(personalCluster.getFirebase_cluster_id())};
+
+        this.selectionArgs = new String[]{personalCluster.getFirebase_cluster_id()};
         this.context = getContext();
 
+        mTwoPane = PreferenceManager.getTwoPaneMode(context);
         //getting action bar reference from parent activity
         actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
 
@@ -141,12 +146,11 @@ public class PersonalExpensesFragment extends Fragment implements
             }
         });
 
-
+        emptyViewBehavior();
         initializeLoader(SharedConstants.CURSOR_EXPENSES_PERSONAL);
 
         return rootView;
     }
-
 
     private void emptyViewBehavior() {
         if (adapter.getItemCount() <= 0) {
@@ -227,6 +231,7 @@ public class PersonalExpensesFragment extends Fragment implements
                 return null;
         }
 
+        String selection = ExpenseEntry.FIREBASE_CLUSTER_KEY + " = ?";
         return new CursorLoader(
                 this.context,
                 ExpenseEntry.CONTENT_URI,
@@ -328,9 +333,13 @@ public class PersonalExpensesFragment extends Fragment implements
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (mTwoPane) {
+            menu.clear();
+        }
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_personal_expenses, menu);
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

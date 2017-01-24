@@ -13,6 +13,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,7 @@ import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.data.DataInsertionTask;
 import hemal.t.shah.expensetracker.data.ExpenseContract;
 import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
+import hemal.t.shah.expensetracker.utils.PreferenceManager;
 import hemal.t.shah.expensetracker.utils.SharedConstants;
 
 /**
@@ -102,8 +104,10 @@ public class ExpensesFragment extends Fragment {
 
         ActionBar actionBar = appCompatActivity.getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
-            actionBar.setDisplayHomeAsUpEnabled(true);
+            if (!PreferenceManager.getTwoPaneMode(context)) {
+                actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
+                actionBar.setDisplayHomeAsUpEnabled(true);
+            }
             actionBar.setTitle(clusterParcelable.getTitle().toUpperCase());
         }
 
@@ -113,16 +117,23 @@ public class ExpensesFragment extends Fragment {
         bundle.putParcelable(SharedConstants.SHARE_CLUSTER_PARCEL, clusterParcelable);
 
         cluster_key = clusterParcelable.getFirebase_cluster_id();
+        Log.i(TAG, "onCreateView: keyy " + cluster_key);
         is_shared = clusterParcelable.getIs_shared();
 
         Fragment fragment = null;
 
-        if (clusterParcelable != null && clusterParcelable.getIs_shared() == 0) {
+        if (clusterParcelable.getIs_shared() == 0) {
             //It's a personal fragment.
             fragment = new PersonalExpensesFragment();
-        } else if (clusterParcelable != null && clusterParcelable.getIs_shared() == 1) {
+        } else if (clusterParcelable.getIs_shared() == 1) {
             //it's a shared fragment
             fragment = new SharedExpensesFragment();
+        }
+        String FRAGMENT_TAG = "fragment_tag_expenses";
+
+        Fragment oldFragment = manager.findFragmentByTag(FRAGMENT_TAG);
+        if (oldFragment != null) {
+            manager.beginTransaction().remove(oldFragment).commit();
         }
 
         if (fragment != null) {
