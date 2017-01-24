@@ -112,7 +112,6 @@ public class PersonalExpensesFragment extends Fragment implements
             personalCluster = arguments.getParcelable(SharedConstants.SHARE_CLUSTER_PARCEL);
         }
 
-
         this.selectionArgs = new String[]{personalCluster.getFirebase_cluster_id()};
         this.context = getContext();
 
@@ -145,6 +144,7 @@ public class PersonalExpensesFragment extends Fragment implements
                 }
             }
         });
+
 
         emptyViewBehavior();
         initializeLoader(SharedConstants.CURSOR_EXPENSES_PERSONAL);
@@ -193,6 +193,11 @@ public class PersonalExpensesFragment extends Fragment implements
      * @param token id in the initLoader() function.
      */
     private void initializeLoader(int token) {
+
+        if (mTwoPane) {
+            getActivity().getSupportLoaderManager()
+                    .restartLoader(token, null, this);
+        }
         getActivity().getSupportLoaderManager().initLoader(
                 token, null, this
         );
@@ -230,7 +235,10 @@ public class PersonalExpensesFragment extends Fragment implements
             default:
                 return null;
         }
+        // TODO: 24/1/17 this thing is not updated!
 
+        Log.i(TAG, "onCreateLoader: calling new data as follows : "
+                + selectionArgs[0]);
         String selection = ExpenseEntry.FIREBASE_CLUSTER_KEY + " = ?";
         return new CursorLoader(
                 this.context,
@@ -330,7 +338,6 @@ public class PersonalExpensesFragment extends Fragment implements
         builder.create().show();
     }
 
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         if (mTwoPane) {
@@ -339,7 +346,6 @@ public class PersonalExpensesFragment extends Fragment implements
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_personal_expenses, menu);
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

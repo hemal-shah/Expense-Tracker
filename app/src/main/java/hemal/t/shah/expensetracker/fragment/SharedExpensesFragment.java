@@ -165,6 +165,7 @@ public class SharedExpensesFragment extends Fragment implements
             }
         });
 
+
         emptyViewBehavior();
         initializeLoader(SharedConstants.CURSOR_EXPENSES_SHARED);
         return rootView;
@@ -206,6 +207,11 @@ public class SharedExpensesFragment extends Fragment implements
     }
 
     private void initializeLoader(int token) {
+
+        if (mTwoPane) {
+            getActivity().getSupportLoaderManager()
+                    .restartLoader(token, null, this);
+        }
         getActivity().getSupportLoaderManager().initLoader(
                 token, null, this
         );
