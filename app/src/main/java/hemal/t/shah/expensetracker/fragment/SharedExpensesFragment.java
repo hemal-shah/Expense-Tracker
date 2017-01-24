@@ -28,6 +28,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -83,6 +84,9 @@ public class SharedExpensesFragment extends Fragment implements
 
     @BindString(R.string.delete_confirm)
     String DELETE_CONFIRM;
+
+    @BindString(R.string.connect_to_internet)
+    String CONNECT_INTERNET;
 
     @BindString(R.string.share)
     String SHARE;
@@ -376,6 +380,13 @@ public class SharedExpensesFragment extends Fragment implements
      * and share it to others.
      */
     private void shareClusterCode() {
+
+        if(!PreferenceManager.isNetworkConnected(context)){
+            Toast.makeText(context, CONNECT_INTERNET,
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         final ProgressDialog dialog = new ProgressDialog(context);
         dialog.setIndeterminate(true);
         dialog.setMessage(HOLD_MINUTE);

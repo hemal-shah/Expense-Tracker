@@ -27,7 +27,6 @@ public class DataDispenser extends AsyncQueryHandler {
         super.onDeleteComplete(token, cookie, result);
         switch (token) {
             case SharedConstants.TOKEN_DELETE_CLUSTER:
-                // TODO: 20/1/17 try to change to snackbar
                 Log.i(TAG, "onDeleteComplete: ");
                 break;
             case SharedConstants.TOKEN_DELETE_EXPENSES:

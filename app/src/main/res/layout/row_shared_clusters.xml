@@ -64,7 +64,7 @@
                     android:layout_height="match_parent"
                     android:layout_margin="@dimen/margin_timestamp_s_cluster"
                     android:layout_weight="4"
-                    android:gravity="center_vertical"
+                    android:gravity="start|center_vertical"
                     android:textSize="@dimen/text_size_timestamp_s_cluster"
                     tools:text="timestamp goes here"
                     />
@@ -75,6 +75,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="1"
+                    android:contentDescription="@string/cd_new_participant"
                     android:background="?attr/selectableItemBackground"
                     android:src="@drawable/ic_group_add_black_24dp"
                     />
@@ -83,6 +84,7 @@
                     android:id="@+id/ib_exit_s_cluster"
                     android:layout_width="@dimen/zero_dp_width"
                     android:layout_height="wrap_content"
+                    android:contentDescription="@string/cd_exit_cluster"
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:background="?attr/selectableItemBackground"

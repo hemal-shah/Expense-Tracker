@@ -164,7 +164,6 @@ public class TabContainerFragment extends Fragment {
                 String title = et_new_personal_cluster.getText().toString();
 
                 if (title.length() <= 3 || title.length() >= 15) {
-                    // TODO: 17/12/16 add snackbar here
                     Toast.makeText(context, STRING_LENGTH_ERROR,
                             Toast.LENGTH_SHORT).show();
                     dialog.dismiss();

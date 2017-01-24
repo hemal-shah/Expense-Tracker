@@ -94,6 +94,7 @@
                 app:layout_column="3"
                 app:layout_columnSpan="1"
                 app:layout_columnWeight="1"
+                android:contentDescription="@string/cd_delete"
                 app:layout_gravity="end"
                 app:layout_row="3"
                 />

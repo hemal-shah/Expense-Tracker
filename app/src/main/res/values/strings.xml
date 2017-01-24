@@ -62,4 +62,10 @@
     <string name="status_ok_sc" translatable="true">Tap the \'+\' icon at bottom of screen to create new Shared Cluster or Join another shared cluster using 6-digit code.</string>
     <string name="status_ok_pe" translatable="true">Start adding new expenses to this cluster by tapping the \'+\' button at the bottom of the screen.</string>
     <string name="status_ok_se" translatable="true" >Tap the \'+\' button at bottom of the screen to add new expenses to this cluster, or wait for other participants to add new expenses. To add participants, tap on the \"Add group members\" button on top of the screen.</string>
+    <string name="cd_new_expense">Add new expense</string>
+    <string name="cd_delete">Delete</string>
+    <string name="cd_new_participant">Add new participant</string>
+    <string name="cd_exit_cluster">Exit Cluster</string>
+    <string name="cd_profile_photo">User Profile Photo</string>
+    <string name="connect_to_internet">Connect to internet and try again later.</string>
 </resources>

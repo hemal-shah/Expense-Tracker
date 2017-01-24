@@ -26,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -87,6 +88,8 @@ public class SharedClustersFragment extends Fragment implements
     String JOIN;
     @BindString(R.string.cancel)
     String CANCEL;
+    @BindString(R.string.connect_to_internet)
+    String CONNECT_INTERNET;
     @BindView(R.id.tv_empty_shared_clusters)
     TextView emptyTextView;
     @BindString(R.string.exit_confirm)
@@ -368,6 +371,14 @@ public class SharedClustersFragment extends Fragment implements
 
     @Override
     public void onAddParticipant(final ClusterParcelable cluster) {
+
+
+        if (!PreferenceManager.isNetworkConnected(context)) {
+            Toast.makeText(context, CONNECT_INTERNET,
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         //Will be called.
         final ProgressDialog dialog = new ProgressDialog(context);
         dialog.setIndeterminate(true);

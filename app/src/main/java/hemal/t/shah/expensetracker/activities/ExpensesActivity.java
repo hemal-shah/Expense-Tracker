@@ -68,4 +68,10 @@ public class ExpensesActivity extends AppCompatActivity {
         manager = getSupportFragmentManager();
         manager.beginTransaction().replace(R.id.fl_activity_expenses_loader, fragment).commit();
     }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        super.onBackPressed();
+    }
 }

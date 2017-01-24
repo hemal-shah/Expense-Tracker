@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
 
 
     <android.support.design.widget.TextInputLayout
@@ -15,10 +14,10 @@
         android:layout_marginEnd="@dimen/margin_end_start_et_dialog"
         android:layout_marginStart="@dimen/margin_end_start_et_dialog"
         android:layout_marginTop="@dimen/margin_top_et_dialog"
+        android:nextFocusDown="@+id/til_amount_dialog"
         app:counterEnabled="true"
         app:counterMaxLength="15"
-        app:errorEnabled="true"
-        >
+        app:errorEnabled="true">
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/tiet_about_dialog"
@@ -26,8 +25,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/enter_about"
             android:inputType="text"
-            android:maxLength="15"
-            />
+            android:maxLength="15" />
 
     </android.support.design.widget.TextInputLayout>
 
@@ -40,17 +38,17 @@
         android:layout_marginEnd="@dimen/margin_end_start_et_dialog"
         android:layout_marginStart="@dimen/margin_end_start_et_dialog"
         android:layout_marginTop="@dimen/margin_top_et_dialog"
+        android:nextFocusDown="@+id/til_describe_dialog"
+        android:nextFocusUp="@id/til_about_dialog"
         app:counterMaxLength="5"
-        app:errorEnabled="true"
-        >
+        app:errorEnabled="true">
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/tiet_amount_dialog"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/enter_amount"
-            android:inputType="numberDecimal"
-            />
+            android:inputType="numberDecimal" />
 
     </android.support.design.widget.TextInputLayout>
 
@@ -63,17 +61,16 @@
         android:layout_marginEnd="@dimen/margin_end_start_et_dialog"
         android:layout_marginStart="@dimen/margin_end_start_et_dialog"
         android:layout_marginTop="@dimen/margin_top_et_dialog"
+        android:nextFocusUp="@id/til_amount_dialog"
         app:counterEnabled="true"
-        app:errorEnabled="true"
-        >
+        app:errorEnabled="true">
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/tiet_describe_dialog"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/describe"
-            android:inputType="textLongMessage"
-            />
+            android:inputType="textLongMessage" />
 
     </android.support.design.widget.TextInputLayout>
 

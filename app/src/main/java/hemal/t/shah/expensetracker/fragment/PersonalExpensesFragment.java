@@ -235,10 +235,6 @@ public class PersonalExpensesFragment extends Fragment implements
             default:
                 return null;
         }
-        // TODO: 24/1/17 this thing is not updated!
-
-        Log.i(TAG, "onCreateLoader: calling new data as follows : "
-                + selectionArgs[0]);
         String selection = ExpenseEntry.FIREBASE_CLUSTER_KEY + " = ?";
         return new CursorLoader(
                 this.context,

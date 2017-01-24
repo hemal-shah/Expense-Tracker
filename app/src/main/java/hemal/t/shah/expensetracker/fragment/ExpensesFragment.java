@@ -144,7 +144,6 @@ public class ExpensesFragment extends Fragment {
         return baseView;
     }
 
-
     @OnClick(R.id.fab_activity_expenses_loader)
     public void addNewExpense() {
 

@@ -40,6 +40,7 @@
                 android:paddingTop="@dimen/padding_top_start_end_s_expense_ll"
                 >
                 <ImageView
+                    android:contentDescription="@string/cd_profile_photo"
                     android:id="@+id/iv_user_profile"
                     android:layout_width="@dimen/photo_size"
                     android:layout_height="@dimen/photo_size"
@@ -126,6 +127,7 @@
                     app:layout_column="3"
                     app:layout_columnSpan="1"
                     app:layout_columnWeight="1"
+                    android:contentDescription="@string/cd_delete"
                     app:layout_gravity="end"
                     app:layout_row="3"
                     />

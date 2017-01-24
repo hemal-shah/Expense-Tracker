@@ -13,6 +13,7 @@ import hemal.t.shah.expensetracker.fragment.SharedClustersFragment;
  */
 public class ViewPagerTabAdapter extends FragmentPagerAdapter {
 
+
     //Titles of tabs.
     private String[] tabTitles = {"Personal", "Shared"};
 
