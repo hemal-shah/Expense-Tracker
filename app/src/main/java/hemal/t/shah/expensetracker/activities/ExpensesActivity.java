@@ -47,9 +47,6 @@ public class ExpensesActivity extends AppCompatActivity {
 
     private static final String TAG = "ExpensesActivity";
 
-    private ClusterParcelable mClusterParcelable;
-    private FragmentManager manager;
-
     @SuppressLint("CommitTransaction")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,15 +54,16 @@ public class ExpensesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_expenses_loader);
 
         Intent intent = getIntent();
-        mClusterParcelable = intent.getExtras().getParcelable(SharedConstants.SHARE_CLUSTER_PARCEL);
+        ClusterParcelable clusterParcelable = intent.getExtras().getParcelable(
+                SharedConstants.SHARE_CLUSTER_PARCEL);
 
         Bundle args = new Bundle();
-        args.putParcelable(SharedConstants.SHARE_CLUSTER_PARCEL, mClusterParcelable);
+        args.putParcelable(SharedConstants.SHARE_CLUSTER_PARCEL, clusterParcelable);
 
         Fragment fragment = new ExpensesFragment();
         fragment.setArguments(args);
 
-        manager = getSupportFragmentManager();
+        FragmentManager manager = getSupportFragmentManager();
         manager.beginTransaction().replace(R.id.fl_activity_expenses_loader, fragment).commit();
     }
 

@@ -79,12 +79,9 @@ public class TabContainerFragment extends Fragment {
     @BindString(R.string.cancel)
     String CANCEL;
 
-    private ActionBar mActionBar;
     private FirebaseUser user;
 
     private DatabaseReference reference;
-
-    private AppCompatActivity activity;
 
     private Context context;
 
@@ -103,13 +100,17 @@ public class TabContainerFragment extends Fragment {
         user = FirebaseAuth.getInstance().getCurrentUser();
         reference = FirebaseDatabase.getInstance().getReference();
 
-        activity = (AppCompatActivity) getActivity();
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.setSupportActionBar(toolbar);
-        mActionBar = activity.getSupportActionBar();
+        ActionBar actionBar = activity.getSupportActionBar();
 
         //set the name of user in title
-        if (user != null && mActionBar != null) {
-            mActionBar.setTitle(user.getDisplayName());
+        if (user != null && actionBar != null) {
+            if (user.getDisplayName() != null || !user.getDisplayName().equals("")) {
+                actionBar.setTitle(user.getDisplayName());
+            } else {
+                actionBar.setTitle(getResources().getString(R.string.app_name));
+            }
         }
 
         viewPager.setAdapter(new ViewPagerTabAdapter(getChildFragmentManager()));

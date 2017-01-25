@@ -15,11 +15,8 @@ public class DataDispenser extends AsyncQueryHandler {
 
     private static final String TAG = "DataDispenser";
 
-    private Context context = null;
-
     public DataDispenser(ContentResolver cr, Context context) {
         super(cr);
-        this.context = context;
     }
 
     @Override
