@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/menu_filter_personal_clusters"
         android:icon="@drawable/ic_sort_white_24dp"
         android:title="@string/filter"
         app:showAsAction="always">
