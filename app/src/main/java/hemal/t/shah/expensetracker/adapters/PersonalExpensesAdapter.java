@@ -9,8 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.hemal.shah.TimeTravel;
 import com.hemal.shah.TimeTravelException;
 

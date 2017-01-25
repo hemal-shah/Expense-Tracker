@@ -13,12 +13,10 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.data.ExpenseContract.ClusterEntry;
 import hemal.t.shah.expensetracker.data.ExpenseContract.ExpenseEntry;
-import hemal.t.shah.expensetracker.widget.ExpenseWidgetService;
 import hemal.t.shah.expensetracker.widget.PersonalExpenseWidget;
 
 @SuppressWarnings("ConstantConditions")

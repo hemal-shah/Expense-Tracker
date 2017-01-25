@@ -1,41 +1,15 @@
 package hemal.t.shah.expensetracker.activities;
 
 import android.annotation.SuppressLint;
-import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import butterknife.BindString;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import hemal.t.shah.expensetracker.R;
-import hemal.t.shah.expensetracker.data.DataInsertionTask;
-import hemal.t.shah.expensetracker.data.ExpenseContract;
-import hemal.t.shah.expensetracker.data.ExpenseContract.ExpenseEntry;
 import hemal.t.shah.expensetracker.fragment.ExpensesFragment;
-import hemal.t.shah.expensetracker.fragment.PersonalExpensesFragment;
-import hemal.t.shah.expensetracker.fragment.SharedExpensesFragment;
 import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
 import hemal.t.shah.expensetracker.utils.SharedConstants;
 

@@ -22,7 +22,7 @@ import android.database.DataSetObserver;
 import android.support.v7.widget.RecyclerView;
 
 /**
- * Similiar to CursorAdapter for ListView.
+ * Similar to CursorAdapter for ListView.
  * Created by skyfishjy on 10/31/14.
  */
 

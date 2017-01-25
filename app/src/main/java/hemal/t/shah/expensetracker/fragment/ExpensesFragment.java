@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -117,7 +116,6 @@ public class ExpensesFragment extends Fragment {
         bundle.putParcelable(SharedConstants.SHARE_CLUSTER_PARCEL, clusterParcelable);
 
         cluster_key = clusterParcelable.getFirebase_cluster_id();
-        Log.i(TAG, "onCreateView: keyy " + cluster_key);
         is_shared = clusterParcelable.getIs_shared();
 
         Fragment fragment = null;

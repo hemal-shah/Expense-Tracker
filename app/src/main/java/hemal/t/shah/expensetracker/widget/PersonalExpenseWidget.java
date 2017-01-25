@@ -7,13 +7,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Bundle;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.activities.ExpensesActivity;
-import hemal.t.shah.expensetracker.activities.MainActivity;
 import hemal.t.shah.expensetracker.data.ExpenseContract;
 import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
 import hemal.t.shah.expensetracker.utils.SharedConstants;

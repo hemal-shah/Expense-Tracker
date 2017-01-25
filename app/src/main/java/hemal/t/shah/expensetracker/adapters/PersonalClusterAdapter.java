@@ -21,7 +21,6 @@ import hemal.t.shah.expensetracker.R;
 import hemal.t.shah.expensetracker.data.ExpenseContract.ClusterEntry;
 import hemal.t.shah.expensetracker.interfaces.OnCluster;
 import hemal.t.shah.expensetracker.pojo.ClusterParcelable;
-import hemal.t.shah.expensetracker.utils.PreferenceManager;
 
 /**
  * Adapter to show personal clusters in the main screen of the tabs.
