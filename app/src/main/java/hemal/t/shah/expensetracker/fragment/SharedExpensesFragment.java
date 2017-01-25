@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -269,26 +270,45 @@ public class SharedExpensesFragment extends Fragment implements
          */
         if (data.getCount() == 0) return;
 
-        /**
-         * Load & Calculate the sum and display it in the action bar
-         * subtitle.
-         */
-        int index_amount = data.getColumnIndex(
-                ExpenseEntry.COLUMN_AMOUNT
-        );
-        double total = 0;
-        for (int i = 0; i < data.getCount(); i++) {
-            data.moveToPosition(i);
-            double amount = data.getDouble(index_amount);
-            total += amount;
+        new CalculateTotalTask().execute(data);
+    }
+
+
+    public class CalculateTotalTask extends AsyncTask<Cursor, Void, Double> {
+
+        @Override
+        protected Double doInBackground(Cursor... params) {
+            Cursor data = params[0];
+
+            /**
+             * Load & Calculate the sum and display it in the action bar
+             * subtitle.
+             */
+            int index_amount = data.getColumnIndex(
+                    ExpenseEntry.COLUMN_AMOUNT
+            );
+
+            double total = 0;
+            for (int i = 0; i < data.getCount(); i++) {
+                data.moveToPosition(i);
+                double amount = data.getDouble(index_amount);
+                total += amount;
+            }
+            return total;
         }
 
-        if (actionBar != null && total != 0) {
+        @Override
+        protected void onPostExecute(Double total) {
 
-            actionBar.setSubtitle(
-                    "Total : " + PreferenceManager.getCurrency(context) + " " + total);
+            if (actionBar != null && total != 0) {
+
+                actionBar.setSubtitle(
+                        "Total : " + PreferenceManager.getCurrency(context) + " " + total);
+            }
+
         }
     }
+
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
