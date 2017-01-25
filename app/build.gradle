@@ -2,9 +2,16 @@ apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'ExpenseTracker'
+            keyPassword 'hemalshah'
+            storeFile file("${project.rootDir}/keystore.jks")
+            storePassword 'hemalshah'
+        }
+    }
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
-
     defaultConfig {
         applicationId "hemal.t.shah.expensetracker"
         minSdkVersion 21
@@ -16,9 +23,9 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
         }
     }
-
     repositories {
         maven { url 'https://maven.fabric.io/public' }
     }
@@ -26,10 +33,8 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-
     //my time library
     compile project(':timetravel')
-
     compile 'com.android.support:appcompat-v7:25.1.0'
     compile 'com.android.support:recyclerview-v7:25.1.0'
     compile 'com.android.support:design:25.1.0'
@@ -46,8 +51,3 @@ dependencies {
 }
 
 apply plugin: 'com.google.gms.google-services'
-
-if(project.hasProperty("MyProject.signing")
-        && new File(project.property("MyProject.signing") + ".gradle").exists()) {
-    apply from: project.property("MyProject.signing") + ".gradle";
-}
